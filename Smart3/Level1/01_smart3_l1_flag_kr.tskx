@@ -1,0 +1,366 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 청기백기 예제프로그램
+o // param_text:[작동 방법]
+o // param_text:스마트 폰을 로봇에 장착하여, 청기 백기 게임을 합니다.
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+- 
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o call faddr_dest:초기화
+- 
+o while(1)
+o begin
+o call faddr_dest:깃발표시
+o call faddr_dest:입력감지
+o call faddr_dest:표정표시
+o call faddr_dest:점수표시
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:smart:100:262 param_src:img_num:1
+o // param_text:깃발상태 (0: 대기, 1:캡쳐, 2:미스)
+o load param_dest:var:깃발상태 param_src:dec_num:0
+- 
+o // param_text:입력시간 설정
+o load param_dest:var:입력시간 param_src:hrtimer_num:1000
+- 
+o // param_text:남은 가능 게임수
+o load param_dest:var:남은기회라벨 param_src:scrpos4_num:35520775
+o load param_dest:var:남은기회 param_src:dec_num:3
+- 
+o // param_text:잡은 깃발수
+o load param_dest:var:잡은깃발라벨 param_src:scrpos4_num:35521033
+o load param_dest:var:잡은깃발 param_src:dec_num:0
+- 
+o // param_text:TTS 목록 설정
+o load param_dest:var:TTS청기올려 param_src:dec_num:3
+o load param_dest:var:TTS백기올려 param_src:dec_num:4
+o load param_dest:var:TTS청기내려 param_src:dec_num:5
+o load param_dest:var:TTS백기내려 param_src:dec_num:6
+- 
+o // param_text:초기 표시 설정
+o load param_dest:smart:100:266 param_src:var:남은기회라벨
+o load param_dest:smart:100:266 param_src:var:잡은깃발라벨
+- 
+o compute param_dest:var:잡은깃발_표시위치조정 param_src:var:잡은깃발 aop:* param_src:dec_num:256
+o compute param_dest:var:남은기회_표시위치조정 param_src:var:남은기회 aop:* param_src:dec_num:256
+o compute param_dest:var:잡은깃발표시 param_src:scrpos0_num:14,잡은깃발,52,2 aop:+ param_src:dec_num:0
+o compute param_dest:var:남은기회표시 param_src:scrpos0_num:12,남은기회,52,2 aop:+ param_src:dec_num:0
+- 
+o load param_dest:smart:100:267 param_src:var:잡은깃발표시
+o load param_dest:smart:100:267 param_src:var:남은기회표시
+- 
+o load param_dest:smart:100:263 param_src:scrpos3_num:13
+o load param_dest:smart:100:263 param_src:scrpos3_num:18
+o load param_dest:cm:5 param_src:timer_num:16
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o function faddr_src:깃발표시
+o begin
+o load param_dest:var:깃발상태 param_src:dec_num:0
+o load param_dest:var:입력확인 param_src:bool_num:0
+- 
+- 
+o load param_dest:cm:25 param_src:dec_num:5
+o load param_dest:var:깃발값 param_src:cm:25
+o load param_dest:smart:100:263 param_src:scrpos3_num:66317
+o load param_dest:smart:100:263 param_src:scrpos3_num:11
+o load param_dest:smart:100:263 param_src:scrpos3_num:15
+- 
+o // param_text:깃발값 (0:청기내려, 1&2:청기올려, 3:백기내려, 4&5:백기올려)
+o if param_src:var:깃발값 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:65803
+o load param_dest:smart:100:268 param_src:var:TTS청기내려
+o while param_src:smart:100:268 lop:!= param_src:txt_num:0 rop:then
+o begin
+o call faddr_dest:입력확인
+o if param_src:var:입력확인 lop:== param_src:bool_num:1 rop:then
+o begin
+o break
+o end
+o end
+o end
+o elseif param_src:var:깃발값 lop:== param_src:dec_num:1 rop:|| param_src:var:깃발값 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:65803
+o load param_dest:smart:100:268 param_src:var:TTS청기올려
+o while param_src:smart:100:268 lop:!= param_src:txt_num:0 rop:then
+o begin
+o call faddr_dest:입력확인
+o if param_src:var:입력확인 lop:== param_src:bool_num:1 rop:then
+o begin
+o break
+o end
+o end
+o end
+o elseif param_src:var:깃발값 lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66063
+o load param_dest:smart:100:268 param_src:var:TTS백기내려
+o while param_src:smart:100:268 lop:!= param_src:txt_num:0 rop:then
+o begin
+o call faddr_dest:입력확인
+o if param_src:var:입력확인 lop:== param_src:bool_num:1 rop:then
+o begin
+o break
+o end
+o end
+o end
+o elseif param_src:var:깃발값 lop:== param_src:dec_num:4 rop:|| param_src:var:깃발값 lop:== param_src:dec_num:5 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66063
+o load param_dest:smart:100:268 param_src:var:TTS백기올려
+o while param_src:smart:100:268 lop:!= param_src:txt_num:0 rop:then
+o begin
+o call faddr_dest:입력확인
+o if param_src:var:입력확인 lop:== param_src:bool_num:1 rop:then
+o begin
+o break
+o end
+o end
+o end
+o end
+- 
+o function faddr_src:입력감지
+o begin
+o if param_src:var:깃발상태 lop:!= param_src:dec_num:0 rop:then
+o begin
+o return
+o end
+- 
+o load param_dest:cm:6 param_src:var:입력시간
+o while param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o begin
+o call faddr_dest:입력확인
+o if param_src:var:입력확인 lop:== param_src:bool_num:1 rop:then
+o begin
+o break
+o end
+o end
+o end
+- 
+o function faddr_src:표정표시
+o begin
+o // param_text:깃발이 올라갔는데 터치가 없다면 미스
+o if param_src:var:청기스위치 lop:< param_src:dec_num:1 rop:&& param_src:var:백기스위치 lop:< param_src:dec_num:1 rop:then
+o begin
+o if param_src:var:깃발값 lop:== param_src:dec_num:1 rop:|| param_src:var:깃발값 lop:== param_src:dec_num:2 rop:|| param_src:var:깃발값 lop:== param_src:dec_num:4 rop:|| param_src:var:깃발값 lop:== param_src:dec_num:5 rop:then
+o begin
+o load param_dest:var:깃발상태 param_src:dec_num:2
+o end
+o end
+- 
+o // param_text:깃발상태 (0: 대기, 1:캡쳐, 2:미스)
+o if param_src:var:깃발상태 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66573
+o end
+o elseif param_src:var:깃발상태 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66829
+o end
+o else
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66317
+o end
+o end
+- 
+o function faddr_src:점수표시
+o begin
+o // param_text:깃발상태 (0: 대기, 1:캡쳐, 2:미스)
+o if param_src:var:깃발상태 lop:== param_src:dec_num:1 rop:then
+o begin
+o call faddr_dest:맞음멜로디
+o compute param_dest:var:잡은깃발 param_src:var:잡은깃발 aop:+ param_src:dec_num:1
+o compute param_dest:var:입력시간 param_src:var:입력시간 aop:- param_src:hrtimer_num:50
+o if param_src:var:입력시간 lop:<= param_src:hrtimer_num:0 rop:then
+o begin
+o load param_dest:var:입력시간 param_src:hrtimer_num:0
+o end
+o end
+o elseif param_src:var:깃발상태 lop:== param_src:dec_num:2 rop:then
+o begin
+o call faddr_dest:틀림멜로디
+o compute param_dest:var:남은기회 param_src:var:남은기회 aop:- param_src:dec_num:1
+o end
+- 
+o compute param_dest:var:잡은깃발_표시위치조정 param_src:var:잡은깃발 aop:* param_src:dec_num:256
+o compute param_dest:var:남은기회_표시위치조정 param_src:var:남은기회 aop:* param_src:dec_num:256
+o compute param_dest:var:잡은깃발표시 param_src:scrpos0_num:14,잡은깃발,50,2 aop:+ param_src:dec_num:0
+o compute param_dest:var:남은기회표시 param_src:scrpos0_num:12,남은기회,50,2 aop:+ param_src:dec_num:0
+- 
+o load param_dest:smart:100:267 param_src:var:잡은깃발표시
+o load param_dest:smart:100:267 param_src:var:남은기회표시
+- 
+o if param_src:var:남은기회 lop:== param_src:dec_num:0 rop:then
+o begin
+o call faddr_dest:게임종료
+o end
+- 
+o // param_text:미스 또는 캡쳐한경우 잠시 대기
+o if param_src:var:깃발상태 lop:== param_src:dec_num:1 rop:|| param_src:var:깃발상태 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o end
+- 
+o function faddr_src:입력확인
+o begin
+o if param_src:cm:13 lop:> param_src:dec_num:500 rop:then
+o begin
+o load param_dest:var:청기스위치 param_src:dec_num:1
+o end
+o elseif param_src:cm:15 lop:> param_src:dec_num:500 rop:then
+o begin
+o load param_dest:var:백기스위치 param_src:dec_num:1
+o end
+o else
+o begin
+o load param_dest:var:청기스위치 param_src:dec_num:0
+o load param_dest:var:백기스위치 param_src:dec_num:0
+o end
+- 
+o if param_src:var:청기스위치 lop:< param_src:dec_num:1 rop:&& param_src:var:백기스위치 lop:< param_src:dec_num:1 rop:then
+o begin
+o load param_dest:var:깃발상태 param_src:dec_num:0
+o load param_dest:var:이전청기스위치 param_src:dec_num:0
+o load param_dest:var:이전백기스위치 param_src:dec_num:0
+o end
+o else
+o begin
+o if param_src:var:이전청기스위치 lop:== param_src:dec_num:0 rop:&& param_src:var:이전백기스위치 lop:== param_src:dec_num:0 rop:then
+o begin
+o if param_src:var:청기스위치 lop:> param_src:dec_num:0 rop:then
+o begin
+o if param_src:var:깃발값 lop:== param_src:dec_num:1 rop:|| param_src:var:깃발값 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:var:깃발상태 param_src:dec_num:1
+o end
+o else
+o begin
+o load param_dest:var:깃발상태 param_src:dec_num:2
+o end
+o load param_dest:aux:1:68 param_src:dir_num:1824
+o load param_dest:cm:6 param_src:hrtimer_num:150
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:1:68 param_src:dir_num:800
+o load param_dest:cm:6 param_src:hrtimer_num:150
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:var:이전청기스위치 param_src:dec_num:1
+o load param_dest:var:입력확인 param_src:bool_num:1
+o end
+- 
+o if param_src:var:백기스위치 lop:> param_src:dec_num:0 rop:then
+o begin
+o if param_src:var:깃발값 lop:== param_src:dec_num:4 rop:|| param_src:var:깃발값 lop:== param_src:dec_num:5 rop:then
+o begin
+o load param_dest:var:깃발상태 param_src:dec_num:1
+o end
+o else
+o begin
+o load param_dest:var:깃발상태 param_src:dec_num:2
+o end
+o load param_dest:aux:2:68 param_src:dir_num:800
+o load param_dest:cm:6 param_src:hrtimer_num:150
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o load param_dest:aux:2:68 param_src:dir_num:1824
+o load param_dest:cm:6 param_src:hrtimer_num:150
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o load param_dest:var:이전백기스위치 param_src:dec_num:1
+o load param_dest:var:입력확인 param_src:bool_num:1
+o end
+o end
+o end
+o end
+- 
+o function faddr_src:맞음멜로디
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:15
+o call faddr_dest:멜로디기다리기
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:19
+o call faddr_dest:멜로디기다리기
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:22
+o call faddr_dest:멜로디기다리기
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:27
+o call faddr_dest:멜로디기다리기
+o end
+- 
+o function faddr_src:틀림멜로디
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:8
+o call faddr_dest:멜로디기다리기
+o end
+- 
+o function faddr_src:멜로디기다리기
+o begin
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o end
+- 
+o function faddr_src:게임종료
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+- 
+o wait param_src:smart:100:270 lop:!= param_src:audio_num:0 rop:then
+- 
+o // param_text:화면 클리어
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o load param_dest:smart:100:266 param_src:scrpos4_num:0
+o load param_dest:smart:100:267 param_src:scrpos4_num:0
+- 
+o // param_text:GameOver 표시
+o load param_dest:smart:100:263 param_src:scrpos3_num:132621
+- 
+o // param_text:Retry 깜박임, 클릭시 게임 재시작
+o while param_src:smart:100:286 lop:!= param_src:scrpos1_num:23 rop:then
+o begin
+o for param_var:반복 param_src:dec_num:0 param_src:dec_num:1
+o begin
+o if param_src:var:반복 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:23
+o end
+o else
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:132887
+o end
+- 
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o while param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o begin
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:23
+o break
+o end
+o end
+o end
+o end
+- 
+o // param_text:초기화
+o call faddr_dest:초기화
+o end
+- 

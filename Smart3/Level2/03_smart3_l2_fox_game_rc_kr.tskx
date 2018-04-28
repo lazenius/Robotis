@@ -1,0 +1,235 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 여우 게임
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:리모컨으로 동작
+o // param_text:U: 공격/방어 시작. 공격/방어시 멜로디 다름.
+o // param_text:1: 중앙 선택, 2: 왼쪽 선택, 4: 오른쪽 선택
+o // param_text:3회 실패시 게임 종료
+- 
+o main
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o load param_dest:var:점수 param_src:dec_num:0
+o load param_dest:var:공격 param_src:bool_num:1
+o load param_dest:var:생명 param_src:dec_num:3
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:5:62 param_src:position_num:819
+o call faddr_dest:대기0_5
+o load param_dest:aux:5:62 param_src:position_num:654
+o call faddr_dest:대기0_5
+- 
+o while(1)
+o begin
+o if param_src:var:생명 lop:== param_src:dec_num:0 rop:then
+o begin
+- 
+o while(1)
+o begin
+o load param_dest:var:점수 param_src:dec_num:0
+o load param_dest:var:공격 param_src:bool_num:1
+o load param_dest:var:생명 param_src:dec_num:3
+o exit
+o end
+o end
+- 
+o if param_src:var:공격 lop:== param_src:bool_num:1 rop:then
+o begin
+o end
+o if param_src:var:공격 lop:== param_src:bool_num:0 rop:then
+o begin
+o end
+o while(1)
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o break
+o end
+o end
+o call faddr_dest:초기화
+o call faddr_dest:카운트다운_3초
+o call faddr_dest:고개돌리기
+o call faddr_dest:인식하기
+o call faddr_dest:결과확인
+o call faddr_dest:퍼포먼스
+o end
+o end
+- 
+o // param_text:게임에 필요한 난수를 0에서 2 사이의 랜덤숫자로 정합니다.
+o function faddr_src:초기화
+o begin
+o load param_dest:var:난수 param_src:cm:25
+o compute param_dest:var:난수 param_src:var:난수 aop:% param_src:dec_num:3
+- 
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:5:62 param_src:position_num:654
+o call faddr_dest:대기0_5
+o end
+- 
+o // param_text:각 숫자에 맞는 고개 방향을 설정합니다.
+o function faddr_src:고개돌리기
+o begin
+o if param_src:var:난수 lop:== param_src:dec_num:0 rop:then
+o begin
+o call faddr_dest:왼쪽
+o end
+o elseif param_src:var:난수 lop:== param_src:dec_num:1 rop:then
+o begin
+o call faddr_dest:가운데
+o end
+o else
+o begin
+o call faddr_dest:오른쪽
+o end
+o end
+- 
+o // param_text:터치 입력이 있는 경우 스마트폰의 기울기 센서 값을 받아옵니다.
+o function faddr_src:인식하기
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:1000
+o while param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o begin
+o load param_dest:var:사용자감지 param_src:dec_num:-1
+o if param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o load param_dest:var:사용자감지 param_src:dec_num:0
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o load param_dest:var:사용자감지 param_src:dec_num:2
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:var:사용자감지 param_src:dec_num:1
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+o end
+- 
+o // param_text:공격에서 이기면 점수 +1하고 계속 공격진행, 지면 생명 -1하고 방어로 전환
+o // param_text:방어에서 이기면 점수 +1하고 공격으로 전환, 지면 생명 -1하고 방어 계속
+o function faddr_src:결과확인
+o begin
+o if param_src:var:공격 lop:== param_src:bool_num:1 rop:then
+o begin
+o if param_src:var:사용자감지 lop:== param_src:var:난수 rop:then
+o begin
+o compute param_dest:var:점수 param_src:var:점수 aop:+ param_src:dec_num:1
+o load param_dest:var:정답 param_src:bool_num:1
+o jump laddr_dest:방어전환
+o end
+o else
+o begin
+o compute param_dest:var:생명 param_src:var:생명 aop:- param_src:dec_num:1
+o load param_dest:var:정답 param_src:bool_num:0
+o load param_dest:var:공격 param_src:bool_num:0
+o jump laddr_dest:방어전환
+o end
+o end
+o else
+o begin
+o if param_src:var:사용자감지 lop:!= param_src:var:난수 rop:then
+o begin
+o compute param_dest:var:점수 param_src:var:점수 aop:+ param_src:dec_num:1
+o load param_dest:var:정답 param_src:bool_num:1
+o load param_dest:var:공격 param_src:bool_num:1
+o end
+o else
+o begin
+o compute param_dest:var:생명 param_src:var:생명 aop:- param_src:dec_num:1
+o load param_dest:var:정답 param_src:bool_num:0
+o end
+o label laddr_src:방어전환
+o end
+o end
+o function faddr_src:왼쪽
+o begin
+o load param_dest:aux:8:62 param_src:position_num:373
+o end
+o function faddr_src:가운데
+o begin
+o load param_dest:aux:8:62 param_src:position_num:512
+o end
+o function faddr_src:오른쪽
+o begin
+o load param_dest:aux:8:62 param_src:position_num:651
+o end
+- 
+o function faddr_src:카운트다운_3초
+o begin
+o load param_dest:var:횟수 param_src:dec_num:1
+o while(1)
+o begin
+o compute param_dest:var:횟수_표시 param_src:dec_num:4 aop:- param_src:var:횟수
+o load param_dest:cm:18 param_src:buzzertime_num:8
+o load param_dest:cm:17 param_src:scale_num:10
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o compute param_dest:var:횟수 param_src:var:횟수 aop:+ param_src:dec_num:1
+o if param_src:var:횟수_표시 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:8
+o load param_dest:cm:17 param_src:scale_num:15
+o break
+o end
+o end
+o end
+o function faddr_src:퍼포먼스
+o begin
+o if param_src:var:정답 lop:!= param_src:bool_num:1 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:4
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:1:68 param_src:dir_num:500
+o load param_dest:aux:8:62 param_src:position_num:373
+o load param_dest:aux:5:62 param_src:position_num:790
+o call faddr_dest:대기0_5
+o load param_dest:aux:1:68 param_src:dir_num:1524
+o load param_dest:aux:8:62 param_src:position_num:651
+o load param_dest:aux:5:62 param_src:position_num:654
+o call faddr_dest:대기0_5
+o load param_dest:aux:1:68 param_src:dir_num:500
+o load param_dest:aux:8:62 param_src:position_num:373
+o load param_dest:aux:5:62 param_src:position_num:790
+o call faddr_dest:대기0_5
+o load param_dest:aux:1:68 param_src:dir_num:1524
+o load param_dest:aux:8:62 param_src:position_num:651
+o load param_dest:aux:5:62 param_src:position_num:654
+o call faddr_dest:대기0_5
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o end
+o else
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:16
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:cm:5 param_src:timer_num:15
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:8:62 param_src:position_num:651
+o load param_dest:aux:5:62 param_src:position_num:790
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+- 
+o function faddr_src:대기0_5
+o begin
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+- 

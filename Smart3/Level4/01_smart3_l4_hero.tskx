@@ -1,0 +1,207 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 4단계 레전드 히어로
+o // param_text:연결포트 : 오른쪽 팔꿈치 - 감속 모터 2번, 오른팔 3번, 오른쪽 어깨 5번, 오른쪽 다리 6번, 오른쪽 발목 7번
+o // param_text:연결포트 : 왼쪽 팔꿈치 - 감속 모터 1번, 왼쪽팔 4번, 왼쪽 어깨 8번, 왼쪽 다리 9번, 왼쪽 발목 10번
+o // param_text:터치입력에 따라 전후좌우 보행을 하고 간단한 모션을 함
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o // param_text:배경추가
+o load param_dest:smart:100:262 param_src:img_num:1
+- 
+o call faddr_dest:초기화
+o while(1)
+o begin
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o call faddr_dest:전진한걸음
+o end
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:22 rop:then
+o begin
+o call faddr_dest:후진한걸음
+o end
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o call faddr_dest:왼쪽으로회전
+o end
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o call faddr_dest:오른쪽으로회전
+o end
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:0 rop:then
+o call faddr_dest:정지
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:10 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o call faddr_dest:인사
+o end
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:15 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:4
+o call faddr_dest:경례
+o end
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:20 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o load param_dest:smart:100:270 param_src:audio_num:5
+o call faddr_dest:레이저
+o end
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:25 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:초기화
+o end
+o end
+o end
+- 
+o // param_text:자세 초기화
+o function faddr_src:초기화
+o begin
+o // param_text:로봇의 움직임을 관찰하며 적당하게 변경해서 사용해도 됩니다. 
+o load param_dest:var:속도1000 param_src:dec_num:1000
+o load param_dest:var:속도500 param_src:dec_num:500
+o load param_dest:var:속도850 param_src:dec_num:850
+o load param_dest:var:속도750 param_src:dec_num:750
+o // param_text:보행 시 왼발 오른발을 순차적으로 움직이기 위한 변수
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:6:61 param_src:bool_num:1
+o load param_dest:aux:7:61 param_src:bool_num:1
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:9:61 param_src:bool_num:1
+o load param_dest:aux:10:61 param_src:bool_num:1
+o load param_dest:motion:-:50 param_src:dec_num:1
+o call faddr_dest:팔동작
+o call faddr_dest:다리동작
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o end
+o function faddr_src:정지
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:0
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o end
+- 
+o // param_text:앞으로 이동하기
+o // param_text:보폭은 6번과 9번 모터 값으로 조정합니다.
+o // param_text:무게 중심을 옮기기 위한 발목 관절은 7번과 10번 모터값을 조정합니다.
+- 
+o function faddr_src:다리동작
+o begin
+o load param_dest:aux:7:62 param_src:position_num:622
+o load param_dest:aux:10:62 param_src:position_num:402
+o call faddr_dest:대기0_25초
+- 
+o load param_dest:aux:6:62 param_src:position_num:462
+o load param_dest:aux:9:62 param_src:position_num:562
+o call faddr_dest:대기0_25초
+- 
+o load param_dest:aux:7:62 param_src:position_num:512
+o load param_dest:aux:10:62 param_src:position_num:512
+o call faddr_dest:대기0_35초
+o end
+- 
+o function faddr_src:전진한걸음
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:2
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o function faddr_src:후진한걸음
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:3
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o function faddr_src:왼쪽으로회전
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:4
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o call faddr_dest:대기0_25초
+o end
+o function faddr_src:오른쪽으로회전
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:5
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o call faddr_dest:대기0_25초
+o end
+- 
+o // param_text:팔동작
+o function faddr_src:팔동작
+o begin
+o compute param_dest:aux:3:60 param_src:dir_num:0 aop:+ param_src:var:속도850
+o compute param_dest:aux:4:60 param_src:dir_num:0 aop:+ param_src:var:속도850
+o compute param_dest:aux:5:60 param_src:dir_num:0 aop:+ param_src:var:속도850
+o compute param_dest:aux:8:60 param_src:dir_num:0 aop:+ param_src:var:속도850
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:500
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:500
+o call faddr_dest:대기0_25초
+o load param_dest:aux:3:62 param_src:position_num:562
+o load param_dest:aux:4:62 param_src:position_num:442
+o call faddr_dest:대기0_35초
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:8:62 param_src:position_num:512
+o call faddr_dest:대기0_35초
+o end
+- 
+o function faddr_src:레이저
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:7
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o call faddr_dest:대기0_25초
+o call faddr_dest:초기화
+o end
+o // param_text:거수경례
+o function faddr_src:경례
+o begin
+o call faddr_dest:초기화
+o load param_dest:motion:-:50 param_src:dec_num:8
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:dec_num:500
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o call faddr_dest:대기0_25초
+o call faddr_dest:초기화
+o end
+o // param_text:손흔들며 인사하기
+o function faddr_src:인사
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:6
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o call faddr_dest:대기0_25초
+o call faddr_dest:초기화
+o end
+o function faddr_src:대기0_1초
+o begin
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기0_25초
+o begin
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기0_35초
+o begin
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기0_65초
+o begin
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기1초
+o begin
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 

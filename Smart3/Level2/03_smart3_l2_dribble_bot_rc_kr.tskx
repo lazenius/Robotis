@@ -1,0 +1,126 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 드리블 로봇
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:리모컨으로 동작
+o // param_text:U, D, L, R: 전진, 후진, 좌회전, 우회전
+o // param_text:1: 집게 올림, 2: 집게 중간, 3: 집게 내림, 5: 집게 열기, 6: 집게 닫기
+o // param_text:4: 고속/저속 변환
+- 
+o main
+o begin
+o // param_text:스마트 기기가 연결되어 화면이 나타날 때까지 대기
+o // param_text:핸드폰 방향 설정
+o load param_dest:cm:23 param_src:dec_num:0
+- 
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o call faddr_dest:초기화
+o while(1)
+o begin
+o call faddr_dest:조종
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:속도 param_src:dec_num:700
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:10:61 param_src:bool_num:1
+o load param_dest:aux:5:60 param_src:dec_num:1023
+o load param_dest:aux:10:60 param_src:dec_num:1023
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:10:62 param_src:position_num:512
+o end
+- 
+o function faddr_src:조종
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:4 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:8 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o end
+- 
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:aux:10:62 param_src:position_num:120
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o load param_dest:aux:10:62 param_src:position_num:358
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:64 rop:then
+o begin
+o load param_dest:aux:10:62 param_src:position_num:512
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o if param_src:var:속도 lop:== param_src:dec_num:700 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:1023
+o load param_dest:cm:18 param_src:buzzertime_num:10
+o load param_dest:cm:17 param_src:scale_num:15
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:var:속도 lop:== param_src:dec_num:1023 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:700
+o load param_dest:cm:18 param_src:buzzertime_num:10
+o load param_dest:cm:17 param_src:scale_num:3
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:256 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:205
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:512 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:770
+o end
+o else
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

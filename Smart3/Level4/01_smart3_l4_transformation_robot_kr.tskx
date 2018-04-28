@@ -1,0 +1,261 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 4단계 변신로봇
+o // param_text:로봇모드, 자동차모드로 변신함
+o // param_text:로봇모드에서는 전후좌우 이동, 미사일발사, 팔 움직임 등의 동작을 함
+o // param_text:자동차모드에서는 전후좌우 이동만 가능함
+- 
+o main
+o begin
+o // param_text:스마트 기기가 연결되어 화면이 나타날 때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+- 
+o // param_text:스마트기기 화면 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o call faddr_dest:초기화
+- 
+o while(1)
+o begin
+o call faddr_dest:터치감지
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:smart:100:272 param_src:dec_num:1
+o wait param_src:smart:100:272 lop:!= param_src:dec_num:0 rop:then
+o // param_text:로봇모드=1, 자동차모드=2
+o load param_dest:var:현재모드 param_src:dec_num:1
+o // param_text:버튼 배경
+o load param_dest:smart:100:262 param_src:dec_num:1
+o call faddr_dest:기본자세
+o load param_dest:smart:100:262 param_src:dec_num:1
+- 
+o end
+- 
+o function faddr_src:터치감지
+o begin
+o load param_dest:var:터치 param_src:smart:100:286
+o // param_text:변신
+o if param_src:var:터치 lop:== param_src:dec_num:15 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:dec_num:1
+o if param_src:var:현재모드 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:dec_num:2
+o load param_dest:var:현재모드 param_src:dec_num:2
+o load param_dest:aux:1:68 param_src:dir_num:800
+o load param_dest:aux:2:68 param_src:dir_num:1824
+o load param_dest:motion:1:50 param_src:dec_num:2
+o wait param_src:motion:3:51 lop:== param_src:bool_num:1 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:2047
+o load param_dest:aux:2:68 param_src:dir_num:1023
+o load param_dest:cm:6 param_src:hrtimer_num:300
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o else
+o begin
+o load param_dest:smart:100:262 param_src:dec_num:1
+o load param_dest:var:현재모드 param_src:dec_num:1
+o load param_dest:motion:1:50 param_src:dec_num:3
+o load param_dest:aux:1:68 param_src:dir_num:700
+o load param_dest:aux:2:68 param_src:dir_num:1724
+o wait param_src:motion:3:51 lop:== param_src:bool_num:1 rop:then
+o call faddr_dest:기본자세
+o end
+o end
+- 
+o // param_text:방향
+o elseif param_src:var:터치 lop:== param_src:dec_num:17 rop:then
+o begin
+o // param_text:전진
+o if param_src:var:현재모드 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:700
+o load param_dest:aux:2:68 param_src:dir_num:1724
+o call faddr_dest:타이머대기
+o end
+o if param_src:var:현재모드 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1023
+o load param_dest:aux:2:68 param_src:dir_num:2047
+o call faddr_dest:타이머대기
+o end
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:22 rop:then
+o begin
+o // param_text:후진
+o if param_src:var:현재모드 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1724
+o load param_dest:aux:2:68 param_src:dir_num:700
+o call faddr_dest:타이머대기
+o end
+o if param_src:var:현재모드 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:2047
+o load param_dest:aux:2:68 param_src:dir_num:1023
+o call faddr_dest:타이머대기
+o end
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:21 rop:then
+o begin
+o // param_text:좌회전
+o if param_src:var:현재모드 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1724
+o load param_dest:aux:2:68 param_src:dir_num:1724
+o call faddr_dest:타이머대기
+o end
+o if param_src:var:현재모드 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:2047
+o load param_dest:aux:2:68 param_src:dir_num:2047
+o call faddr_dest:타이머대기
+o end
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:23 rop:then
+o begin
+o // param_text:우회전
+o if param_src:var:현재모드 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:700
+o load param_dest:aux:2:68 param_src:dir_num:700
+o call faddr_dest:타이머대기
+o end
+o if param_src:var:현재모드 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1023
+o load param_dest:aux:2:68 param_src:dir_num:1023
+o call faddr_dest:타이머대기
+o end
+o end
+o // param_text:행동
+o elseif param_src:var:현재모드 lop:== param_src:dec_num:1 rop:&& param_src:var:터치 lop:== param_src:dec_num:14 rop:then
+o begin
+o call faddr_dest:정지
+o // param_text:미사일 발사
+o load param_dest:smart:100:270 param_src:dec_num:2
+o load param_dest:motion:1:50 param_src:dec_num:8
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:smart:100:271 param_src:dec_num:2
+o call faddr_dest:모션완료대기
+o call faddr_dest:기본자세
+o end
+o elseif param_src:var:현재모드 lop:== param_src:dec_num:1 rop:&& param_src:var:터치 lop:== param_src:dec_num:19 rop:then
+o begin
+o call faddr_dest:정지
+o // param_text:왼팔 공격
+o load param_dest:smart:100:270 param_src:dec_num:4
+o load param_dest:motion:1:50 param_src:dec_num:4
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:smart:100:271 param_src:dec_num:4
+o call faddr_dest:모션완료대기
+o call faddr_dest:기본자세
+o end
+o elseif param_src:var:현재모드 lop:== param_src:dec_num:1 rop:&& param_src:var:터치 lop:== param_src:dec_num:20 rop:then
+o begin
+o call faddr_dest:정지
+o // param_text:오른팔 공격
+o load param_dest:smart:100:270 param_src:dec_num:4
+o load param_dest:motion:1:50 param_src:dec_num:5
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:smart:100:271 param_src:dec_num:4
+o call faddr_dest:모션완료대기
+o call faddr_dest:기본자세
+o end
+o elseif param_src:var:현재모드 lop:== param_src:dec_num:1 rop:&& param_src:var:터치 lop:== param_src:dec_num:24 rop:then
+o begin
+o call faddr_dest:정지
+o // param_text:왼팔 휘두루기
+o load param_dest:smart:100:270 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:6
+o call faddr_dest:모션완료대기
+o call faddr_dest:기본자세
+o end
+o elseif param_src:var:현재모드 lop:== param_src:dec_num:1 rop:&& param_src:var:터치 lop:== param_src:dec_num:25 rop:then
+o begin
+o call faddr_dest:정지
+o // param_text:오른팔 휘두루기
+o load param_dest:smart:100:270 param_src:dec_num:3
+o load param_dest:motion:1:50 param_src:dec_num:7
+o call faddr_dest:모션완료대기
+o call faddr_dest:기본자세
+o end
+o else
+o begin
+o load param_dest:aux:1:68 param_src:dec_num:0
+o load param_dest:aux:2:68 param_src:dec_num:0
+o end
+o end
+o function faddr_src:기본자세
+o begin
+o load param_dest:motion:1:50 param_src:dec_num:1
+o call faddr_dest:모션완료대기
+o end
+o function faddr_src:모션완료대기
+o begin
+o wait param_src:motion:1:51 lop:== param_src:bool_num:1 rop:then
+o end
+o function faddr_src:타이머대기
+o begin
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:정지
+o begin
+o load param_dest:aux:1:68 param_src:dec_num:0
+o load param_dest:aux:2:68 param_src:dec_num:0
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

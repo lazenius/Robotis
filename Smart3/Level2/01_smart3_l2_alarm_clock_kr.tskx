@@ -1,0 +1,249 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 알람 로봇
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:스마트 폰에 알람을 설정할 수 있습니다. 알람시간이 되면 로봇이 동작합니다.
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:dec_num:0 rop:then
+- 
+o call faddr_dest:초기화
+o while(1)
+o begin
+o call faddr_dest:시간표시
+o call faddr_dest:알람확인
+o call faddr_dest:알람설정
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:현재시간H param_src:dec_num:-1
+o load param_dest:var:현재시간M param_src:dec_num:-1
+o load param_dest:var:알람시간H param_src:dec_num:-1
+o load param_dest:var:알람시간M param_src:dec_num:-1
+o load param_dest:var:화면종류 param_src:dec_num:0
+o load param_dest:var:알람 param_src:dec_num:0
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:smart:100:268 param_src:dec_num:1
+o wait param_src:smart:100:268 lop:!= param_src:txt_num:0 rop:then
+o load param_dest:aux:5:62 param_src:position_num:91
+o load param_dest:aux:8:62 param_src:position_num:933
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:smart:100:270 param_src:audio_num:2
+- 
+o while param_src:smart:100:270 lop:!= param_src:audio_num:0 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1524
+o load param_dest:aux:2:68 param_src:dir_num:1524
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:500
+o load param_dest:aux:2:68 param_src:dir_num:500
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o load param_dest:aux:5:62 param_src:position_num:350
+o load param_dest:aux:8:62 param_src:position_num:674
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o function faddr_src:시간표시
+o begin
+o if param_src:var:화면종류 lop:== param_src:dec_num:0 rop:then
+o begin
+o // param_text:배경 표시
+o load param_dest:smart:100:262 param_src:img_num:1
+o label laddr_src:현재시간입력
+o load param_dest:var:에러 param_src:bool_num:0
+o load param_dest:var:현재시간 param_src:smart:100:295
+o compute param_dest:var:현재시간H param_src:var:현재시간 aop:/ param_src:dec_num:60
+o compute param_dest:var:현재시간M param_src:var:현재시간 aop:% param_src:dec_num:60
+o // param_text:정상적인 값을 읽을때까지 확인
+o if param_src:var:현재시간H lop:< param_src:dec_num:0 rop:|| param_src:var:현재시간H lop:> param_src:dec_num:23 rop:then
+o begin
+o load param_dest:var:에러 param_src:bool_num:1
+o end
+o if param_src:var:현재시간M lop:< param_src:dec_num:0 rop:|| param_src:var:현재시간M lop:> param_src:dec_num:59 rop:then
+o begin
+o load param_dest:var:에러 param_src:bool_num:1
+o end
+o if param_src:var:에러 lop:== param_src:bool_num:1 rop:then
+o begin
+o jump laddr_dest:현재시간입력
+o end
+o compute param_dest:var:현재시간H_표시위치조정 param_src:var:현재시간H aop:* param_src:dec_num:256
+o compute param_dest:var:현재시간M_표시위치조정 param_src:var:현재시간M aop:* param_src:dec_num:256
+o compute param_dest:var:현재시간H표시 param_src:scrpos4_num:26607628 aop:+ param_src:var:현재시간H_표시위치조정
+o compute param_dest:var:현재시간M표시 param_src:scrpos4_num:26607630 aop:+ param_src:var:현재시간M_표시위치조정
+o load param_dest:smart:100:267 param_src:var:현재시간H표시
+o load param_dest:smart:100:267 param_src:var:현재시간M표시
+o if param_src:var:알람시간H lop:>= param_src:dec_num:0 rop:then
+o begin
+o compute param_dest:var:알람시간H_표시위치조정 param_src:var:알람시간H aop:* param_src:dec_num:256
+o compute param_dest:var:알람시간M_표시위치조정 param_src:var:알람시간M aop:* param_src:dec_num:256
+o compute param_dest:var:알람시간H표시 param_src:scrpos4_num:122683414 aop:+ param_src:var:알람시간H_표시위치조정
+o compute param_dest:var:알람시간M표시 param_src:scrpos4_num:122683416 aop:+ param_src:var:알람시간M_표시위치조정
+o load param_dest:smart:100:267 param_src:var:알람시간H표시
+o load param_dest:smart:100:267 param_src:var:알람시간M표시
+o end
+o load param_dest:var:터치 param_src:smart:100:286
+o if param_src:var:터치 lop:== param_src:dec_num:15 rop:then
+o begin
+o load param_dest:var:화면종류 param_src:dec_num:1
+o load param_dest:smart:100:263 param_src:dec_num:0
+o load param_dest:smart:100:267 param_src:dec_num:0
+o if param_src:var:알람시간H lop:< param_src:dec_num:0 rop:then
+o begin
+o load param_dest:var:알람시간H param_src:var:현재시간H
+o load param_dest:var:알람시간M param_src:var:현재시간M
+o end
+o end
+o end
+o end
+- 
+o function faddr_src:알람확인
+o begin
+o if param_src:var:화면종류 lop:== param_src:dec_num:0 rop:then
+o begin
+o if param_src:var:현재시간H lop:== param_src:var:알람시간H rop:&& param_src:var:현재시간M lop:== param_src:var:알람시간M rop:then
+o begin
+o if param_src:var:알람 lop:== param_src:dec_num:0 rop:then
+o begin
+o // param_text:알람 발생
+o load param_dest:var:알람 param_src:dec_num:1
+o end
+o end
+o else
+o begin
+o // param_text:알람 없음
+o load param_dest:var:알람 param_src:dec_num:0
+o end
+- 
+o if param_src:var:알람 lop:== param_src:dec_num:1 rop:then
+o begin
+o // param_text:알람 발생 확인
+o load param_dest:var:알람 param_src:dec_num:2
+o call faddr_dest:알람동작
+o end
+o end
+o end
+- 
+o function faddr_src:알람설정
+o begin
+o if param_src:var:화면종류 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:2
+o compute param_dest:var:알람시간H_표시위치조정 param_src:var:알람시간H aop:* param_src:dec_num:256
+o compute param_dest:var:알람시간M_표시위치조정 param_src:var:알람시간M aop:* param_src:dec_num:256
+o compute param_dest:var:알람시간H표시 param_src:scrpos4_num:26607628 aop:+ param_src:var:알람시간H_표시위치조정
+o compute param_dest:var:알람시간M표시 param_src:scrpos4_num:26607630 aop:+ param_src:var:알람시간M_표시위치조정
+o load param_dest:smart:100:267 param_src:var:알람시간H표시
+o load param_dest:smart:100:267 param_src:var:알람시간M표시
+o load param_dest:var:터치 param_src:smart:100:286
+o if param_src:var:터치 lop:== param_src:dec_num:7 rop:then
+o begin
+o compute param_dest:var:알람시간H param_src:var:알람시간H aop:+ param_src:dec_num:1
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:17 rop:then
+o begin
+o compute param_dest:var:알람시간H param_src:var:알람시간H aop:- param_src:dec_num:1
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:9 rop:then
+o begin
+o compute param_dest:var:알람시간M param_src:var:알람시간M aop:+ param_src:dec_num:1
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:19 rop:then
+o begin
+o compute param_dest:var:알람시간M param_src:var:알람시간M aop:- param_src:dec_num:1
+o end
+o // param_text:유효 범위 체크
+o if param_src:var:알람시간H lop:< param_src:dec_num:0 rop:then
+o begin
+o load param_dest:var:알람시간H param_src:dec_num:23
+o end
+o elseif param_src:var:알람시간H lop:> param_src:dec_num:23 rop:then
+o begin
+o load param_dest:var:알람시간H param_src:dec_num:0
+o end
+o // param_text:유효 범위 체크
+o if param_src:var:알람시간M lop:< param_src:dec_num:0 rop:then
+o begin
+o load param_dest:var:알람시간M param_src:dec_num:59
+o end
+o elseif param_src:var:알람시간M lop:> param_src:dec_num:59 rop:then
+o begin
+o load param_dest:var:알람시간M param_src:dec_num:0
+o end
+o if param_src:var:터치 lop:== param_src:dec_num:22 rop:then
+o begin
+o load param_dest:var:화면종류 param_src:dec_num:0
+o load param_dest:var:알람 param_src:dec_num:0
+o load param_dest:smart:100:263 param_src:dec_num:0
+o load param_dest:smart:100:267 param_src:dec_num:0
+o load param_dest:smart:100:262 param_src:img_num:3
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:24 rop:then
+o begin
+o load param_dest:var:화면종류 param_src:dec_num:0
+o load param_dest:var:알람시간H param_src:dec_num:-1
+o load param_dest:var:알람시간M param_src:dec_num:-1
+o load param_dest:var:알람 param_src:dec_num:0
+o load param_dest:smart:100:263 param_src:dec_num:0
+o load param_dest:smart:100:267 param_src:dec_num:0
+o load param_dest:smart:100:262 param_src:img_num:1
+o end
+o end
+o end
+- 
+o function faddr_src:알람동작
+o begin
+o // param_text:경고 표정
+o load param_dest:smart:100:262 param_src:img_num:4
+o load param_dest:smart:100:267 param_src:scrpos4_num:0
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:5:62 param_src:position_num:91
+o load param_dest:aux:8:62 param_src:position_num:933
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o while param_src:smart:100:286 lop:!= param_src:scrpos1_num:23 rop:then
+o begin
+o if param_src:smart:100:270 lop:== param_src:audio_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o end
+o load param_dest:aux:1:68 param_src:dir_num:1524
+o load param_dest:aux:2:68 param_src:dir_num:1524
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:500
+o load param_dest:aux:2:68 param_src:dir_num:500
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o load param_dest:smart:100:270 param_src:audio_num:0
+o load param_dest:aux:5:62 param_src:position_num:350
+o load param_dest:aux:8:62 param_src:position_num:674
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:8:61 param_src:bool_num:0
+o load param_dest:aux:5:61 param_src:bool_num:0
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 

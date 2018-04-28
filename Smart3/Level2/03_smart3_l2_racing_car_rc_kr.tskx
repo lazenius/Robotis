@@ -1,0 +1,123 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 스마트 레이싱카
+o // param_text:최초 배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:리모컨으로 동작. U: 전진, D: 후진, U+L: 좌회전하며 전진, U+R: 우회전하며 전진, D+L: 좌회전하며 후진, D+R: 우회전하며 전진
+o // param_text:1: 부스터(전진만), 2: 저속, 4: 고속
+- 
+o main
+o begin
+- 
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o // param_text:시작 퍼포먼스
+o load param_dest:var:최고속도 param_src:dec_num:1023
+o load param_dest:var:속도 param_src:dec_num:800
+o call faddr_dest:날개내리기
+o call faddr_dest:날개올리기
+o call faddr_dest:날개내리기
+o call faddr_dest:날개_천천히_올리기
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:3:62 param_src:position_num:512
+- 
+o while(1)
+o begin
+o call faddr_dest:로봇조종
+o end
+o end
+- 
+o function faddr_src:로봇조종
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:10 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o load param_dest:aux:5:62 param_src:position_num:622
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:6 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o load param_dest:aux:5:62 param_src:position_num:382
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:9 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o load param_dest:aux:5:62 param_src:position_num:622
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:5 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o load param_dest:aux:5:62 param_src:position_num:382
+o end
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:600
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:800
+o end
+o // param_text:부스터
+o if param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:512
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:최고속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:최고속도
+o call faddr_dest:날개내리기
+o wait param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o call faddr_dest:날개올리기
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:0
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:0
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o end
+- 
+o function faddr_src:날개내리기
+o begin
+o load param_dest:aux:3:60 param_src:dir_num:1023
+o load param_dest:aux:3:62 param_src:position_num:410
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:날개올리기
+o begin
+o load param_dest:aux:3:60 param_src:dir_num:1023
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:날개_천천히_올리기
+o begin
+o load param_dest:aux:3:60 param_src:dir_num:350
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 

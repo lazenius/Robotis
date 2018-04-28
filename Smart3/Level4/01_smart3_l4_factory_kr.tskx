@@ -1,0 +1,501 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 4단계 컬러공장
+o // param_text:자동분류모드, 수동검사모드, 수리모드로 동작
+o // param_text:[자동분류모드] 
+o // param_text:빨강, 노랑, 초록, 파랑, 흰 플레이트를 자동으로 분류
+o // param_text:[수동검사모드] 
+o // param_text:컬러센서에 플레이트가 멈추면 사용자가 스마트폰 화면에서 색을 선택
+o // param_text:컬러센서에서 감지한 색과 사용자가 선택한 색이 일치할 때 해당 상자로 분류, 틀렸을 때는 흰색 상자로 버림
+o // param_text:[수리모드]
+o // param_text:공장 벨트에 플레이트가 끼거나 잘 동작하지 않을 때 벨트를 회전시켜줌
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o load param_dest:smart:100:262 param_src:img_num:1
+o // param_text:오디오아이템 추가하기 공장소리
+o load param_dest:smart:100:270 param_src:audio_num:1
+- 
+o // param_text:3번서보-우측, 4번서보-좌측, 10번서보-버리기서보, 7번 컬러센서
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:10:61 param_src:bool_num:1
+- 
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:aux:10:62 param_src:position_num:512
+- 
+- 
+o while(1)
+o begin
+o label laddr_src:자동모드
+o call faddr_dest:검사밸트
+o if param_src:aux:7:73 lop:== param_src:color_num:1 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:1 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:1 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66055
+o load param_dest:aux:10:60 param_src:dec_num:1023
+o load param_dest:aux:10:62 param_src:position_num:819
+o load param_dest:cm:6 param_src:hrtimer_num:600
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:10:60 param_src:dec_num:500
+o load param_dest:aux:10:62 param_src:position_num:512
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o end
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:aux:7:73 lop:== param_src:color_num:3 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:3 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:3 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66311
+o load param_dest:aux:3:62 param_src:position_num:692
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:분류밸트_우회전
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o end
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:aux:7:73 lop:== param_src:color_num:6 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:6 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:6 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66567
+o load param_dest:aux:3:62 param_src:position_num:512
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:분류밸트_우회전
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o end
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:aux:7:73 lop:== param_src:color_num:4 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:4 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:4 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66823
+o load param_dest:aux:4:62 param_src:position_num:332
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:분류밸트_좌회전
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o end
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:aux:7:73 lop:== param_src:color_num:5 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:5 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:5 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:67079
+o load param_dest:aux:4:62 param_src:position_num:512
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:분류밸트_좌회전
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o end
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o jump laddr_dest:수동모드
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o call faddr_dest:검사밸트_내리기
+o call faddr_dest:분류밸트_우회전
+o call faddr_dest:검사밸트_내리기_버림
+o call faddr_dest:분류밸트_좌회전
+o call faddr_dest:검사밸트_내리기
+o call faddr_dest:검사밸트
+o end
+o end
+- 
+o label laddr_src:수동모드
+o while(1)
+o begin
+o call faddr_dest:검사밸트
+o load param_dest:smart:100:262 param_src:img_num:2
+o if param_src:aux:7:73 lop:== param_src:color_num:3 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:3 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:3 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o wait param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+- 
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:12 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:131853
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:검사밸트
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:3:62 param_src:position_num:692
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:분류밸트_우회전
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:smart:100:286 lop:!= param_src:scrpos1_num:12 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:2
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:버리기
+o end
+o end
+o end
+o end
+o elseif param_src:aux:7:73 lop:== param_src:color_num:6 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:6 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:6 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o wait param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:13 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:132109
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:검사밸트
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:3:62 param_src:position_num:512
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:분류밸트_우회전
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:smart:100:286 lop:!= param_src:scrpos1_num:13 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:2
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:버리기
+o end
+o end
+o end
+o end
+o elseif param_src:aux:7:73 lop:== param_src:color_num:4 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:4 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:4 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o wait param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:14 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:132365
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:검사밸트
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:4:62 param_src:position_num:332
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:분류밸트_좌회전
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:smart:100:286 lop:!= param_src:scrpos1_num:14 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:2
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:버리기
+o end
+o end
+o end
+o end
+o elseif param_src:aux:7:73 lop:== param_src:color_num:5 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:5 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:5 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o wait param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:15 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:132621
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:검사밸트
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:4:62 param_src:position_num:512
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:분류밸트_좌회전
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:smart:100:286 lop:!= param_src:scrpos1_num:15 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:2
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:버리기
+o end
+o end
+o end
+o end
+o elseif param_src:aux:7:73 lop:== param_src:color_num:1 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:1 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o if param_src:aux:7:73 lop:== param_src:color_num:1 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o wait param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:11 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:131597
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:검사밸트
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+- 
+o // param_text:버리기
+o load param_dest:aux:10:60 param_src:dec_num:1023
+o load param_dest:aux:10:62 param_src:position_num:819
+o load param_dest:cm:6 param_src:hrtimer_num:600
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:10:60 param_src:dec_num:500
+o load param_dest:aux:10:62 param_src:position_num:512
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:smart:100:263 param_src:scrpos3_num:65536
+o end
+o elseif param_src:smart:100:286 lop:!= param_src:scrpos1_num:11 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:2
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:버리기
+o end
+o end
+o end
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:4 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:1
+o jump laddr_dest:자동모드
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o call faddr_dest:검사밸트_내리기
+o call faddr_dest:분류밸트_우회전
+o call faddr_dest:검사밸트_내리기_버림
+o call faddr_dest:분류밸트_좌회전
+o call faddr_dest:검사밸트_내리기
+o call faddr_dest:검사밸트
+o end
+o end
+- 
+o end
+- 
+o function faddr_src:검사밸트
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1724
+o load param_dest:cm:6 param_src:hrtimer_num:40
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:cm:6 param_src:hrtimer_num:300
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o function faddr_src:분류밸트_우회전
+o begin
+o load param_dest:aux:2:68 param_src:dir_num:1874
+o load param_dest:cm:6 param_src:hrtimer_num:700
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o function faddr_src:분류밸트_좌회전
+o begin
+o load param_dest:aux:2:68 param_src:dir_num:850
+o load param_dest:cm:6 param_src:hrtimer_num:700
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o function faddr_src:검사밸트_내리기
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1624
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:cm:6 param_src:hrtimer_num:300
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o function faddr_src:검사밸트_내리기_버림
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1824
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:cm:6 param_src:hrtimer_num:300
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o function faddr_src:버리기
+o begin
+o load param_dest:aux:10:60 param_src:dec_num:1023
+o load param_dest:aux:10:62 param_src:position_num:819
+o load param_dest:cm:6 param_src:hrtimer_num:600
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o call faddr_dest:검사밸트_내리기
+o load param_dest:cm:6 param_src:hrtimer_num:100
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:10:60 param_src:dec_num:500
+o load param_dest:aux:10:62 param_src:position_num:512
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

@@ -1,0 +1,277 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 스마트 레이싱카
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:스마트 기기의 진동 기능과 레이싱카의 칼라센서를 이용하여 조종 게임 진행.
+o // param_text:스마트폰에서 팀 색상을 선택하여 게임 시작. 색상 종이를 목표점에 놓음.
+o // param_text:이동 버튼을 터치하면서 스마트폰을 기울이면 방향이 조절되며 이동.
+o // param_text:부스터 버튼을 누르면 빠르게 직진함.
+o // param_text:색상 감지 버튼을 터치하여 자신의 팀 색상을 감지시키면 게임 종료.
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+- 
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o // param_text:시작 퍼포먼스
+o call faddr_dest:날개내리기
+o call faddr_dest:날개올리기
+o call faddr_dest:날개내리기
+o call faddr_dest:날개_천천히_올리기
+o call faddr_dest:초기화
+- 
+o while(1)
+o begin
+o call faddr_dest:배경음악
+o for param_var:조종 param_src:dec_num:1 param_src:dec_num:10
+o begin
+o call faddr_dest:로봇조종
+o end
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:최고속도 param_src:dec_num:1023
+o load param_dest:var:빨강팀 param_src:bool_num:0
+o load param_dest:var:초록팀 param_src:bool_num:0
+o load param_dest:var:감지색상 param_src:color_num:0
+- 
+o load param_dest:smart:100:268 param_src:dec_num:1
+o load param_dest:smart:100:262 param_src:dec_num:1
+o while(1)
+o begin
+o if param_src:smart:100:286 lop:== param_src:dec_num:12 rop:|| param_src:smart:100:286 lop:== param_src:dec_num:7 rop:then
+o begin
+o load param_dest:var:빨강팀 param_src:bool_num:1
+o break
+o end
+o elseif param_src:smart:100:286 lop:== param_src:dec_num:14 rop:|| param_src:smart:100:286 lop:== param_src:dec_num:9 rop:then
+o begin
+o load param_dest:var:초록팀 param_src:bool_num:1
+o break
+o end
+o end
+- 
+o if param_src:var:빨강팀 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:dec_num:2
+o end
+o elseif param_src:var:초록팀 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:dec_num:3
+o end
+o // param_text:모터 초기화
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:3:62 param_src:position_num:512
+- 
+o load param_dest:smart:100:270 param_src:dec_num:2
+o load param_dest:smart:100:292 param_src:dec_num:200
+o load param_dest:smart:100:268 param_src:dec_num:2
+o end
+- 
+o function faddr_src:로봇조종
+o begin
+o load param_dest:var:터치 param_src:smart:100:286
+o load param_dest:var:기울기왼쪽 param_src:smart:100:278
+o load param_dest:var:기울기오른쪽 param_src:smart:100:279
+- 
+o if param_src:var:터치 lop:== param_src:dec_num:23 rop:then
+o begin
+o call faddr_dest:색상감지
+o end
+o // param_text:후진
+o if param_src:var:터치 lop:== param_src:dec_num:21 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:dec_num:10
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:600
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:600
+o if param_src:var:기울기왼쪽 lop:>= param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:622
+o end
+o if param_src:var:기울기오른쪽 lop:>= param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:382
+o end
+o if param_src:var:기울기오른쪽 lop:< param_src:dec_num:22 rop:&& param_src:var:기울기왼쪽 lop:< param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o end
+o // param_text:전진
+o elseif param_src:var:터치 lop:== param_src:dec_num:25 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:dec_num:10
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:600
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:dec_num:600
+o if param_src:var:기울기왼쪽 lop:>= param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:622
+o end
+o if param_src:var:기울기오른쪽 lop:>= param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:382
+o end
+o if param_src:var:기울기오른쪽 lop:< param_src:dec_num:22 rop:&& param_src:var:기울기왼쪽 lop:< param_src:dec_num:22 rop:then
+o begin
+- 
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o end
+o // param_text:고속전진
+o elseif param_src:var:터치 lop:== param_src:dec_num:20 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:dec_num:10
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:750
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:dec_num:750
+o if param_src:var:기울기왼쪽 lop:>= param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:622
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:800
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:dec_num:600
+o end
+o if param_src:var:기울기오른쪽 lop:>= param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:382
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:600
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:dec_num:800
+o end
+o if param_src:var:기울기오른쪽 lop:< param_src:dec_num:22 rop:&& param_src:var:기울기왼쪽 lop:< param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:512
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:750
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:dec_num:750
+o end
+o end
+o // param_text:고속후진
+o elseif param_src:var:터치 lop:== param_src:dec_num:16 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:dec_num:10
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:750
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:750
+o if param_src:var:기울기왼쪽 lop:>= param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:622
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:800
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:600
+o end
+o if param_src:var:기울기오른쪽 lop:>= param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:382
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:600
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:800
+o end
+o if param_src:var:기울기오른쪽 lop:< param_src:dec_num:22 rop:&& param_src:var:기울기왼쪽 lop:< param_src:dec_num:22 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:512
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:750
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:750
+o end
+o end
+o // param_text:부스터
+o elseif param_src:var:터치 lop:== param_src:dec_num:15 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:dec_num:10
+o load param_dest:aux:5:62 param_src:position_num:512
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:최고속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:최고속도
+o call faddr_dest:날개내리기
+o end
+o else
+o begin
+o call faddr_dest:날개올리기
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:0
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o end
+- 
+o function faddr_src:색상감지
+o begin
+o if param_src:var:빨강팀 lop:== param_src:bool_num:1 rop:then
+o begin
+o if param_src:aux:8:73 lop:== param_src:color_num:3 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:dec_num:3
+o load param_dest:smart:100:268 param_src:dec_num:3
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:종료
+o end
+o elseif param_src:aux:8:73 lop:!= param_src:color_num:3 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:dec_num:80
+o end
+o end
+o if param_src:var:초록팀 lop:== param_src:bool_num:1 rop:then
+o begin
+o if param_src:aux:8:73 lop:== param_src:color_num:4 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:dec_num:3
+o load param_dest:smart:100:268 param_src:dec_num:3
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:종료
+o end
+o elseif param_src:aux:8:73 lop:!= param_src:color_num:4 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:dec_num:80
+o end
+o end
+o end
+- 
+o function faddr_src:배경음악
+o begin
+o if param_src:smart:100:270 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:dec_num:1
+o end
+o end
+- 
+o function faddr_src:종료
+o begin
+o // param_text:WINNER 표시
+o load param_dest:smart:100:263 param_src:scrpos3_num:65800
+o load param_dest:cm:6 param_src:hrtimer_num:3000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o // param_text:Retry 표시
+o load param_dest:smart:100:263 param_src:scrpos3_num:197133
+o wait param_src:smart:100:286 lop:!= param_src:scrpos1_num:13 rop:then
+o load param_dest:smart:100:263 param_src:dec_num:0
+o load param_dest:smart:100:270 param_src:dec_num:0
+o call faddr_dest:초기화
+o end
+- 
+o function faddr_src:날개내리기
+o begin
+o load param_dest:aux:3:60 param_src:dir_num:1023
+o load param_dest:aux:3:62 param_src:position_num:410
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:날개올리기
+o begin
+o load param_dest:aux:3:60 param_src:dir_num:1023
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:날개_천천히_올리기
+o begin
+o load param_dest:aux:3:60 param_src:dir_num:350
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 

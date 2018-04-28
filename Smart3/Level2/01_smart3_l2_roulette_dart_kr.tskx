@@ -1,0 +1,161 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 룰렛 로봇
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:주황색 버튼을 누르면 룰렛 회전, 다시 누르면 정지, 컬러센서가 색상 감지하여 스마트폰 화면에 표시됨.
+- 
+- 
+- 
+o main
+o begin
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o call faddr_dest:초기화
+o while(1)
+o begin
+o call faddr_dest:버튼입력
+o if param_src:smart:100:270 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:dec_num:1
+o end
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:회전 param_src:bool_num:1
+o call faddr_dest:가속회전
+o call faddr_dest:감속회전
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:smart:100:268 param_src:dec_num:1
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o function faddr_src:버튼입력
+o begin
+o if param_src:aux:7:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:2
+o call faddr_dest:가속회전
+o load param_dest:smart:100:268 param_src:dec_num:2
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o while param_src:aux:7:65 lop:!= param_src:bool_num:1 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:10
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+o load param_dest:smart:100:262 param_src:img_num:2
+o call faddr_dest:감속회전
+o load param_dest:cm:5 param_src:timer_num:16
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o call faddr_dest:색상판단
+o load param_dest:smart:100:266 param_src:scrpos4_num:0
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:smart:100:268 param_src:dec_num:1
+o end
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o function faddr_src:가속회전
+o begin
+o for param_var:i param_src:dec_num:1 param_src:dec_num:16
+o begin
+o compute param_dest:var:회전속도 param_src:var:회전속도 aop:+ param_src:dec_num:50
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:회전속도
+o load param_dest:cm:6 param_src:hrtimer_num:10
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+- 
+o function faddr_src:감속회전
+o begin
+o for param_var:i param_src:dec_num:1 param_src:dec_num:40
+o begin
+o compute param_dest:var:회전속도 param_src:var:회전속도 aop:- param_src:dec_num:20
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:회전속도
+o load param_dest:cm:6 param_src:hrtimer_num:30
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+o load param_dest:smart:100:263 param_src:scrpos3_num:65549
+o end
+- 
+o function faddr_src:색상판단
+o begin
+o label laddr_src:색상판단
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:색상1 param_src:aux:8:73
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:색상2 param_src:aux:8:73
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:색상3 param_src:aux:8:73
+o if param_src:var:색상1 lop:== param_src:var:색상2 rop:&& param_src:var:색상2 lop:== param_src:var:색상3 rop:then
+o begin
+o load param_dest:var:감지색상 param_src:var:색상3
+o if param_src:var:감지색상 lop:== param_src:color_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:3
+o load param_dest:smart:100:266 param_src:scrpos4_num:39453448
+o load param_dest:smart:100:268 param_src:dec_num:3
+o load param_dest:cm:5 param_src:timer_num:50
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:var:감지색상 lop:== param_src:color_num:2 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:4
+o load param_dest:smart:100:266 param_src:scrpos4_num:39453704
+o load param_dest:smart:100:268 param_src:dec_num:4
+o load param_dest:cm:5 param_src:timer_num:50
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:var:감지색상 lop:== param_src:color_num:3 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:5
+o load param_dest:smart:100:266 param_src:scrpos4_num:39453960
+o load param_dest:smart:100:268 param_src:dec_num:5
+o load param_dest:cm:5 param_src:timer_num:50
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:var:감지색상 lop:== param_src:color_num:4 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:6
+o load param_dest:smart:100:266 param_src:scrpos4_num:39454216
+o load param_dest:smart:100:268 param_src:dec_num:6
+o load param_dest:cm:5 param_src:timer_num:50
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:var:감지색상 lop:== param_src:color_num:5 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:7
+o load param_dest:smart:100:266 param_src:scrpos4_num:39454472
+o load param_dest:smart:100:268 param_src:dec_num:7
+o load param_dest:cm:5 param_src:timer_num:50
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:var:감지색상 lop:== param_src:color_num:6 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:8
+o load param_dest:smart:100:266 param_src:scrpos4_num:39454728
+o load param_dest:smart:100:268 param_src:dec_num:8
+o load param_dest:cm:5 param_src:timer_num:50
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o else
+o begin
+o jump laddr_dest:색상판단
+o end
+o end
+o end
+- 

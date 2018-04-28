@@ -1,0 +1,54 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 꿀벌 예제프로그램_적외선
+o // param_text:[작동 방법]
+o // param_text:적외선센서에 손이 가까이 가면 꿀벌이 움직입니다.
+o main
+o begin
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o while(1)
+o begin
+o load param_dest:var:적외선감지 param_src:cm:14
+- 
+o // param_text:적외선 값으로 춤추는 속도를 조절
+o if param_src:var:적외선감지 lop:> param_src:dec_num:30 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1624 aop:+ param_src:var:적외선감지
+o compute param_dest:aux:2:68 param_src:dir_num:1624 aop:+ param_src:var:적외선감지
+o if param_src:var:적외선감지 lop:> param_src:dec_num:400 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:2047
+o load param_dest:aux:2:68 param_src:dir_num:2047
+o end
+o end
+o else
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o end
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

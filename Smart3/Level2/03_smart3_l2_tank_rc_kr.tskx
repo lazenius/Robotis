@@ -1,0 +1,129 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 대포 로봇
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:리모컨으로 동작
+o // param_text:U, D, L, R: 전진, 후진, 좌회전, 우회전
+o // param_text:1: 각도 올림, 3: 각도 내림, 4: 각도 고정/해제
+o // param_text:2: 발사 및 사운드(장전이 되어 있지 않으면 발사안됨)
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o call faddr_dest:초기화
+o while(1)
+o begin
+o call faddr_dest:장전
+o call faddr_dest:조종
+o call faddr_dest:각도조절
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+- 
+o load param_dest:var:각도 param_src:dec_num:100
+o load param_dest:var:발사준비 param_src:bool_num:0
+o load param_dest:var:각도고정 param_src:bool_num:0
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:4:60 param_src:dir_num:1023
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+- 
+- 
+o function faddr_src:장전
+o begin
+o if param_src:aux:8:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:14
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:aux:5:62 param_src:position_num:778
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:발사준비 param_src:bool_num:1
+- 
+o end
+o end
+- 
+o function faddr_src:조종
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o // param_text:전진
+o load param_dest:aux:2:68 param_src:dir_num:1774
+o load param_dest:aux:1:68 param_src:dir_num:750
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o // param_text:후진
+o load param_dest:aux:2:68 param_src:dir_num:750
+o load param_dest:aux:1:68 param_src:dir_num:1774
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:4 rop:then
+o begin
+o // param_text:좌회전
+o load param_dest:aux:1:68 param_src:dir_num:1774
+o load param_dest:aux:2:68 param_src:dir_num:1774
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:8 rop:then
+o begin
+o // param_text:우회전
+o load param_dest:aux:1:68 param_src:dir_num:750
+o load param_dest:aux:2:68 param_src:dir_num:750
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:32 rop:&& param_src:var:발사준비 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:발사준비 param_src:bool_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:24
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o if param_src:var:각도고정 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:var:각도고정 param_src:bool_num:1
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:17
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o end
+o elseif param_src:var:각도고정 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:각도고정 param_src:bool_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:15
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o end
+o end
+o end
+- 
+o function faddr_src:각도조절
+o begin
+o if param_src:var:각도고정 lop:== param_src:bool_num:1 rop:then
+o begin
+o return
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:16 rop:&& param_src:aux:4:62 lop:< param_src:position_num:750 rop:then
+o begin
+o compute param_dest:aux:4:62 param_src:aux:4:62 aop:+ param_src:var:각도
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:64 rop:&& param_src:aux:4:62 lop:> param_src:position_num:480 rop:then
+o begin
+o compute param_dest:aux:4:62 param_src:aux:4:62 aop:- param_src:var:각도
+o end
+o end
+- 

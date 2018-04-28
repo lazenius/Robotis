@@ -1,0 +1,488 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 지프차
+o // param_text:접촉센서를 눌러 시동을 키거나 끔.
+o // param_text:스마트기기 버튼을 터치하여 기어 변속, 경적 버튼 터치하여 경적 울림, 엑셀/브레이크 버튼 터치하여 가속/감속.
+o // param_text:스마트기기를 기울여 방향 조절.
+- 
+o main
+o begin
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:var:감속모터출력 param_src:dec_num:0
+o load param_dest:var:시동상태 param_src:bool_num:0
+o load param_dest:var:시속출력 param_src:dec_num:0
+o call faddr_dest:서보모터_초기화
+o call faddr_dest:대기_1초
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:smart:100:268 param_src:dec_num:2
+o load param_dest:aux:4:62 param_src:position_num:512
+o call faddr_dest:회전정지
+o compute param_dest:var:시속출력 param_src:var:감속모터출력 aop:/ param_src:dec_num:10
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,시속출력,50,2
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:smart:100:268 param_src:txt_num:1
+o call faddr_dest:대기_1초
+o while(1)
+o begin
+o if param_src:aux:10:65 lop:== param_src:dec_num:1 rop:&& param_src:var:시동상태 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:262 param_src:img_num:3
+o load param_dest:var:시동상태 param_src:bool_num:1
+o call faddr_dest:대기_1초
+o call faddr_dest:대기_1초
+- 
+o while param_src:aux:10:65 lop:!= param_src:bool_num:1 rop:then
+o begin
+o call faddr_dest:기어변속
+o end
+o end
+o elseif param_src:aux:10:65 lop:== param_src:dec_num:1 rop:&& param_src:var:시동상태 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:2
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:smart:100:268 param_src:txt_num:2
+o load param_dest:aux:4:62 param_src:position_num:512
+o call faddr_dest:회전정지
+o compute param_dest:var:시속출력 param_src:var:감속모터출력 aop:/ param_src:dec_num:10
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,시속출력,50,2
+o call faddr_dest:대기_1초
+o call faddr_dest:대기_1초
+o call faddr_dest:대기_1초
+o load param_dest:var:시동상태 param_src:bool_num:0
+o call faddr_dest:대기_1초
+o load param_dest:smart:100:262 param_src:img_num:1
+o end
+o end
+o end
+o function faddr_src:기어변속
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,시속출력,50,2
+o label laddr_src:PARKING
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:3 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:3
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:smart:100:268 param_src:txt_num:2
+o load param_dest:aux:4:62 param_src:position_num:512
+o call faddr_dest:회전정지
+o load param_dest:var:감속모터출력 param_src:dec_num:0
+o load param_dest:var:시속출력 param_src:dec_num:0
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,0,50,2
+o end
+o label laddr_src:REVERSE
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:8 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:4
+o load param_dest:var:감속모터출력 param_src:dec_num:0
+o load param_dest:var:전진방향 param_src:dec_num:0
+o load param_dest:smart:100:268 param_src:txt_num:3
+o load param_dest:aux:4:62 param_src:position_num:512
+o while(1)
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o compute param_dest:var:시속출력 param_src:var:감속모터출력 aop:/ param_src:dec_num:10
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,시속출력,50,2
+o call faddr_dest:조향
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:13 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o jump laddr_dest:NEUTRAL
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:3 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:4:62 param_src:position_num:200
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:후진회전
+o load param_dest:aux:4:62 param_src:position_num:512
+o jump laddr_dest:PARKING
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:4:62 param_src:position_num:200
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:전진회전
+o jump laddr_dest:LOW
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:18 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:4:62 param_src:position_num:200
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o jump laddr_dest:DRIVE
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:25 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o call faddr_dest:후진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:+ param_src:dec_num:60
+o if param_src:var:감속모터출력 lop:> param_src:dec_num:800 rop:then
+o begin
+o load param_dest:var:감속모터출력 param_src:dec_num:800
+o end
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o while param_src:var:터치위치 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o call faddr_dest:후진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:- param_src:dec_num:100
+o if param_src:var:감속모터출력 lop:< param_src:dec_num:200 rop:then
+o begin
+o call faddr_dest:회전정지
+o end
+o end
+o load param_dest:var:감속모터출력 param_src:dec_num:0
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o if param_src:var:감속모터출력 lop:>= param_src:dec_num:600 rop:&& param_src:var:감속모터출력 lop:<= param_src:dec_num:850 rop:then
+o begin
+o call faddr_dest:후진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:- param_src:dec_num:50
+o end
+o if param_src:var:감속모터출력 lop:>= param_src:dec_num:0 rop:&& param_src:var:감속모터출력 lop:< param_src:dec_num:600 rop:then
+o begin
+o call faddr_dest:후진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:+ param_src:dec_num:70
+o end
+o end
+o end
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:13 rop:then
+o begin
+o label laddr_src:NEUTRAL
+o load param_dest:smart:100:262 param_src:img_num:5
+o load param_dest:smart:100:268 param_src:txt_num:4
+o load param_dest:aux:4:62 param_src:position_num:200
+o while(1)
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o call faddr_dest:조향
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:3 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o jump laddr_dest:PARKING
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:8 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o jump laddr_dest:REVERSE
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:18 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o jump laddr_dest:DRIVE
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o jump laddr_dest:LOW
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o end
+o else
+o begin
+o if param_src:var:전진방향 lop:== param_src:dec_num:1 rop:then
+o begin
+o call faddr_dest:전진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:- param_src:dec_num:200
+o if param_src:var:감속모터출력 lop:> param_src:dec_num:1001 rop:then
+o begin
+o load param_dest:var:감속모터출력 param_src:dec_num:0
+o end
+o compute param_dest:var:시속출력 param_src:var:감속모터출력 aop:/ param_src:dec_num:10
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,시속출력,50,2
+o end
+o elseif param_src:var:전진방향 lop:== param_src:dec_num:0 rop:then
+o begin
+o call faddr_dest:후진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:- param_src:dec_num:200
+o compute param_dest:var:시속출력 param_src:var:감속모터출력 aop:/ param_src:dec_num:10
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,시속출력,50,2
+o if param_src:var:감속모터출력 lop:< param_src:dec_num:200 rop:then
+o begin
+o call faddr_dest:회전정지
+o load param_dest:var:감속모터출력 param_src:dec_num:0
+o compute param_dest:var:시속출력 param_src:var:감속모터출력 aop:/ param_src:dec_num:10
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,시속출력,50,2
+o end
+o end
+o end
+o end
+o end
+o label laddr_src:DRIVE
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:18 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:6
+o load param_dest:var:전진방향 param_src:dec_num:1
+o load param_dest:smart:100:268 param_src:txt_num:5
+o load param_dest:aux:4:62 param_src:position_num:512
+o while(1)
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o compute param_dest:var:시속출력 param_src:var:감속모터출력 aop:/ param_src:dec_num:10
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,시속출력,50,2
+o call faddr_dest:조향
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:13 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o jump laddr_dest:NEUTRAL
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:3 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:4:62 param_src:position_num:200
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:전진회전
+o load param_dest:aux:4:62 param_src:position_num:512
+o jump laddr_dest:PARKING
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:8 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:4:62 param_src:position_num:200
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o jump laddr_dest:REVERSE
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:4:62 param_src:position_num:200
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:전진회전
+o jump laddr_dest:LOW
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:25 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o call faddr_dest:전진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:+ param_src:dec_num:60
+o if param_src:var:감속모터출력 lop:> param_src:dec_num:1001 rop:then
+o begin
+o load param_dest:var:감속모터출력 param_src:dec_num:1000
+o end
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o while param_src:var:터치위치 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o call faddr_dest:전진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:- param_src:dec_num:150
+o if param_src:var:감속모터출력 lop:< param_src:dec_num:200 rop:then
+o begin
+o call faddr_dest:회전정지
+o end
+o end
+o load param_dest:var:감속모터출력 param_src:dec_num:0
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o if param_src:var:감속모터출력 lop:>= param_src:dec_num:650 rop:&& param_src:var:감속모터출력 lop:<= param_src:dec_num:1023 rop:then
+o begin
+o call faddr_dest:전진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:- param_src:dec_num:50
+o end
+o elseif param_src:var:감속모터출력 lop:>= param_src:dec_num:0 rop:&& param_src:var:감속모터출력 lop:< param_src:dec_num:650 rop:then
+o begin
+o call faddr_dest:전진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:+ param_src:dec_num:100
+o end
+o end
+o end
+o end
+o label laddr_src:LOW
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:7
+o load param_dest:smart:100:268 param_src:txt_num:6
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:var:전진방향 param_src:dec_num:1
+o while(1)
+o begin
+o load param_dest:var:감속모터출력 param_src:dec_num:600
+o compute param_dest:var:시속출력 param_src:var:감속모터출력 aop:/ param_src:dec_num:10
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,시속출력,50,2
+o load param_dest:var:터치위치 param_src:smart:100:286
+o call faddr_dest:조향
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:600
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:600
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:3 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:4:62 param_src:position_num:200
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:전진회전
+o load param_dest:aux:4:62 param_src:position_num:512
+o jump laddr_dest:PARKING
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:8 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:4:62 param_src:position_num:200
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:전진회전
+o jump laddr_dest:REVERSE
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:13 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:4:62 param_src:position_num:200
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:전진회전
+o jump laddr_dest:NEUTRAL
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:18 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o jump laddr_dest:DRIVE
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o while param_src:var:터치위치 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o call faddr_dest:전진회전
+o compute param_dest:var:감속모터출력 param_src:var:감속모터출력 aop:- param_src:dec_num:100
+o end
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:smart:100:270 param_src:audio_num:2
+o end
+o end
+o end
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o end
+o end
+- 
+o function faddr_src:서보모터_초기화
+o begin
+o // param_text:조향을 담당하는 서보 모터
+o // param_text:포트 3번
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:3:62 param_src:position_num:512
+o // param_text:동력을 연결하고 끊어주는 클러치
+o // param_text:포트 4번
+o load param_dest:aux:4:61 param_src:bool_num:1
+o end
+- 
+o function faddr_src:조향
+o begin
+o if param_src:smart:100:279 lop:> param_src:dec_num:30 rop:then
+o begin
+o compute param_dest:aux:3:62 param_src:aux:3:62 aop:+ param_src:dec_num:100
+o end
+o elseif param_src:smart:100:278 lop:> param_src:dec_num:30 rop:then
+o begin
+o compute param_dest:aux:3:62 param_src:aux:3:62 aop:- param_src:dec_num:100
+o end
+o elseif param_src:smart:100:279 lop:<= param_src:dec_num:30 rop:&& param_src:smart:100:278 lop:<= param_src:dec_num:30 rop:then
+o begin
+o load param_dest:aux:3:62 param_src:position_num:512
+o end
+o end
+- 
+o function faddr_src:대기_1초
+o begin
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+- 
+o function faddr_src:전진회전
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력
+o end
+o function faddr_src:후진회전
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력
+o end
+o function faddr_src:회전정지
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

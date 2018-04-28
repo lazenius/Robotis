@@ -1,0 +1,133 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 4단계 드래곤
+o // param_text:터치 입력에 따라 드래곤이 보행하며 날개, 꼬리를 움직이고 울음소리를 냄
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o // param_text:배경추가
+o load param_dest:smart:100:262 param_src:img_num:1
+- 
+o load param_dest:motion:-:50 param_src:dec_num:1
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+- 
+o while(1)
+o begin
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o while param_src:smart:100:286 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:aux:2:68 param_src:dir_num:1724
+o load param_dest:motion:-:50 param_src:dec_num:2
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o load param_dest:motion:-:50 param_src:dec_num:1
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:22 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:aux:2:68 param_src:dir_num:1724
+o load param_dest:motion:-:50 param_src:dec_num:3
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o while param_src:smart:100:286 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:aux:2:68 param_src:dir_num:1724
+o load param_dest:motion:-:50 param_src:dec_num:4
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o load param_dest:motion:-:50 param_src:dec_num:1
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o while param_src:smart:100:286 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:aux:2:68 param_src:dir_num:1724
+o load param_dest:motion:-:50 param_src:dec_num:5
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o load param_dest:motion:-:50 param_src:dec_num:1
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o // param_text:꼬리짓
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:25 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o load param_dest:aux:1:68 param_src:dir_num:600
+o end
+o // param_text:날개짓
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:20 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:aux:2:68 param_src:dir_num:1724
+o end
+o // param_text:울음소리
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:15 rop:then
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:6
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:smart:100:270 param_src:audio_num:1
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o end
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

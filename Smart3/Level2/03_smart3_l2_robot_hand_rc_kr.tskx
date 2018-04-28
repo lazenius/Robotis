@@ -1,0 +1,89 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 가위바위보 로봇
+o // param_text:최초 배포: 2017/03/03
+o // param_text:[작동 방법]
+o // param_text:리모컨으로 동작할 때는 조종모드로만 작동.
+o // param_text:1: 가위, 2: 바위, 4: 보
+- 
+o main
+o begin
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o while(1)
+o begin
+o // param_text:가위내기
+o if param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o call faddr_dest:가위
+o end
+o // param_text:바위내기
+o if param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o call faddr_dest:바위
+o end
+o // param_text:보내기
+o if param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o call faddr_dest:보
+o end
+o end
+o end
+o // param_text:로봇 손 모양만들기
+o function faddr_src:가위
+o begin
+o if param_src:var:바위 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:var:바위 param_src:bool_num:0
+o end
+o else
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:4:62 param_src:position_num:247
+o end
+o end
+- 
+o function faddr_src:바위
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:3:62 param_src:position_num:247
+o load param_dest:aux:4:62 param_src:position_num:247
+o load param_dest:var:바위 param_src:bool_num:1
+o end
+- 
+o function faddr_src:보
+o begin
+o load param_dest:var:바위 param_src:bool_num:0
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:aux:1:68 param_src:dir_num:1624
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root name="R+Motion" version="2.0.0">
+  <DesignRoot name="Smart Puppy" controller="CM-200">
+    <skeleton>
+      <joint motor="SM" id="3" enable="True" id2="3" mirror="4" />
+      <joint motor="SM" id="4" enable="True" id2="4" mirror="3" />
+      <joint motor="SM" id="5" enable="True" id2="5" mirror="8" />
+      <joint motor="SM" id="6" enable="True" id2="6" mirror="9" />
+      <joint motor="SM" id="7" enable="True" id2="7" mirror="10" />
+      <joint motor="SM" id="8" enable="True" id2="8" mirror="5" />
+      <joint motor="SM" id="9" enable="True" id2="9" mirror="6" />
+      <joint motor="SM" id="10" enable="True" id2="10" mirror="7" />
+    </skeleton>
+  </DesignRoot>
+  <FlowRoot>
+    <Flow name="INIT" return="-1">
+      <units>
+        <unit main="INIT" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="F_WALK" return="-1">
+      <units>
+        <unit main="F_WALK" mainSpeed="1.2" loop="5" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="B_WALK" return="-1">
+      <units>
+        <unit main="B_WALK" mainSpeed="1.2" loop="5" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="L_TURN" return="-1">
+      <units>
+        <unit main="L_TURN" mainSpeed="2" loop="4" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="R_TURN" return="-1">
+      <units>
+        <unit main="R_TURN" mainSpeed="2" loop="4" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="SITDOWN" return="-1">
+      <units>
+        <unit main="SITDOWN" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="SLEEP" return="-1">
+      <units>
+        <unit main="SLEEP" mainSpeed="1.5" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="AWAKE" return="-1">
+      <units>
+        <unit main="AWAKE" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="BARK" return="-1">
+      <units>
+        <unit main="BARK" mainSpeed="1" loop="2" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="ANGRY" return="-1">
+      <units>
+        <unit main="ANGRY" mainSpeed="1" loop="3" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="HAND" return="-1">
+      <units>
+        <unit main="HAND" mainSpeed="1.2" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="PEE" return="-1">
+      <units>
+        <unit main="PEE" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="GETUP" return="-1">
+      <units>
+        <unit main="GETUP" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="LIEDOWN" return="-1">
+      <units>
+        <unit main="LIEDOWN" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+  </FlowRoot>
+  <PageRoot>
+    <Page name="INIT">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="77" pose="-20 20 30 0 5 -30 0 -5" />
+      </steps>
+    </Page>
+    <Page name="F_WALK">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="12" pose="-40 20 30 0 15 -50 10 -5" />
+        <step frame="37" pose="-20 20 30 -5 10 -30 -5 0" />
+        <step frame="49" pose="-20 40 50 -10 5 -30 0 -15" />
+        <step frame="74" pose="-20 20 30 5 0 -30 5 -10" />
+      </steps>
+    </Page>
+    <Page name="B_WALK">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="12" pose="-40 20 30 0 15 -50 10 -5" />
+        <step frame="37" pose="-20 20 30 5 0 -30 5 -10" />
+        <step frame="49" pose="-20 40 50 -10 5 -30 0 -15" />
+        <step frame="74" pose="-20 20 30 -5 10 -30 -5 0" />
+      </steps>
+    </Page>
+    <Page name="L_TURN">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="12" pose="-40 20 30 0 10 -50 5 -5" />
+        <step frame="26" pose="-20 20 30 0 15 -30 10 -5" />
+        <step frame="51" pose="-20 40 50 0 5 -30 0 -5" />
+        <step frame="76" pose="-20 20 30 0 5 -30 0 -5" />
+      </steps>
+    </Page>
+    <Page name="R_TURN">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="12" pose="-20 40 50 -5 5 -30 0 -10" />
+        <step frame="37" pose="-20 20 30 -10 5 -30 0 -15" />
+        <step frame="49" pose="-40 20 30 0 5 -50 0 -5" />
+        <step frame="74" pose="-20 20 30 0 5 -30 0 -5" />
+      </steps>
+    </Page>
+    <Page name="SITDOWN">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="70" pose="-103.71 99.61 -8.5 -18.75 -3.52 3.52 9.67 -7.03" />
+      </steps>
+    </Page>
+    <Page name="SLEEP">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="125" pose="-96.39 87.89 11.43 -1.17 6.45 -26.95 -5.57 -21.09" />
+        <step frame="250" pose="-99.9 92.87 12.01 53.61 9.67 -27.25 -61.82 -25.2" />
+        <step frame="308" pose="-99.9 92.87 12.01 53.61 9.67 -27.25 -61.82 -25.2" />
+      </steps>
+    </Page>
+    <Page name="AWAKE">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="62" pose="-103.71 99.61 87.5 -18.75 -3.52 -82.48 9.67 -7.03" />
+        <step frame="125" pose="-103.71 99.61 -8.5 -18.75 -3.52 3.52 9.67 -7.03" />
+        <step frame="250" pose="-29.3 29.3 29.3 0 5.86 -29.3 0 -5.86" />
+      </steps>
+    </Page>
+    <Page name="BARK">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="25" pose="-58.59 58.59 58.59 -14.65 20.51 -58.59 14.65 -20.51" />
+        <step frame="56" pose="-29.3 29.3 29.3 0 5.86 -29.3 0 -5.86" />
+        <step frame="102" pose="-29.3 29.3 29.3 0 5.86 -29.3 0 -5.86" />
+      </steps>
+    </Page>
+    <Page name="ANGRY">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="24" pose="-42.48 25.78 75.29 4.98 -65.33 -73.54 -12.6 33.11" />
+        <step frame="48" pose="-44.24 24.9 66.5 8.79 -41.02 -73.83 -10.25 60.06" />
+        <step frame="69" pose="-42.48 25.78 75.29 4.98 -65.33 -73.54 -12.6 33.11" />
+      </steps>
+    </Page>
+    <Page name="HAND">
+      <param compileSize="2" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="80" pose="-103.71 53.61 79.39 -30.47 3.22 -5.86 -12.01 41.02" />
+        <step frame="160" pose="-104 53.61 33.4 60.06 2.93 -5.27 -12.01 41.02" />
+        <step frame="228" pose="-103.71 56.84 4.39 30.18 2.93 -5.86 -12.6 41.31" />
+        <step frame="298" pose="-103.71 53.32 28.42 57.13 2.93 -5.27 -11.72 41.31" />
+        <step frame="372" pose="-104 53.03 5.27 25.49 4.69 -7.62 -17.29 39.55" />
+        <step frame="430" pose="-104 53.03 81.74 50.98 4.1 -7.32 -16.11 39.84" />
+        <step frame="499" pose="-104 53.03 81.74 50.98 4.1 -7.32 -16.11 39.84" />
+        <step frame="609" pose="-103.71 99.61 -8.5 -18.75 -3.52 3.52 9.67 -7.03" />
+      </steps>
+    </Page>
+    <Page name="PEE">
+      <param compileSize="2" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="104" pose="0.31 24.02 49.07 -4.39 2.04 -55.66 0 1.46" />
+        <step frame="248" pose="-33.69 24.02 49.07 -4.39 -55.96 -92.87 0 1.46" />
+        <step frame="332" pose="-45.7 23.73 25.49 -7.03 -65.62 -95.21 1.76 1.46" />
+        <step frame="497" pose="-45.7 23.73 25.49 -7.03 -65.62 -95.21 1.76 1.46" />
+        <step frame="514" pose="-81.15 23.73 25.78 -4.1 -42.77 -95.8 2.34 2.93" />
+        <step frame="531" pose="-48.05 24.02 25.49 -6.15 -70.02 -95.8 2.05 0.59" />
+        <step frame="550" pose="-76.17 23.73 24.9 -6.45 -37.5 -96.09 1.76 0.59" />
+        <step frame="585" pose="-45.12 24.02 25.78 -5.86 -61.23 -96.09 1.76 0.59" />
+        <step frame="710" pose="-29.3 29.3 29.3 0 5.86 -29.3 0 -5.86" />
+      </steps>
+    </Page>
+    <Page name="GETUP">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="90" pose="-103.71 99.61 87.5 -18.75 -3.52 -82.48 9.67 -7.03" />
+        <step frame="179" pose="-29.3 29.3 29.3 0 5.86 -29.3 0 -5.86" />
+      </steps>
+    </Page>
+    <Page name="LIEDOWN">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="108" pose="-29.3 29.3 29.3 68 -68.14 -29.3 -68 68.14" />
+      </steps>
+    </Page>
+  </PageRoot>
+  <GroupRoot>
+    <Group name="None">
+      <param weights="0 0 0 0 0 0 0 0" />
+    </Group>
+    <Group name="All">
+      <param weights="1 1 1 1 1 1 1 1" />
+    </Group>
+  </GroupRoot>
+  <BucketRoot>
+    <Bucket name="PUPPY_MOTION">
+      <callFlows>
+        <callFlow callIndex="1" subIndex="0" exitIndex="0" flow="INIT" />
+        <callFlow callIndex="2" subIndex="0" exitIndex="0" flow="F_WALK" />
+        <callFlow callIndex="3" subIndex="0" exitIndex="0" flow="B_WALK" />
+        <callFlow callIndex="4" subIndex="0" exitIndex="0" flow="L_TURN" />
+        <callFlow callIndex="5" subIndex="0" exitIndex="0" flow="R_TURN" />
+        <callFlow callIndex="6" subIndex="0" exitIndex="0" flow="SITDOWN" />
+        <callFlow callIndex="7" subIndex="0" exitIndex="0" flow="SLEEP" />
+        <callFlow callIndex="8" subIndex="0" exitIndex="0" flow="AWAKE" />
+        <callFlow callIndex="9" subIndex="0" exitIndex="0" flow="BARK" />
+        <callFlow callIndex="10" subIndex="0" exitIndex="0" flow="ANGRY" />
+        <callFlow callIndex="11" subIndex="0" exitIndex="0" flow="HAND" />
+        <callFlow callIndex="12" subIndex="0" exitIndex="0" flow="PEE" />
+        <callFlow callIndex="13" subIndex="0" exitIndex="0" flow="LIEDOWN" />
+      </callFlows>
+    </Bucket>
+  </BucketRoot>
+</Root>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root name="R+Motion" version="2.0.0">
+  <DesignRoot name="" controller="CM-200">
+    <skeleton>
+      <joint motor="SM" id="3" enable="True" id2="3" mirror="-1" />
+      <joint motor="SM" id="4" enable="True" id2="4" mirror="-1" />
+      <joint motor="SM" id="5" enable="True" id2="5" mirror="-1" />
+      <joint motor="SM" id="6" enable="True" id2="6" mirror="-1" />
+      <joint motor="SM" id="7" enable="True" id2="7" mirror="-1" />
+      <joint motor="SM" id="8" enable="True" id2="8" mirror="-1" />
+      <joint motor="SM" id="9" enable="True" id2="9" mirror="-1" />
+      <joint motor="SM" id="10" enable="True" id2="10" mirror="-1" />
+    </skeleton>
+  </DesignRoot>
+  <FlowRoot>
+    <Flow name="put up down hands" return="-1">
+      <units>
+        <unit main="put up down hands" mainSpeed="2" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="init" return="-1">
+      <units>
+        <unit main="init" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="knock" return="-1">
+      <units>
+        <unit main="knock" mainSpeed="1" loop="2" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="dj-ing" return="-1">
+      <units>
+        <unit main="dj-ing" mainSpeed="1" loop="3" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="right arm down" return="-1">
+      <units>
+        <unit main="right arm down" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="left arm down" return="-1">
+      <units>
+        <unit main="left arm down" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="left arm up" return="-1">
+      <units>
+        <unit main="left arm up" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="right arm up" return="-1">
+      <units>
+        <unit main="right arm up" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="R hand out" return="-1">
+      <units>
+        <unit main="R hand out" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="L hand out" return="-1">
+      <units>
+        <unit main="L hand out" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="L hand in" return="-1">
+      <units>
+        <unit main="L hand in" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="R hand in" return="-1">
+      <units>
+        <unit main="R hand in" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+  </FlowRoot>
+  <PageRoot>
+    <Page name="init">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60 -25 -20 -70 -30 -18 70 30" />
+        <step frame="27" pose="60 0 0 -20 -30 0 20 30" />
+        <step frame="66" pose="60 0 0 -70 -30 0 70 30" />
+        <step frame="91" pose="60 0 -25 -70 -30 25 70 30" />
+      </steps>
+    </Page>
+    <Page name="put up down hands">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="60 -24.36 -20 -70 -30 -17 70 30" />
+        <step frame="102" pose="60 0 18 -70 -30 20 70 30" />
+        <step frame="154" pose="60 -25 -20 -70 -30 -18 70 30" />
+      </steps>
+    </Page>
+    <Page name="knock">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60.35 -48.63 2 -50.14 -90 -2 50 90" />
+        <step frame="26" pose="60.35 -48.63 2 -80 -90 -2 50 90" />
+        <step frame="52" pose="60.35 -48.63 2 -50 -90 -2 80 90" />
+        <step frame="77" pose="60.35 -48.63 2 -80 -90 -2 50 90" />
+        <step frame="102" pose="60.35 -48.63 2 -50 -90 -2 80 90" />
+      </steps>
+    </Page>
+    <Page name="dj-ing">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60.35 -48.63 -25 -50 -50.1 -60 50 61" />
+        <step frame="26" pose="60.35 3.58 -25 -50 -64.95 -60 50 20.06" />
+        <step frame="52" pose="60.35 -48.63 -25 -50 -50.1 -60 50 61" />
+        <step frame="77" pose="60.35 1.44 -25 -50 -64.95 -60 50 20.06" />
+        <step frame="103" pose="60.35 39.85 -25 -50 -50.1 -60 50 61" />
+      </steps>
+    </Page>
+    <Page name="left arm up">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60 0 -25 -70 -30 25 70 30" />
+        <step frame="42" pose="60 0 -25 -70 -30 -60 66.63 23.92" />
+      </steps>
+    </Page>
+    <Page name="right arm up">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60 0 -25 -70 -30 25 70 30" />
+        <step frame="51" pose="60 0 60 -66 -24 25 70 30" />
+      </steps>
+    </Page>
+    <Page name="left arm down">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60 0 -25 -70 -30 -60 66.63 23.92" />
+        <step frame="51" pose="60 0 -25 -70 -30 20 70 30" />
+      </steps>
+    </Page>
+    <Page name="right arm down">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60 0 60 -66 -24 20 70 30" />
+        <step frame="52" pose="60 0 -25 -70 -30 20 70 30" />
+      </steps>
+    </Page>
+    <Page name="L hand in">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60.35 -48.63 2 -50.14 -90 0 44 33" />
+        <step frame="65" pose="60.35 -48.63 2 -50.14 -90 0 76 74" />
+      </steps>
+    </Page>
+    <Page name="R hand in">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60.35 -48.63 2 -39.14 -36 0 50 90" />
+        <step frame="64" pose="60.35 -48.63 2 -76 -74 0 50 90" />
+      </steps>
+    </Page>
+    <Page name="L hand out">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60.35 -48.63 2 -50.14 -90 0 76 74" />
+        <step frame="64" pose="60.35 -48.63 2 -50.14 -90 0 44 33" />
+      </steps>
+    </Page>
+    <Page name="R hand out">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="0" pose="60.35 -48.63 2 -76 -74 0 50 90" />
+        <step frame="64" pose="60.35 -48.63 2 -39.14 -36 0 50 90" />
+      </steps>
+    </Page>
+  </PageRoot>
+  <GroupRoot>
+    <Group name="None">
+      <param weights="0 0 0 0 0 0 0 0" />
+    </Group>
+    <Group name="All">
+      <param weights="1 1 1 1 1 1 1 1" />
+    </Group>
+  </GroupRoot>
+  <BucketRoot>
+    <Bucket name="motion">
+      <callFlows>
+        <callFlow callIndex="1" subIndex="0" exitIndex="0" flow="init" />
+        <callFlow callIndex="2" subIndex="0" exitIndex="0" flow="put up down hands" />
+        <callFlow callIndex="3" subIndex="0" exitIndex="0" flow="knock" />
+        <callFlow callIndex="4" subIndex="0" exitIndex="0" flow="dj-ing" />
+        <callFlow callIndex="5" subIndex="0" exitIndex="0" flow="left arm up" />
+        <callFlow callIndex="6" subIndex="0" exitIndex="0" flow="left arm down" />
+        <callFlow callIndex="7" subIndex="0" exitIndex="0" flow="right arm up" />
+        <callFlow callIndex="8" subIndex="0" exitIndex="0" flow="right arm down" />
+        <callFlow callIndex="9" subIndex="0" exitIndex="0" flow="L hand in" />
+        <callFlow callIndex="10" subIndex="0" exitIndex="0" flow="R hand in" />
+        <callFlow callIndex="11" subIndex="0" exitIndex="0" flow="L hand out" />
+        <callFlow callIndex="12" subIndex="0" exitIndex="0" flow="R hand out" />
+      </callFlows>
+    </Bucket>
+  </BucketRoot>
+</Root>

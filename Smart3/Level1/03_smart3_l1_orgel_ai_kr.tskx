@@ -1,0 +1,541 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 오르골 예제프로그램_소리
+o // param_text:[작동 방법]
+o // param_text:회전하며 멜로디음악을 연주합니다.
+o main
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o // param_text:최종 소리 감지 횟수에 따른 음악재생(2가지 음악)
+o while(1)
+o begin
+o if param_src:cm:19 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:var:음악트랙 param_src:dec_num:1
+o end
+o elseif param_src:cm:19 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:var:음악트랙 param_src:dec_num:2
+o end
+o else
+o begin
+o load param_dest:var:음악트랙 param_src:dec_num:3
+o end
+o call faddr_dest:오르골_회전
+o end
+o end
+o function faddr_src:오르골_회전
+o begin
+o if param_src:var:음악트랙 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:400
+o load param_dest:aux:2:68 param_src:dir_num:1324
+o call faddr_dest:음악_1_재생
+o end
+o if param_src:var:음악트랙 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1274
+o load param_dest:aux:2:68 param_src:dir_num:300
+o call faddr_dest:음악_2_재생
+o end
+o if param_src:var:음악트랙 lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o end
+- 
+o function faddr_src:음악_1_재생
+o begin
+o call faddr_dest:미_점2분음표
+o call faddr_dest:솔_2분음표
+o call faddr_dest:라_4분음표
+o call faddr_dest:라_점2분음표
+o call faddr_dest:라_점2분음표
+o call faddr_dest:파_점2분음표
+o call faddr_dest:라_2분음표
+o call faddr_dest:시_4분음표
+- 
+o call faddr_dest:시_점2분음표
+o call faddr_dest:시_점2분음표
+o call faddr_dest:레_고_점2분음표
+o call faddr_dest:도_고_2분음표
+o call faddr_dest:미_4분음표
+o call faddr_dest:솔_점2분음표
+o call faddr_dest:파_2분음표
+o call faddr_dest:미_4분음표
+- 
+o call faddr_dest:미_점2분음표
+o call faddr_dest:레_점2분음표
+o call faddr_dest:도_점2분음표
+o call faddr_dest:도_4분음표
+- 
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+- 
+o call faddr_dest:솔_4분음표
+o call faddr_dest:시_4분음표
+o call faddr_dest:시_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:시_4분음표
+o call faddr_dest:시_4분음표
+- 
+o call faddr_dest:솔_8분음표
+o call faddr_dest:레_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:레_고_8분음표
+o call faddr_dest:솔_8분음표
+o call faddr_dest:레_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:레_고_8분음표
+o call faddr_dest:솔_8분음표
+o call faddr_dest:레_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:레_고_8분음표
+- 
+o call faddr_dest:솔_4분음표
+o call faddr_dest:도_고_4분음표
+o call faddr_dest:도_고_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:도_고_4분음표
+o call faddr_dest:도_고_4분음표
+- 
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+- 
+o call faddr_dest:솔_4분음표
+o call faddr_dest:시_4분음표
+o call faddr_dest:시_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:시_4분음표
+o call faddr_dest:시_4분음표
+- 
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+- 
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:시_8분음표
+o call faddr_dest:레_고_8분음표
+- 
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:솔_8분음표
+o call faddr_dest:도_고_8분음표
+o call faddr_dest:라_8분음표
+o call faddr_dest:도_고_8분음표
+- 
+o call faddr_dest:솔_4분음표
+o call faddr_dest:시_4분음표
+o call faddr_dest:시_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:시_4분음표
+o call faddr_dest:시_2분음표
+o load param_dest:cm:19 param_src:dec_num:0
+o end
+- 
+o function faddr_src:음악_2_재생
+o begin
+o call faddr_dest:도_4분음표
+o call faddr_dest:도_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:라_4분음표
+o call faddr_dest:라_4분음표
+o call faddr_dest:솔_2분음표
+o call faddr_dest:파_4분음표
+o call faddr_dest:파_4분음표
+o call faddr_dest:미_4분음표
+o call faddr_dest:미_4분음표
+o call faddr_dest:레_4분음표
+o call faddr_dest:레_4분음표
+o call faddr_dest:도_2분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:파_4분음표
+o call faddr_dest:파_4분음표
+o call faddr_dest:미_4분음표
+o call faddr_dest:미_4분음표
+o call faddr_dest:레_2분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:파_4분음표
+o call faddr_dest:파_4분음표
+o call faddr_dest:미_4분음표
+o call faddr_dest:미_4분음표
+o call faddr_dest:레_2분음표
+o call faddr_dest:도_4분음표
+o call faddr_dest:도_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:솔_4분음표
+o call faddr_dest:라_4분음표
+o call faddr_dest:라_4분음표
+o call faddr_dest:솔_2분음표
+o call faddr_dest:파_4분음표
+o call faddr_dest:파_4분음표
+o call faddr_dest:미_4분음표
+o call faddr_dest:미_4분음표
+o call faddr_dest:레_4분음표
+o call faddr_dest:레_4분음표
+o call faddr_dest:도_2분음표
+o load param_dest:cm:19 param_src:dec_num:0
+o end
+- 
+o // param_text:여기서부터 작성된 함수들은 음악 연주시 유용하게 사용할 수 있습니다.
+o function faddr_src:도_점2분음표
+o begin
+o call faddr_dest:_점2분음표
+o call faddr_dest:도
+o end
+o function faddr_src:도_2분음표
+o begin
+o call faddr_dest:_2분음표
+o call faddr_dest:도
+o end
+o function faddr_src:도_4분음표
+o begin
+o call faddr_dest:_4분음표
+o call faddr_dest:도
+o end
+o function faddr_src:도_점4분음표
+o begin
+o call faddr_dest:_점4분음표
+o call faddr_dest:도
+o end
+o function faddr_src:도_8분음표
+o begin
+o call faddr_dest:_8분음표
+o call faddr_dest:도
+o end
+- 
+o function faddr_src:레_점2분음표
+o begin
+o call faddr_dest:_점2분음표
+o call faddr_dest:레
+o end
+o function faddr_src:레_2분음표
+o begin
+o call faddr_dest:_2분음표
+o call faddr_dest:레
+o end
+o function faddr_src:레_점4분음표
+o begin
+o call faddr_dest:_점4분음표
+o call faddr_dest:레
+o end
+o function faddr_src:레_4분음표
+o begin
+o call faddr_dest:_4분음표
+o call faddr_dest:레
+o end
+o function faddr_src:레_8분음표
+o begin
+o call faddr_dest:_8분음표
+o call faddr_dest:레
+o end
+- 
+o function faddr_src:미_점2분음표
+o begin
+o call faddr_dest:_점2분음표
+o call faddr_dest:미
+o end
+o function faddr_src:미_2분음표
+o begin
+o call faddr_dest:_2분음표
+o call faddr_dest:미
+o end
+o function faddr_src:미_4분음표
+o begin
+o call faddr_dest:_4분음표
+o call faddr_dest:미
+o end
+o function faddr_src:미_점4분음표
+o begin
+o call faddr_dest:_점4분음표
+o call faddr_dest:미
+o end
+o function faddr_src:미_8분음표
+o begin
+o call faddr_dest:_8분음표
+o call faddr_dest:미
+o end
+- 
+o function faddr_src:파_점2분음표
+o begin
+o call faddr_dest:_점2분음표
+o call faddr_dest:파
+o end
+o function faddr_src:파_2분음표
+o begin
+o call faddr_dest:_2분음표
+o call faddr_dest:파
+o end
+o function faddr_src:파_점4분음표
+o begin
+o call faddr_dest:_점4분음표
+o call faddr_dest:파
+o end
+o function faddr_src:파_4분음표
+o begin
+o call faddr_dest:_4분음표
+o call faddr_dest:파
+o end
+o function faddr_src:파_8분음표
+o begin
+o call faddr_dest:_8분음표
+o call faddr_dest:파
+o end
+- 
+o function faddr_src:솔_점2분음표
+o begin
+o call faddr_dest:_점2분음표
+o call faddr_dest:솔
+o end
+o function faddr_src:솔_2분음표
+o begin
+o call faddr_dest:_2분음표
+o call faddr_dest:솔
+o end
+o function faddr_src:솔_4분음표
+o begin
+o call faddr_dest:_4분음표
+o call faddr_dest:솔
+o end
+o function faddr_src:솔_점4분음표
+o begin
+o call faddr_dest:_점4분음표
+o call faddr_dest:솔
+o end
+o function faddr_src:솔_8분음표
+o begin
+o call faddr_dest:_8분음표
+o call faddr_dest:솔
+o end
+- 
+o function faddr_src:라_점2분음표
+o begin
+o call faddr_dest:_점2분음표
+o call faddr_dest:라
+o end
+o function faddr_src:라_2분음표
+o begin
+o call faddr_dest:_2분음표
+o call faddr_dest:라
+o end
+o function faddr_src:라_4분음표
+o begin
+o call faddr_dest:_4분음표
+o call faddr_dest:라
+o end
+o function faddr_src:라_8분음표
+o begin
+o call faddr_dest:_8분음표
+o call faddr_dest:라
+o end
+- 
+o function faddr_src:시_점2분음표
+o begin
+o call faddr_dest:_점2분음표
+o call faddr_dest:시
+o end
+o function faddr_src:시_2분음표
+o begin
+o call faddr_dest:_2분음표
+o call faddr_dest:시
+o end
+o function faddr_src:시_4분음표
+o begin
+o call faddr_dest:_4분음표
+o call faddr_dest:시
+o end
+o function faddr_src:시_점4분음표
+o begin
+o call faddr_dest:_점4분음표
+o call faddr_dest:시
+o end
+o function faddr_src:시_8분음표
+o begin
+o call faddr_dest:_8분음표
+o call faddr_dest:시
+o end
+- 
+o function faddr_src:도_고_점2분음표
+o begin
+o call faddr_dest:_점2분음표
+o call faddr_dest:도_고
+o end
+o function faddr_src:도_고_2분음표
+o begin
+o call faddr_dest:_2분음표
+o call faddr_dest:도_고
+o end
+o function faddr_src:도_고_4분음표
+o begin
+o call faddr_dest:_4분음표
+o call faddr_dest:도_고
+o end
+o function faddr_src:도_고_8분음표
+o begin
+o call faddr_dest:_8분음표
+o call faddr_dest:도_고
+o end
+- 
+o function faddr_src:레_고_점2분음표
+o begin
+o call faddr_dest:_점2분음표
+o call faddr_dest:레_고
+o end
+o function faddr_src:레_고_8분음표
+o begin
+o call faddr_dest:_8분음표
+o call faddr_dest:레_고
+o end
+- 
+o function faddr_src:도
+o begin
+o load param_dest:cm:17 param_src:scale_num:3
+o call faddr_dest:멜로디대기
+o end
+o function faddr_src:레
+o begin
+o load param_dest:cm:17 param_src:scale_num:5
+o call faddr_dest:멜로디대기
+o end
+o function faddr_src:미
+o begin
+o load param_dest:cm:17 param_src:scale_num:7
+o call faddr_dest:멜로디대기
+o end
+o function faddr_src:파
+o begin
+o load param_dest:cm:17 param_src:scale_num:8
+o call faddr_dest:멜로디대기
+o end
+o function faddr_src:솔
+o begin
+o load param_dest:cm:17 param_src:scale_num:10
+o call faddr_dest:멜로디대기
+o end
+o function faddr_src:라
+o begin
+o load param_dest:cm:17 param_src:scale_num:12
+o call faddr_dest:멜로디대기
+o end
+o function faddr_src:시
+o begin
+o load param_dest:cm:17 param_src:scale_num:14
+o call faddr_dest:멜로디대기
+o end
+o function faddr_src:도_고
+o begin
+o load param_dest:cm:17 param_src:scale_num:15
+o call faddr_dest:멜로디대기
+o end
+o function faddr_src:레_고
+o begin
+o load param_dest:cm:17 param_src:scale_num:17
+o call faddr_dest:멜로디대기
+o end
+- 
+o function faddr_src:_점2분음표
+o begin
+o compute param_dest:cm:18 param_src:var:_8분음표시간 aop:* param_src:dec_num:6
+o end
+o function faddr_src:_2분음표
+o begin
+o compute param_dest:cm:18 param_src:var:_8분음표시간 aop:* param_src:dec_num:4
+o end
+o function faddr_src:_4분음표
+o begin
+o compute param_dest:cm:18 param_src:var:_8분음표시간 aop:* param_src:dec_num:2
+o end
+o function faddr_src:_점4분음표
+o begin
+o compute param_dest:cm:18 param_src:var:_8분음표시간 aop:* param_src:dec_num:3
+o end
+o function faddr_src:_8분음표
+o begin
+o load param_dest:cm:18 param_src:var:_8분음표시간
+o end
+- 
+o function faddr_src:멜로디대기
+o begin
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

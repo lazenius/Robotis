@@ -1,0 +1,168 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 스마트 지게차 리모컨
+o // param_text:U: 전진, D: 후진, U+L: 좌전진, U+R: 우전진, D+L: 좌후진, D+R: 우후진
+o // param_text:2: 고속, 4: 저속
+o // param_text:1: 지게 올리기, 3: 지게 내리기
+- 
+o main
+o begin
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o // param_text:시작 퍼포먼스
+- 
+o call faddr_dest:초기화
+- 
+o while(1)
+o begin
+o call faddr_dest:로봇조종
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:감속모터출력 param_src:dec_num:800
+o // param_text:조향 (후방)
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:4:62 param_src:position_num:512
+o // param_text:포크리프트
+o load param_dest:aux:8:61 param_src:bool_num:0
+o load param_dest:aux:5:61 param_src:bool_num:0
+o end
+- 
+o function faddr_src:로봇조종
+o begin
+o // param_text:전진
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o while param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력
+o load param_dest:aux:4:62 param_src:position_num:512
+o end
+o load param_dest:var:현재감속출력 param_src:var:감속모터출력
+o while param_src:var:현재감속출력 lop:>= param_src:dec_num:50 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:현재감속출력
+o compute param_dest:var:현재감속출력 param_src:var:현재감속출력 aop:- param_src:dec_num:50
+o end
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o end
+o // param_text:좌전진
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:5 rop:then
+o begin
+o while param_src:cm:1 lop:== param_src:rc100z_num:5 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력
+o load param_dest:aux:4:62 param_src:position_num:622
+o end
+o load param_dest:var:현재감속출력 param_src:var:감속모터출력
+o while param_src:var:현재감속출력 lop:>= param_src:dec_num:50 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:현재감속출력
+o compute param_dest:var:현재감속출력 param_src:var:현재감속출력 aop:- param_src:dec_num:50
+o end
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o end
+o // param_text:우전진
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:9 rop:then
+o begin
+o while param_src:cm:1 lop:== param_src:rc100z_num:9 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력
+o load param_dest:aux:4:62 param_src:position_num:402
+o end
+o load param_dest:var:현재감속출력 param_src:var:감속모터출력
+o while param_src:var:현재감속출력 lop:>= param_src:dec_num:50 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:현재감속출력
+o compute param_dest:var:현재감속출력 param_src:var:현재감속출력 aop:- param_src:dec_num:50
+o end
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o end
+o // param_text:후진
+o if param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o while param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력
+o load param_dest:aux:4:62 param_src:position_num:512
+o end
+o load param_dest:var:현재감속출력 param_src:var:감속모터출력
+o while param_src:var:현재감속출력 lop:>= param_src:dec_num:50 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:현재감속출력
+o compute param_dest:var:현재감속출력 param_src:var:현재감속출력 aop:- param_src:dec_num:50
+o end
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:0
+o end
+o // param_text:좌후진
+o if param_src:cm:1 lop:== param_src:rc100z_num:6 rop:then
+o begin
+o while param_src:var:터치위치 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력
+o load param_dest:aux:4:62 param_src:position_num:622
+o end
+o load param_dest:var:현재감속출력 param_src:var:감속모터출력
+o while param_src:var:현재감속출력 lop:>= param_src:dec_num:50 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:현재감속출력
+o compute param_dest:var:현재감속출력 param_src:var:현재감속출력 aop:- param_src:dec_num:50
+o end
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:0
+o end
+o // param_text:우후진
+o if param_src:cm:1 lop:== param_src:rc100z_num:10 rop:then
+o begin
+o while param_src:cm:1 lop:== param_src:rc100z_num:10 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력
+o load param_dest:aux:4:62 param_src:position_num:402
+o end
+o load param_dest:var:현재감속출력 param_src:var:감속모터출력
+o while param_src:var:현재감속출력 lop:>= param_src:dec_num:50 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:현재감속출력
+o compute param_dest:var:현재감속출력 param_src:var:현재감속출력 aop:- param_src:dec_num:50
+o end
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:0
+o end
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o load param_dest:aux:8:60 param_src:dec_num:0
+o load param_dest:aux:5:60 param_src:dec_num:0
+o compute param_dest:aux:1:68 param_src:dec_num:0 aop:+ param_src:var:현재감속출력
+o end
+- 
+o // param_text:고속
+o if param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o load param_dest:var:감속모터출력 param_src:dec_num:900
+o end
+o // param_text:저속
+o if param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o load param_dest:var:감속모터출력 param_src:dec_num:800
+o end
+o // param_text:들기
+o if param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:21
+o load param_dest:aux:8:60 param_src:dec_num:1023
+o load param_dest:aux:5:60 param_src:dec_num:2047
+o end
+o // param_text:내리기
+o if param_src:cm:1 lop:== param_src:rc100z_num:64 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:18
+o load param_dest:aux:8:60 param_src:dec_num:2047
+o load param_dest:aux:5:60 param_src:dec_num:1023
+o end
+o end
+- 

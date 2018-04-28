@@ -1,0 +1,267 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 4단계 춤추는 고릴라
+o // param_text:조종모드, 플레이모드, 싱글모드로 동작함
+o // param_text:조종모드: 전후좌우 이동, 팔 움직임
+o // param_text:플레이모드: 댄스 동작시 흔들림센서를 이용하여 음악 연주 가능, 디제이동작, 가슴두드리기 동작
+o // param_text:싱글모드: 자동으로 댄스
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:var:오디오선택 param_src:audio_num:4
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:motion:-:50 param_src:dec_num:1
+- 
+o while(1)
+o begin
+o label laddr_src:조종모드
+o while(1)
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:17 rop:then
+o // param_text:전진
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:aux:2:68 param_src:dir_num:1624
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:22 rop:then
+o // param_text:후진
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1624
+o load param_dest:aux:2:68 param_src:dir_num:600
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:21 rop:then
+o // param_text:좌회전
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1624
+o load param_dest:aux:2:68 param_src:dir_num:1624
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:23 rop:then
+o // param_text:우회전
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:aux:2:68 param_src:dir_num:600
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:0 rop:then
+o // param_text:정지
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:14 rop:then
+o // param_text:왼손 안
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:5
+o load param_dest:motion:-:50 param_src:dec_num:9
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:15 rop:then
+o // param_text:오른손 안
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:5
+o load param_dest:motion:-:50 param_src:dec_num:10
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:19 rop:then
+o // param_text:왼손 밖
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:5
+o load param_dest:motion:-:50 param_src:dec_num:11
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:20 rop:then
+o // param_text:오른손 밖
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:5
+o load param_dest:motion:-:50 param_src:dec_num:12
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:4 rop:then
+o // param_text:왼팔up
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:5
+o load param_dest:motion:-:50 param_src:dec_num:5
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:9 rop:then
+o // param_text:왼팔down
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:5
+o load param_dest:motion:-:50 param_src:dec_num:6
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:5 rop:then
+o // param_text:오른팔up
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:5
+o load param_dest:motion:-:50 param_src:dec_num:7
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:10 rop:then
+o // param_text:오른팔down
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:5
+o load param_dest:motion:-:50 param_src:dec_num:8
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:2 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:2
+o jump laddr_dest:플레이모드
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:3 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:4
+o jump laddr_dest:싱글모드
+o end
+o end
+- 
+o label laddr_src:플레이모드
+o while(1)
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:15 rop:then
+o // param_text:댄스
+o begin
+o load param_dest:smart:100:262 param_src:img_num:3
+o load param_dest:smart:100:270 param_src:audio_num:1
+o while(1)
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:25 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:0
+o load param_dest:smart:100:262 param_src:img_num:2
+o load param_dest:motion:-:50 param_src:dec_num:1
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o break
+o end
+o elseif param_src:var:터치위치 lop:!= param_src:scrpos1_num:25 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:262 param_src:img_num:3
+o if param_src:motion:-:51 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:2
+o end
+o elseif param_src:smart:100:277 lop:> param_src:dec_num:50 rop:then
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:5
+o end
+o end
+o end
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:20 rop:then
+o // param_text:가슴두드리기
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o load param_dest:motion:-:50 param_src:dec_num:3
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:25 rop:then
+o // param_text:디제잉
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:motion:-:50 param_src:dec_num:4
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:0 rop:then
+o // param_text:정지
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:1
+o jump laddr_dest:조종모드
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:3 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:4
+o jump laddr_dest:싱글모드
+o end
+o end
+o label laddr_src:싱글모드
+o while(1)
+o begin
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:262 param_src:img_num:4
+o while param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:4
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:3
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o load param_dest:motion:-:50 param_src:dec_num:2
+o wait param_src:motion:-:51 lop:== param_src:bool_num:1 rop:then
+o end
+o end
+o end
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:smart:100:270 param_src:audio_num:0
+o jump laddr_dest:조종모드
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:2 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:2
+o load param_dest:smart:100:270 param_src:audio_num:0
+o jump laddr_dest:플레이모드
+o end
+o end
+o end
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

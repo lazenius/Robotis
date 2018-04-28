@@ -1,0 +1,95 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 바람개비 꽃 예제프로그램_소리
+o // param_text:[작동 방법]
+o // param_text:마이크에 소리가 감지되면 감지된 횟수만큼 모터가 회전 합니다.
+o main
+o begin
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o // param_text:소리감지 1~5까지 모터속도 200씩 증가
+o while(1)
+o begin
+o load param_dest:cm:5 param_src:timer_num:4
+o while param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o begin
+o load param_dest:var:박수감지횟수 param_src:cm:19
+- 
+o if param_src:var:박수감지횟수 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:var:바람세기 param_src:dec_num:200
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o load param_dest:cm:5 param_src:timer_num:24
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o break
+o end
+o elseif param_src:var:박수감지횟수 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:var:바람세기 param_src:dec_num:400
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o load param_dest:cm:5 param_src:timer_num:24
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o break
+o end
+o elseif param_src:var:박수감지횟수 lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:var:바람세기 param_src:dec_num:600
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o load param_dest:cm:5 param_src:timer_num:24
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o break
+o end
+o elseif param_src:var:박수감지횟수 lop:== param_src:dec_num:4 rop:then
+o begin
+o load param_dest:var:바람세기 param_src:dec_num:800
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o load param_dest:cm:5 param_src:timer_num:24
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o break
+o end
+o elseif param_src:var:박수감지횟수 lop:== param_src:dec_num:5 rop:then
+o begin
+o load param_dest:var:바람세기 param_src:dec_num:1000
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o load param_dest:cm:5 param_src:timer_num:24
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o break
+o end
+o else
+o begin
+o load param_dest:var:바람세기 param_src:dec_num:0
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o end
+o end
+o end
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

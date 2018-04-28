@@ -1,0 +1,186 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 터렛 예제프로그램
+o // param_text:[작동 방법]
+o // param_text:스마트폰의 터치센서로 로봇을 조종합니다.
+- 
+o main
+o begin
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:== param_src:buzzertime_num:0 rop:then
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:8:62 param_src:dec_num:512
+o load param_dest:aux:8:60 param_src:dec_num:500
+o load param_dest:aux:1:68 param_src:dir_num:300
+o load param_dest:cm:6 param_src:hrtimer_num:1500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:var:서보모터위치 param_src:aux:8:62
+o call faddr_dest:초기화
+- 
+o while(1)
+o begin
+o call faddr_dest:조종
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,발사옵션,60,2
+o load param_dest:var:발사옵션 param_src:dec_num:1
+o end
+- 
+o // param_text:터렛의 회전 조종, 터렛 파워 조절
+o function faddr_src:조종
+o begin
+o load param_dest:smart:100:267 param_src:scrpos0_num:6,발사옵션,60,2
+o load param_dest:var:터치 param_src:smart:100:286
+- 
+o if param_src:var:터치 lop:== param_src:scrpos1_num:10 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o if param_src:var:발사옵션 lop:== param_src:dec_num:1 rop:then
+o begin
+o call faddr_dest:파워_1
+o end
+o elseif param_src:var:발사옵션 lop:== param_src:dec_num:2 rop:then
+o begin
+o call faddr_dest:파워_2
+o end
+o else
+o begin
+o call faddr_dest:파워_3
+o end
+o call faddr_dest:대기0_5
+o end
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:cm:6 param_src:hrtimer_num:1500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o end
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:1 rop:then
+o begin
+o compute param_dest:var:발사옵션 param_src:var:발사옵션 aop:+ param_src:dec_num:1
+o if param_src:var:발사옵션 lop:> param_src:dec_num:3 rop:then
+o begin
+o load param_dest:var:발사옵션 param_src:dec_num:3
+o end
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o call faddr_dest:대기0_5
+o end
+- 
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:11 rop:then
+o begin
+o compute param_dest:var:발사옵션 param_src:var:발사옵션 aop:- param_src:dec_num:1
+o if param_src:var:발사옵션 lop:< param_src:dec_num:1 rop:then
+o begin
+o load param_dest:var:발사옵션 param_src:dec_num:1
+o end
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o call faddr_dest:대기0_5
+o end
+- 
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:24 rop:then
+o begin
+o compute param_dest:var:서보모터위치 param_src:var:서보모터위치 aop:+ param_src:dec_num:50
+- 
+o if param_src:var:서보모터위치 lop:> param_src:dec_num:819 rop:then
+o begin
+o load param_dest:var:서보모터위치 param_src:position_num:819
+o end
+- 
+o load param_dest:aux:8:62 param_src:var:서보모터위치
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o call faddr_dest:대기0_5
+o end
+- 
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:22 rop:then
+o begin
+o compute param_dest:var:서보모터위치 param_src:var:서보모터위치 aop:- param_src:dec_num:50
+- 
+o if param_src:var:서보모터위치 lop:< param_src:dec_num:205 rop:then
+o begin
+o load param_dest:var:서보모터위치 param_src:position_num:205
+o end
+- 
+o load param_dest:aux:8:62 param_src:var:서보모터위치
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o call faddr_dest:대기0_5
+o end
+- 
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o load param_dest:var:서보모터위치 param_src:dec_num:512
+- 
+o load param_dest:aux:8:62 param_src:var:서보모터위치
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o call faddr_dest:대기0_5
+o end
+o end
+- 
+o function faddr_src:파워_1
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1724
+o load param_dest:cm:6 param_src:hrtimer_num:180
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:cm:17 param_src:scale_num:15
+- 
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o call faddr_dest:대기0_5
+- 
+o load param_dest:aux:1:68 param_src:dir_num:300
+o load param_dest:cm:6 param_src:hrtimer_num:1500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o end
+- 
+o function faddr_src:파워_2
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1824
+o load param_dest:cm:6 param_src:hrtimer_num:180
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:cm:17 param_src:scale_num:19
+- 
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o call faddr_dest:대기0_5
+- 
+o load param_dest:aux:1:68 param_src:dir_num:400
+o load param_dest:cm:6 param_src:hrtimer_num:1500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o end
+- 
+o function faddr_src:파워_3
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:2047
+o load param_dest:cm:6 param_src:hrtimer_num:120
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:cm:17 param_src:scale_num:22
+- 
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o call faddr_dest:대기0_5
+- 
+o load param_dest:aux:1:68 param_src:dir_num:300
+o load param_dest:cm:6 param_src:hrtimer_num:1500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o end
+- 
+o function faddr_src:대기0_5
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+- 

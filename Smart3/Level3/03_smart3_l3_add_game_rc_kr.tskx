@@ -1,0 +1,187 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 더하기게임 리모컨
+o // param_text:임의로 올라오는 숫자를 모두 더하여 리모컨으로 입력
+o // param_text:리모컨 1 - 숫자1, 5 - 숫자5, 6 - 숫자10, L - 지우기, 3 - 입력
+o // param_text:입력한 답이 맞으면 단계가 올라가고 틀리면 기회가 줄어듬.
+o // param_text:단계가 올라갈수록 숫자의 개수가 추가됨.
+- 
+o main
+o begin
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:cm:25 param_src:dec_num:4
+- 
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:9:61 param_src:bool_num:1
+- 
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:aux:2:68 param_src:dir_num:1524
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:2:68 param_src:dir_num:1024
+- 
+o label laddr_src:처음시작
+o load param_dest:var:스테이지 param_src:dec_num:1
+o load param_dest:var:남은기회 param_src:dec_num:3
+o while(1)
+o begin
+o if param_src:cm:1 lop:!= param_src:rc100z_num:0 rop:then
+o begin
+o break
+o end
+o end
+o while(1)
+o begin
+o label laddr_src:시작
+o call faddr_dest:게임셋팅
+o call faddr_dest:정답입력
+o load param_dest:cm:5 param_src:timer_num:6
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:입력정답이 지정된 정답과 같을 경우 다음 스테이지로 넘어감
+o if param_src:var:입력값 lop:== param_src:var:정답 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:0
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o compute param_dest:var:스테이지 param_src:var:스테이지 aop:+ param_src:dec_num:1
+o jump laddr_dest:시작
+o end
+o // param_text:입력정답이 지정된 정답과 다를 경우 생명이 줄어들고 스테이지 유지
+o elseif param_src:var:입력값 lop:!= param_src:var:정답 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:4
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o compute param_dest:var:남은기회 param_src:var:남은기회 aop:- param_src:dec_num:1
+o if param_src:var:남은기회 lop:== param_src:dec_num:0 rop:then
+o begin
+o break
+o jump laddr_dest:처음시작
+o end
+o jump laddr_dest:시작
+o end
+o end
+o end
+o // param_text:임의 숫자 스테이지당 하나씩 선정하고 해당하는 모터 돌림
+o function faddr_src:게임셋팅
+o begin
+o load param_dest:var:정답 param_src:dec_num:0
+o for param_var:횟수 param_src:dec_num:1 param_src:var:스테이지
+o begin
+o load param_dest:var:임의숫자 param_src:cm:25
+o if param_src:var:임의숫자 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:var:숫자값 param_src:dec_num:1
+o load param_dest:aux:3:62 param_src:position_num:205
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o compute param_dest:var:정답 param_src:var:정답 aop:+ param_src:var:숫자값
+o end
+o elseif param_src:var:임의숫자 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:var:숫자값 param_src:dec_num:2
+o load param_dest:aux:5:62 param_src:position_num:205
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o compute param_dest:var:정답 param_src:var:정답 aop:+ param_src:var:숫자값
+o end
+o elseif param_src:var:임의숫자 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:var:숫자값 param_src:dec_num:3
+o load param_dest:aux:2:68 param_src:dir_num:550
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:2:68 param_src:dir_num:1524
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o compute param_dest:var:정답 param_src:var:정답 aop:+ param_src:var:숫자값
+o end
+o elseif param_src:var:임의숫자 lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:var:숫자값 param_src:dec_num:4
+o load param_dest:aux:8:62 param_src:position_num:819
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o compute param_dest:var:정답 param_src:var:정답 aop:+ param_src:var:숫자값
+o end
+o elseif param_src:var:임의숫자 lop:== param_src:dec_num:4 rop:then
+o begin
+o load param_dest:var:숫자값 param_src:dec_num:5
+o load param_dest:aux:9:62 param_src:position_num:819
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o compute param_dest:var:정답 param_src:var:정답 aop:+ param_src:var:숫자값
+o end
+o end
+o // param_text:생성한 임의 숫자 모두 더해서 정답 만들기
+o end
+- 
+o // param_text:1,5,10을 조합한 덧셈 값을 입력정답 값으로 지정합니다 
+o function faddr_src:정답입력
+o begin
+o load param_dest:var:중간입력값 param_src:dec_num:0
+o load param_dest:var:입력값 param_src:dec_num:0
+o while(1)
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:var:중간입력값 param_src:dec_num:1
+o compute param_dest:var:입력값 param_src:var:입력값 aop:+ param_src:var:중간입력값
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:256 rop:then
+o begin
+o load param_dest:var:중간입력값 param_src:dec_num:5
+o compute param_dest:var:입력값 param_src:var:입력값 aop:+ param_src:var:중간입력값
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:512 rop:then
+o begin
+o load param_dest:var:중간입력값 param_src:dec_num:10
+o compute param_dest:var:입력값 param_src:var:입력값 aop:+ param_src:var:중간입력값
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:64 rop:then
+o begin
+o break
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:4 rop:then
+o begin
+o load param_dest:var:중간입력값 param_src:dec_num:0
+o load param_dest:var:입력값 param_src:dec_num:0
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+o end
+- 

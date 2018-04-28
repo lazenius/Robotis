@@ -1,0 +1,406 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 전자활
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:스마트폰을 전자활에 장착. 접촉센서를 누르면 활이 펴짐.
+o // param_text:활시위를 당겼다 놓는 동작(적외선센서를 가렸다가 뗌)을 하면 활 발사.
+o // param_text:활을 발사하여 우주선을 맞힘.
+- 
+o main
+o begin
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:9:61 param_src:bool_num:1
+o load param_dest:aux:8:62 param_src:position_num:203
+o load param_dest:aux:9:62 param_src:position_num:203
+o // param_text:스마트 폰과 연결 될때까지 대기 
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+- 
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o label laddr_src:시작
+o call faddr_dest:초기화
+o load param_dest:smart:100:266 param_src:scrpos4_num:103940877
+- 
+o wait param_src:var:fire lop:== param_src:dec_num:0 rop:then
+o load param_dest:smart:100:266 param_src:scrpos4_num:103940109
+o while(1)
+o begin
+o call faddr_dest:모기생성
+o if param_src:var:게임종료 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:dec_num:2
+o load param_dest:smart:100:266 param_src:scrpos4_num:103941133
+o wait param_src:smart:100:286 lop:== param_src:dec_num:0 rop:then
+o load param_dest:smart:100:266 param_src:scrpos4_num:103940109
+o load param_dest:var:터치센서 param_src:bool_num:0
+o jump laddr_dest:시작
+o end
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:게임종료 param_src:bool_num:0
+o load param_dest:var:fire param_src:dec_num:0
+o load param_dest:var:flag1 param_src:dec_num:1
+o load param_dest:var:flag2 param_src:dec_num:1
+o load param_dest:var:flag3 param_src:dec_num:1
+o load param_dest:var:flag4 param_src:dec_num:1
+o load param_dest:var:flag5 param_src:dec_num:1
+o load param_dest:smart:100:276 param_src:dec_num:5
+o load param_dest:smart:100:263 param_src:dec_num:0
+o load param_dest:smart:100:262 param_src:dec_num:1
+- 
+o load param_dest:var:남은물체수 param_src:dec_num:5
+o load param_dest:smart:100:266 param_src:scrpos4_num:103940376
+o load param_dest:smart:100:267 param_src:scrpos0_num:25,남은물체수,50,6
+- 
+o load param_dest:var:초 param_src:dec_num:0
+o load param_dest:smart:100:266 param_src:scrpos4_num:70386197
+o load param_dest:smart:100:267 param_src:scrpos0_num:22,초,50,4
+- 
+o call faddr_dest:활준비
+o end
+- 
+o function faddr_src:모기생성
+o begin
+o load param_dest:var:난수 param_src:cm:25
+o while(1)
+o begin
+o if param_src:smart:100:271 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:4
+o end
+o compute param_dest:var:초 param_src:var:초 aop:+ param_src:dec_num:1
+o load param_dest:smart:100:266 param_src:scrpos4_num:70386197
+o load param_dest:smart:100:267 param_src:scrpos0_num:22,초,50,4
+o compute param_dest:var:핸드폰방향 param_src:smart:100:280 aop:/ param_src:dec_num:1
+o compute param_dest:var:물체1 param_src:var:난수 aop:% param_src:dec_num:25
+o if param_src:var:물체1 lop:< param_src:dec_num:20 rop:then
+o begin
+o load param_dest:var:물체1 param_src:dec_num:20
+o end
+o compute param_dest:var:물체2 param_src:var:물체1 aop:+ param_src:dec_num:30
+o compute param_dest:var:물체3 param_src:var:물체1 aop:+ param_src:dec_num:50
+o compute param_dest:var:물체4 param_src:var:난수 aop:% param_src:dec_num:10
+o compute param_dest:var:물체4 param_src:var:물체4 aop:+ param_src:dec_num:10
+o compute param_dest:var:물체5 param_src:var:물체4 aop:+ param_src:dec_num:40
+o call faddr_dest:모기방향보정
+o if param_src:var:게임종료 lop:== param_src:bool_num:1 rop:|| param_src:var:초 lop:== param_src:dec_num:255 rop:then
+o begin
+o load param_dest:var:게임종료 param_src:bool_num:1
+o load param_dest:smart:100:270 param_src:audio_num:0
+o load param_dest:smart:100:271 param_src:audio_num:0
+o break
+o end
+o end
+o end
+- 
+o function faddr_src:모기방향보정
+o begin
+o compute param_dest:var:각도변환 param_src:dec_num:5 aop:* param_src:var:핸드폰방향
+o compute param_dest:var:각도변환 param_src:var:각도변환 aop:/ param_src:dec_num:9
+o compute param_dest:var:기준 param_src:dec_num:60 aop:- param_src:var:각도변환
+- 
+o if param_src:var:flag1 lop:== param_src:dec_num:1 rop:then
+o begin
+o compute param_dest:var:물체상1 param_src:var:물체1 aop:- param_src:var:기준
+o compute param_dest:var:층1 param_src:var:물체상1 aop:/ param_src:dec_num:5
+o compute param_dest:var:층1 param_src:var:층1 aop:* param_src:dec_num:5
+o compute param_dest:var:층1_ param_src:var:층1 aop:+ param_src:dec_num:2
+o compute param_dest:var:물체종류1 param_src:var:물체상1 aop:% param_src:dec_num:5
+o compute param_dest:var:물체종류1 param_src:var:물체종류1 aop:+ param_src:dec_num:1
+o compute param_dest:var:물체종류1 param_src:var:물체종류1 aop:* param_src:dec_num:256
+o compute param_dest:var:물체사진1 param_src:var:층1_ aop:+ param_src:var:물체종류1
+o end
+- 
+o if param_src:var:flag2 lop:== param_src:dec_num:1 rop:then
+o begin
+o compute param_dest:var:물체상2 param_src:var:물체2 aop:- param_src:var:기준
+o compute param_dest:var:층2 param_src:var:물체상2 aop:/ param_src:dec_num:5
+o compute param_dest:var:층2 param_src:var:층2 aop:* param_src:dec_num:5
+o compute param_dest:var:층2_ param_src:var:층2 aop:+ param_src:dec_num:2
+o compute param_dest:var:물체종류2 param_src:var:물체상2 aop:% param_src:dec_num:5
+o compute param_dest:var:물체종류2 param_src:var:물체종류2 aop:+ param_src:dec_num:1
+o compute param_dest:var:물체종류2 param_src:var:물체종류2 aop:* param_src:dec_num:256
+o compute param_dest:var:물체사진2 param_src:var:층2_ aop:+ param_src:var:물체종류2
+o end
+- 
+o if param_src:var:flag3 lop:== param_src:dec_num:1 rop:then
+o begin
+o compute param_dest:var:물체상3 param_src:var:물체3 aop:- param_src:var:기준
+o compute param_dest:var:층3 param_src:var:물체상3 aop:/ param_src:dec_num:5
+o compute param_dest:var:층3 param_src:var:층3 aop:* param_src:dec_num:5
+o compute param_dest:var:층3_ param_src:var:층3 aop:+ param_src:dec_num:2
+o compute param_dest:var:물체종류3 param_src:var:물체상3 aop:% param_src:dec_num:5
+o compute param_dest:var:물체종류3 param_src:var:물체종류3 aop:+ param_src:dec_num:1
+o compute param_dest:var:물체종류3 param_src:var:물체종류3 aop:* param_src:dec_num:256
+o compute param_dest:var:물체사진3 param_src:var:층3_ aop:+ param_src:var:물체종류3
+o end
+- 
+o if param_src:var:flag4 lop:== param_src:dec_num:1 rop:then
+o begin
+o compute param_dest:var:물체상4 param_src:var:물체4 aop:- param_src:var:기준
+o compute param_dest:var:층4 param_src:var:물체상4 aop:/ param_src:dec_num:5
+o compute param_dest:var:층4 param_src:var:층4 aop:* param_src:dec_num:5
+o compute param_dest:var:층4_ param_src:var:층4 aop:+ param_src:dec_num:2
+o compute param_dest:var:물체종류4 param_src:var:물체상4 aop:% param_src:dec_num:5
+o compute param_dest:var:물체종류4 param_src:var:물체종류4 aop:+ param_src:dec_num:1
+o compute param_dest:var:물체종류4 param_src:var:물체종류4 aop:* param_src:dec_num:256
+o compute param_dest:var:물체사진4 param_src:var:층4_ aop:+ param_src:var:물체종류4
+o end
+- 
+o if param_src:var:flag5 lop:== param_src:dec_num:1 rop:then
+o begin
+o compute param_dest:var:물체상5 param_src:var:물체5 aop:- param_src:var:기준
+o compute param_dest:var:층5 param_src:var:물체상5 aop:/ param_src:dec_num:5
+o compute param_dest:var:층5 param_src:var:층5 aop:* param_src:dec_num:5
+o compute param_dest:var:층5_ param_src:var:층5 aop:+ param_src:dec_num:2
+o compute param_dest:var:물체종류5 param_src:var:물체상5 aop:% param_src:dec_num:5
+o compute param_dest:var:물체종류5 param_src:var:물체종류5 aop:+ param_src:dec_num:1
+o compute param_dest:var:물체종류5 param_src:var:물체종류5 aop:* param_src:dec_num:256
+o compute param_dest:var:물체사진5 param_src:var:층5_ aop:+ param_src:var:물체종류5
+o end
+- 
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:물체사진1
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:물체사진2
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:물체사진3
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:물체사진4
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:물체사진5
+- 
+o if param_src:var:fire lop:== param_src:dec_num:2 rop:&& param_src:var:ready lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:var:ready param_src:dec_num:0
+o load param_dest:smart:100:270 param_src:audio_num:1
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o if param_src:var:fire lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o load param_dest:smart:100:292 param_src:vibtime_num:100
+o call faddr_dest:화살발사
+- 
+o wait param_src:smart:100:270 lop:!= param_src:audio_num:0 rop:then
+o load param_dest:var:ready param_src:dec_num:1
+o if param_src:var:물체종류1 lop:== param_src:dec_num:1024 rop:then
+o begin
+o load param_dest:var:물체종류1 param_src:dec_num:768
+o end
+o if param_src:var:물체종류2 lop:== param_src:dec_num:1024 rop:then
+o begin
+o load param_dest:var:물체종류2 param_src:dec_num:768
+o end
+o if param_src:var:물체종류3 lop:== param_src:dec_num:1024 rop:then
+o begin
+o load param_dest:var:물체종류3 param_src:dec_num:768
+o end
+o if param_src:var:물체종류4 lop:== param_src:dec_num:1024 rop:then
+o begin
+o load param_dest:var:물체종류4 param_src:dec_num:768
+o end
+o if param_src:var:물체종류5 lop:== param_src:dec_num:1024 rop:then
+o begin
+o load param_dest:var:물체종류5 param_src:dec_num:768
+o end
+- 
+o if param_src:var:층1_ lop:>= param_src:dec_num:8 rop:&& param_src:var:층1_ lop:<= param_src:dec_num:16 rop:&& param_src:var:flag1 lop:== param_src:dec_num:1 rop:&& param_src:var:물체종류1 lop:== param_src:dec_num:768 rop:then
+o begin
+o load param_dest:var:flag1 param_src:dec_num:0
+o load param_dest:var:물체사진1 param_src:dec_num:0
+o compute param_dest:var:남은물체수 param_src:var:남은물체수 aop:- param_src:dec_num:1
+o compute param_dest:smart:100:263 param_src:scrpos3_num:132609 aop:+ param_src:var:층1_
+o load param_dest:smart:100:270 param_src:audio_num:3
+o call faddr_dest:종료판단
+o end
+- 
+o if param_src:var:층2_ lop:>= param_src:dec_num:8 rop:&& param_src:var:층2_ lop:<= param_src:dec_num:16 rop:&& param_src:var:flag2 lop:== param_src:dec_num:1 rop:&& param_src:var:물체종류2 lop:== param_src:dec_num:768 rop:then
+o begin
+o load param_dest:var:flag2 param_src:dec_num:0
+o load param_dest:var:물체사진2 param_src:dec_num:0
+o compute param_dest:var:남은물체수 param_src:var:남은물체수 aop:- param_src:dec_num:1
+o compute param_dest:smart:100:263 param_src:scrpos3_num:132609 aop:+ param_src:var:층2_
+o load param_dest:smart:100:270 param_src:audio_num:3
+o call faddr_dest:종료판단
+o end
+- 
+o if param_src:var:층3_ lop:>= param_src:dec_num:8 rop:&& param_src:var:층3_ lop:<= param_src:dec_num:16 rop:&& param_src:var:flag3 lop:== param_src:dec_num:1 rop:&& param_src:var:물체종류3 lop:== param_src:dec_num:768 rop:then
+o begin
+o load param_dest:var:flag3 param_src:dec_num:0
+o load param_dest:var:물체사진3 param_src:dec_num:0
+o compute param_dest:var:남은물체수 param_src:var:남은물체수 aop:- param_src:dec_num:1
+o compute param_dest:smart:100:263 param_src:scrpos3_num:132609 aop:+ param_src:var:층3_
+o load param_dest:smart:100:270 param_src:audio_num:3
+o call faddr_dest:종료판단
+o end
+- 
+o if param_src:var:층4_ lop:>= param_src:dec_num:8 rop:&& param_src:var:층4_ lop:<= param_src:dec_num:16 rop:&& param_src:var:flag4 lop:== param_src:dec_num:1 rop:&& param_src:var:물체종류4 lop:== param_src:dec_num:768 rop:then
+o begin
+o load param_dest:var:flag4 param_src:dec_num:0
+o load param_dest:var:물체사진4 param_src:dec_num:0
+o compute param_dest:var:남은물체수 param_src:var:남은물체수 aop:- param_src:dec_num:1
+o compute param_dest:smart:100:263 param_src:scrpos3_num:132609 aop:+ param_src:var:층4_
+o load param_dest:smart:100:270 param_src:audio_num:3
+o call faddr_dest:종료판단
+o end
+o if param_src:var:층5_ lop:>= param_src:dec_num:8 rop:&& param_src:var:층5_ lop:<= param_src:dec_num:16 rop:&& param_src:var:flag5 lop:== param_src:dec_num:1 rop:&& param_src:var:물체종류5 lop:== param_src:dec_num:768 rop:then
+o begin
+o load param_dest:var:flag5 param_src:dec_num:0
+o load param_dest:var:물체사진5 param_src:dec_num:0
+o compute param_dest:var:남은물체수 param_src:var:남은물체수 aop:- param_src:dec_num:1
+o compute param_dest:smart:100:263 param_src:scrpos3_num:132609 aop:+ param_src:var:층5_
+o load param_dest:smart:100:270 param_src:audio_num:3
+o call faddr_dest:종료판단
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:7
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1 aop:+ param_src:dec_num:12
+o compute param_dest:smart:100:263 param_src:scrpos3_num:5242893 aop:+ param_src:dec_num:0
+- 
+o load param_dest:var:fire param_src:dec_num:0
+o end
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:생명표시 param_src:var:남은물체수
+o compute param_dest:smart:100:266 param_src:scrpos4_num:103940376 aop:+ param_src:dec_num:0
+o compute param_dest:smart:100:267 param_src:scrpos0_num:25,생명표시,50,6 aop:+ param_src:dec_num:0
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:층1_
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:층2_
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:층3_
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:층4_
+o compute param_dest:smart:100:263 param_src:scrpos3_num:1966081 aop:+ param_src:var:층5_
+o end
+- 
+o function faddr_src:종료판단
+o begin
+o load param_dest:smart:100:253 param_src:dec_num:30
+o if param_src:var:남은물체수 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:var:게임종료 param_src:bool_num:1
+o load param_dest:var:생명표시 param_src:var:남은물체수
+o compute param_dest:smart:100:266 param_src:scrpos4_num:103940376 aop:+ param_src:dec_num:0
+o load param_dest:smart:100:267 param_src:scrpos0_num:25,생명표시,50,6
+- 
+o load param_dest:var:초_위치조정 param_src:var:초
+o load param_dest:smart:100:266 param_src:scrpos4_num:70386197
+o load param_dest:smart:100:267 param_src:scrpos0_num:22,초_위치조정,50,4
+o end
+o load param_dest:cm:5 param_src:timer_num:16
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:smart:100:253 param_src:dec_num:0
+o end
+- 
+o callback
+o begin
+o if param_src:var:터치센서 lop:== param_src:bool_num:1 rop:then
+o begin
+o if param_src:cm:13 lop:>= param_src:dec_num:200 rop:&& param_src:cm:15 lop:>= param_src:dec_num:200 rop:then
+o begin
+o load param_dest:var:fire param_src:dec_num:2
+o load param_dest:aux:8:60 param_src:dir_num:400
+o load param_dest:aux:9:60 param_src:dir_num:400
+o load param_dest:aux:8:62 param_src:position_num:402
+o load param_dest:aux:9:62 param_src:position_num:402
+- 
+o end
+o if param_src:var:fire lop:== param_src:dec_num:2 rop:then
+o begin
+o if param_src:cm:13 lop:<= param_src:dec_num:200 rop:&& param_src:cm:15 lop:>= param_src:dec_num:200 rop:then
+o begin
+o load param_dest:var:fire param_src:dec_num:3
+o load param_dest:aux:8:60 param_src:dir_num:400
+o load param_dest:aux:9:60 param_src:dir_num:400
+- 
+o load param_dest:aux:8:62 param_src:position_num:324
+o load param_dest:aux:9:62 param_src:position_num:324
+o end
+o end
+o if param_src:var:fire lop:== param_src:dec_num:3 rop:then
+o begin
+o if param_src:cm:13 lop:<= param_src:dec_num:200 rop:&& param_src:cm:15 lop:<= param_src:dec_num:200 rop:then
+o begin
+o load param_dest:var:fire param_src:dec_num:1
+o end
+o end
+o end
+o end
+- 
+o function faddr_src:활준비
+o begin
+o load param_dest:aux:8:62 param_src:position_num:203
+o load param_dest:aux:9:62 param_src:position_num:203
+- 
+o while(1)
+o begin
+o load param_dest:var:터치센서 param_src:aux:7:65
+o if param_src:var:터치센서 lop:== param_src:bool_num:1 rop:then
+o begin
+o break
+o end
+o end
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o end
+- 
+o function faddr_src:화살발사
+o begin
+o load param_dest:aux:8:60 param_src:dir_num:1023
+o load param_dest:aux:9:60 param_src:dir_num:1023
+- 
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:aux:8:62 param_src:position_num:470
+o load param_dest:aux:9:62 param_src:position_num:470
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:aux:8:62 param_src:position_num:500
+o load param_dest:aux:9:62 param_src:position_num:500
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

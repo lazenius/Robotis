@@ -1,0 +1,136 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 플라스틱맨 AI
+o // param_text:공격모드만 작동
+o // param_text:[공격모드]
+o // param_text:발사 센서를 터치하면 고무줄을 발사.
+o // param_text:고무줄 발사 후 2초가 지나면 자동으로 재장전.
+o // param_text:접촉 센서가 눌리면 손을 연장하고 자석센서에 자석이 감지되면 손 숨김.
+- 
+o main
+o begin
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o // param_text:발사장치좌측
+o load param_dest:aux:10:61 param_src:bool_num:1
+o load param_dest:aux:10:62 param_src:position_num:512
+- 
+o // param_text:발사장치우측
+o load param_dest:aux:7:61 param_src:bool_num:1
+o load param_dest:aux:7:62 param_src:position_num:512
+- 
+o // param_text:연장손
+o load param_dest:aux:9:61 param_src:bool_num:1
+o load param_dest:aux:9:62 param_src:position_num:819
+- 
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:손숨기기 param_src:dec_num:0
+o load param_dest:var:발사상태 param_src:dec_num:0
+o load param_dest:var:발사준비 param_src:dec_num:0
+- 
+o while(1)
+o begin
+o // param_text:손숨기기
+o if param_src:aux:6:71 lop:== param_src:bool_num:1 rop:then
+o begin
+o if param_src:var:손숨기기 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:var:손숨기기 param_src:dec_num:1
+o end
+o end
+o // param_text:손발사
+o if param_src:aux:4:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o if param_src:var:손숨기기 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:22
+o load param_dest:aux:9:62 param_src:position_num:819
+o load param_dest:var:손숨기기 param_src:dec_num:0
+o end
+o end
+o // param_text:발사
+o if param_src:cm:14 lop:> param_src:dec_num:200 rop:&& param_src:var:발사상태 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:12
+o load param_dest:aux:10:62 param_src:position_num:1023
+o load param_dest:var:발사상태 param_src:dec_num:1
+o call faddr_dest:대기1
+o end
+o elseif param_src:cm:14 lop:> param_src:dec_num:200 rop:&& param_src:var:발사상태 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:12
+o load param_dest:aux:7:62 param_src:position_num:0
+o load param_dest:var:발사상태 param_src:dec_num:2
+o call faddr_dest:대기1
+o call faddr_dest:대기1
+o load param_dest:aux:10:62 param_src:position_num:512
+o load param_dest:aux:7:62 param_src:position_num:512
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:10
+o load param_dest:var:발사상태 param_src:dec_num:0
+o call faddr_dest:대기1
+o end
+o end
+o end
+- 
+o function faddr_src:대기0_1
+o begin
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기0_25
+o begin
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기1
+o begin
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

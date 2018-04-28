@@ -1,0 +1,150 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 대포 로봇
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:스마트폰을 기울여 포 각도 조절. 스마트폰 화면의 버튼을 터치하여 로봇 이동, 포 각도 고정.
+o // param_text:포를 장전하면 접촉센서가 눌리고 고정장치가 내려와 포를 고정.
+o // param_text:장전 완료 후 발사버튼을 터치하여 포 발사.
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o call faddr_dest:초기화
+o load param_dest:smart:100:268 param_src:dec_num:4
+o while(1)
+o begin
+o call faddr_dest:각도그림표시
+o call faddr_dest:장전
+o call faddr_dest:조종
+o call faddr_dest:각도조절
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:발사준비 param_src:bool_num:0
+o load param_dest:var:각도고정 param_src:bool_num:0
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:aux:5:62 param_src:position_num:512
+- 
+o load param_dest:smart:100:262 param_src:img_num:1
+o end
+- 
+o function faddr_src:각도그림표시
+o begin
+o if param_src:var:각도고정 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:1
+o end
+o elseif param_src:var:각도고정 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:2
+o end
+o end
+- 
+o function faddr_src:장전
+o begin
+o if param_src:aux:8:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:778
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:smart:100:292 param_src:dec_num:20
+o load param_dest:smart:100:270 param_src:dec_num:2
+o wait param_src:smart:100:270 lop:!= param_src:dec_num:0 rop:then
+o load param_dest:smart:100:268 param_src:dec_num:3
+o load param_dest:var:발사준비 param_src:bool_num:1
+o end
+o end
+- 
+o function faddr_src:조종
+o begin
+o load param_dest:var:터치 param_src:smart:100:286
+o if param_src:var:터치 lop:== param_src:dec_num:17 rop:then
+o begin
+o // param_text:전진
+o load param_dest:aux:2:68 param_src:dir_num:1774
+o load param_dest:aux:1:68 param_src:dir_num:750
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:21 rop:then
+o begin
+o // param_text:좌회전
+o load param_dest:aux:1:68 param_src:dir_num:1774
+o load param_dest:aux:2:68 param_src:dir_num:1774
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:23 rop:then
+o begin
+o // param_text:우회전
+o load param_dest:aux:1:68 param_src:dir_num:750
+o load param_dest:aux:2:68 param_src:dir_num:750
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:22 rop:then
+o begin
+o // param_text:후진
+o load param_dest:aux:2:68 param_src:dir_num:750
+o load param_dest:aux:1:68 param_src:dir_num:1774
+o end
+o else
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o if param_src:var:터치 lop:== param_src:dec_num:25 rop:&& param_src:var:발사준비 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:발사준비 param_src:bool_num:0
+o load param_dest:smart:100:292 param_src:dec_num:100
+o load param_dest:smart:100:270 param_src:dec_num:1
+o load param_dest:smart:100:267 param_src:scrpos0_num:9,센서각도,40,2
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o if param_src:var:터치 lop:== param_src:dec_num:24 rop:then
+o begin
+o if param_src:var:각도고정 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:var:각도고정 param_src:bool_num:1
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:var:각도고정 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:각도고정 param_src:bool_num:0
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+o end
+- 
+o function faddr_src:각도조절
+o begin
+o if param_src:var:각도고정 lop:== param_src:bool_num:1 rop:then
+o begin
+o return
+o end
+o load param_dest:var:센서각도 param_src:smart:100:280
+o compute param_dest:var:각도 param_src:var:센서각도 aop:* param_src:dec_num:3
+o if param_src:var:각도 lop:> param_src:dec_num:120 rop:then
+o begin
+o load param_dest:var:각도 param_src:dec_num:120
+o load param_dest:var:센서각도 param_src:dec_num:40
+o end
+o elseif param_src:var:각도 lop:< param_src:dec_num:10 rop:then
+o begin
+o load param_dest:var:각도 param_src:dec_num:10
+o load param_dest:var:센서각도 param_src:dec_num:4
+o end
+o compute param_dest:aux:4:62 param_src:dec_num:512 aop:+ param_src:var:각도
+o load param_dest:smart:100:267 param_src:scrpos0_num:10,센서각도,40,2
+o end
+- 

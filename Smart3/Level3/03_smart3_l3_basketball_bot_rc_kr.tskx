@@ -1,0 +1,265 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 농구 리모컨
+o // param_text:UDLR - 전후좌우 이동
+o // param_text:5 - 고속/저속 변환
+o // param_text:1 - 공 올리기, 내리기
+o // param_text:4 - 공 잡기, 풀기
+o // param_text:2 - 패스, 3 - 슛
+o // param_text:6 - 돌진잡기(자동)
+- 
+o main
+o begin
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o // param_text:주행 감속 모터 초기값
+o load param_dest:var:감속모터출력_회전 param_src:dec_num:900
+o load param_dest:var:감속모터출력_이동 param_src:dec_num:800
+- 
+o // param_text:서보 모터 초기값
+o load param_dest:var:서보모터출력 param_src:dec_num:1000
+- 
+o // param_text:공올리기 순서
+o load param_dest:var:공올리기_순서 param_src:dec_num:0
+- 
+o call faddr_dest:서보_초기화
+o call faddr_dest:패스하기
+- 
+o while(1)
+o begin
+o call faddr_dest:조종하기
+o end
+o end
+- 
+o function faddr_src:조종하기
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o call faddr_dest:전진
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o call faddr_dest:후진
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:4 rop:then
+o call faddr_dest:제자리자회전
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:8 rop:then
+o call faddr_dest:제자리우회전
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:256 rop:&& param_src:var:감속모터출력_이동 lop:== param_src:dec_num:900 rop:then
+o begin
+o call faddr_dest:저속
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:256 rop:&& param_src:var:감속모터출력_이동 lop:== param_src:dec_num:800 rop:then
+o begin
+o call faddr_dest:고속
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:16 rop:&& param_src:var:집게 lop:== param_src:dec_num:0 rop:then
+o begin
+o call faddr_dest:집게_올리기
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:집게 param_src:dec_num:1
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:16 rop:&& param_src:var:집게 lop:== param_src:dec_num:1 rop:then
+o begin
+o call faddr_dest:집게_내리기
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:집게 param_src:dec_num:0
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:64 rop:then
+o call faddr_dest:슟
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o call faddr_dest:패스하기
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:128 rop:&& param_src:var:공 lop:== param_src:dec_num:1 rop:then
+o begin
+o call faddr_dest:공놓기
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:공 param_src:dec_num:0
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:128 rop:&& param_src:var:공 lop:== param_src:dec_num:0 rop:then
+o begin
+o call faddr_dest:공잡기
+o load param_dest:cm:5 param_src:timer_num:5
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:공 param_src:dec_num:1
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:512 rop:then
+o call faddr_dest:돌진잡기
+o else
+o begin
+o call faddr_dest:정지
+o end
+o end
+- 
+o function faddr_src:서보_초기화
+o begin
+o // param_text:공올리기
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:4:60 param_src:dec_num:1000
+o load param_dest:aux:4:62 param_src:position_num:512
+- 
+o // param_text:슛동작_고정해제
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:5:60 param_src:var:서보모터출력
+o load param_dest:aux:5:62 param_src:position_num:512
+- 
+o // param_text:팔당기기
+o load param_dest:aux:6:61 param_src:bool_num:1
+o load param_dest:aux:6:60 param_src:dec_num:1023
+o load param_dest:aux:6:62 param_src:position_num:512
+- 
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:3:60 param_src:dec_num:1023
+o load param_dest:aux:3:62 param_src:position_num:412
+o end
+- 
+o function faddr_src:슟
+o begin
+o load param_dest:aux:6:62 param_src:position_num:612
+o call faddr_dest:대기_02
+o load param_dest:aux:5:62 param_src:position_num:512
+o call faddr_dest:대기_02
+o load param_dest:aux:6:60 param_src:dec_num:1000
+o load param_dest:aux:6:62 param_src:position_num:200
+o call faddr_dest:대기_02
+o load param_dest:aux:5:62 param_src:position_num:200
+o call faddr_dest:대기_02
+o load param_dest:aux:6:62 param_src:position_num:612
+o call faddr_dest:대기_02
+o end
+- 
+o function faddr_src:패스하기
+o begin
+o load param_dest:aux:6:60 param_src:dec_num:1000
+o load param_dest:aux:6:62 param_src:position_num:450
+o call faddr_dest:대기_02
+o load param_dest:aux:5:62 param_src:position_num:512
+o call faddr_dest:대기_02
+o load param_dest:aux:6:62 param_src:position_num:612
+o call faddr_dest:대기_02
+o load param_dest:aux:6:62 param_src:position_num:200
+o call faddr_dest:대기_02
+o load param_dest:aux:5:62 param_src:position_num:200
+o call faddr_dest:대기_02
+o load param_dest:aux:6:62 param_src:position_num:512
+o call faddr_dest:대기_02
+o end
+- 
+o function faddr_src:공잡기
+o begin
+o load param_dest:aux:3:62 param_src:position_num:612
+o end
+o function faddr_src:공놓기
+o begin
+o load param_dest:aux:3:62 param_src:position_num:370
+o end
+o function faddr_src:팔고정
+o begin
+o load param_dest:aux:5:62 param_src:position_num:200
+o call faddr_dest:대기_02
+o end
+- 
+o function faddr_src:집게_올리기
+o begin
+o load param_dest:aux:4:60 param_src:dec_num:1023
+o load param_dest:aux:4:62 param_src:position_num:102
+o end
+- 
+o function faddr_src:집게_내리기
+o begin
+o load param_dest:aux:4:60 param_src:dec_num:600
+o load param_dest:aux:4:62 param_src:position_num:540
+o call faddr_dest:대기_02
+o end
+- 
+o function faddr_src:돌진잡기
+o begin
+o load param_dest:aux:3:60 param_src:dec_num:1023
+o load param_dest:aux:3:62 param_src:position_num:370
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력_이동
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력_이동
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:3:62 param_src:position_num:612
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:4:60 param_src:dec_num:1023
+o load param_dest:aux:4:62 param_src:position_num:102
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:3:60 param_src:dec_num:1023
+o load param_dest:aux:3:62 param_src:position_num:370
+o load param_dest:cm:5 param_src:timer_num:7
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:4:60 param_src:dec_num:1023
+o load param_dest:aux:4:62 param_src:position_num:540
+o end
+- 
+o function faddr_src:대기_01
+o begin
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기_02
+o begin
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기_03
+o begin
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기_05
+o begin
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:대기_1초
+o begin
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o function faddr_src:전진
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력_이동
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력_이동
+o end
+o function faddr_src:후진
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력_이동
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력_이동
+o end
+o function faddr_src:제자리자회전
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력_회전
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력_회전
+o end
+o function faddr_src:제자리우회전
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력_회전
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력_회전
+o end
+o function faddr_src:정지
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o end
+o function faddr_src:저속
+o begin
+o load param_dest:var:감속모터출력_이동 param_src:dec_num:800
+o load param_dest:var:감속모터출력_회전 param_src:dec_num:900
+o end
+o function faddr_src:고속
+o begin
+o load param_dest:var:감속모터출력_이동 param_src:dec_num:900
+o load param_dest:var:감속모터출력_회전 param_src:dec_num:1000
+o end
+- 

@@ -1,0 +1,243 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 해양탐사선
+o // param_text:스마트기기 버튼을 눌러 전후좌우 이동
+o // param_text:오른쪽, 왼쪽 어깨 열고 닫기
+o // param_text:오른쪽, 왼쪽 집게 열고 닫기
+o // param_text:LED 켜고 끄기
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+- 
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+- 
+o call faddr_dest:초기화
+o while(1)
+o begin
+o load param_dest:var:터치위치 param_src:smart:100:286
+o if param_src:var:터치위치 lop:== param_src:scrpos1_num:18 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o call faddr_dest:전진
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o call faddr_dest:후진
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:22 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o call faddr_dest:좌회전
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:24 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o call faddr_dest:우회전
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o // param_text:오른쪽어깨열기
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:20 rop:then
+o begin
+o if param_src:aux:5:62 lop:>= param_src:position_num:626 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o end
+o else
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o compute param_dest:aux:5:62 param_src:aux:5:62 aop:+ param_src:dec_num:70
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+o // param_text:왼쪽어깨열기
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:16 rop:then
+o begin
+o if param_src:aux:9:62 lop:<= param_src:position_num:398 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o end
+o else
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o compute param_dest:aux:9:62 param_src:aux:9:62 aop:- param_src:dec_num:70
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+o // param_text:오른쪽어깨닫기
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:15 rop:then
+o begin
+o if param_src:aux:5:62 lop:<= param_src:position_num:264 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o end
+o else
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o compute param_dest:aux:5:62 param_src:aux:5:62 aop:- param_src:dec_num:70
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+o // param_text:왼쪽어깨닫기
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:11 rop:then
+o begin
+o if param_src:aux:9:62 lop:>= param_src:position_num:760 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o end
+o else
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o compute param_dest:aux:9:62 param_src:aux:9:62 aop:+ param_src:dec_num:70
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+o // param_text:오른쪽집게열기
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:10 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:6:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o // param_text:왼쪽집게열기
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:6 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o // param_text:오른쪽집게닫기
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:6:62 param_src:position_num:655
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o // param_text:왼쪽집게닫기
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:1 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:8:62 param_src:position_num:369
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o // param_text:LED
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:3 rop:&& param_src:var:LED lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:3:66 param_src:led_num:3
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:LED param_src:dec_num:1
+o end
+o elseif param_src:var:터치위치 lop:== param_src:scrpos1_num:3 rop:&& param_src:var:LED lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:5
+o load param_dest:aux:3:66 param_src:led_num:0
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:LED param_src:dec_num:0
+o end
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:9:61 param_src:bool_num:1
+o load param_dest:aux:6:61 param_src:bool_num:1
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:5:60 param_src:dir_num:1023
+o load param_dest:aux:9:60 param_src:dir_num:2047
+o load param_dest:aux:6:60 param_src:dir_num:1023
+o load param_dest:aux:8:60 param_src:dir_num:2047
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:aux:6:62 param_src:position_num:655
+o load param_dest:aux:8:62 param_src:position_num:369
+o load param_dest:aux:3:66 param_src:led_num:0
+o load param_dest:var:LED param_src:dec_num:0
+o end
+- 
+o function faddr_src:전진
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:2047
+o load param_dest:aux:2:68 param_src:dir_num:1023
+o end
+o function faddr_src:후진
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1023
+o load param_dest:aux:2:68 param_src:dir_num:2047
+o end
+o function faddr_src:좌회전
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1023
+o load param_dest:aux:2:68 param_src:dir_num:1023
+o end
+o function faddr_src:우회전
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:2047
+o load param_dest:aux:2:68 param_src:dir_num:2047
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

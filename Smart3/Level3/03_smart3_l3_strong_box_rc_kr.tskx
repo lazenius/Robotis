@@ -1,0 +1,289 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 스마트 금고 리모컨
+o // param_text:리모컨 숫자 1~6을 사용하여 비밀번호를 지정.
+o // param_text:비밀번호 입력하여 금고를 열 수 있음.
+o // param_text:비밀번호 입력 성공 또는 실패 시 다른 멜로디가 재생됨.
+- 
+o main
+o begin
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o call faddr_dest:초기화
+o call faddr_dest:비밀번호설정
+o while(1)
+o begin
+o call faddr_dest:비밀번호입력
+o call faddr_dest:비밀번호검사
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:aux:10:61 param_src:bool_num:1
+o load param_dest:aux:7:61 param_src:bool_num:1
+o if param_src:aux:4:71 lop:== param_src:bool_num:1 rop:then
+o begin
+o // param_text:잠금장치 열림
+o load param_dest:aux:7:62 param_src:position_num:612
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:금고 열림
+o load param_dest:aux:10:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:금고 닫힘
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:잠금장치 닫힘
+o load param_dest:aux:7:62 param_src:position_num:412
+o end
+o else
+o begin
+o // param_text:금고 닫힘
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:잠금장치 닫힘
+o load param_dest:aux:7:62 param_src:position_num:412
+o end
+o load param_dest:var:비밀번호1 param_src:dec_num:-1
+o load param_dest:var:비밀번호2 param_src:dec_num:-1
+o load param_dest:var:비밀번호3 param_src:dec_num:-1
+o load param_dest:var:비밀번호범위 param_src:dec_num:-1
+o load param_dest:var:입력번호1 param_src:dec_num:-1
+o load param_dest:var:입력번호2 param_src:dec_num:-1
+o load param_dest:var:입력번호3 param_src:dec_num:-1
+o load param_dest:var:비밀번호설정상태 param_src:bool_num:0
+o end
+- 
+o function faddr_src:비밀번호설정
+o begin
+o wait param_src:cm:2 lop:!= param_src:bool_num:1 rop:then
+o wait param_src:cm:1 lop:< param_src:rc100z_num:15 rop:then
+o if param_src:cm:1 lop:!= param_src:dec_num:0 rop:then
+o begin
+o compute param_dest:var:비밀번호범위 param_src:cm:1 aop:& param_src:rc100z_num:1008
+o load param_dest:var:비밀번호1 param_src:var:비밀번호범위
+o load param_dest:cm:18 param_src:buzzertime_num:2
+o load param_dest:cm:17 param_src:scale_num:10
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o wait param_src:cm:1 lop:> param_src:dec_num:0 rop:then
+o wait param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+- 
+o wait param_src:cm:2 lop:!= param_src:bool_num:1 rop:then
+o wait param_src:cm:1 lop:< param_src:rc100z_num:15 rop:then
+o if param_src:cm:1 lop:!= param_src:dec_num:0 rop:then
+o begin
+o compute param_dest:var:비밀번호범위 param_src:cm:1 aop:& param_src:rc100z_num:1008
+o load param_dest:var:비밀번호2 param_src:var:비밀번호범위
+o load param_dest:cm:9 param_src:var:비밀번호2
+o load param_dest:cm:18 param_src:buzzertime_num:2
+o load param_dest:cm:17 param_src:scale_num:10
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o wait param_src:cm:1 lop:> param_src:dec_num:0 rop:then
+o wait param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+- 
+o wait param_src:cm:2 lop:!= param_src:bool_num:1 rop:then
+o wait param_src:cm:1 lop:< param_src:rc100z_num:15 rop:then
+o if param_src:cm:1 lop:!= param_src:dec_num:0 rop:then
+o begin
+o compute param_dest:var:비밀번호범위 param_src:cm:1 aop:& param_src:rc100z_num:1008
+o load param_dest:var:비밀번호3 param_src:var:비밀번호범위
+o load param_dest:cm:11 param_src:var:비밀번호3
+o load param_dest:cm:18 param_src:buzzertime_num:2
+o load param_dest:cm:17 param_src:scale_num:10
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o // param_text:금고 닫힘
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:잠금장치 닫힘
+- 
+o load param_dest:aux:7:62 param_src:position_num:412
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:12
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o end
+- 
+o function faddr_src:비밀번호입력
+o begin
+o wait param_src:cm:1 lop:> param_src:dec_num:0 rop:then
+o wait param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+- 
+o wait param_src:cm:2 lop:!= param_src:bool_num:1 rop:then
+o if param_src:cm:1 lop:> param_src:rc100z_num:15 rop:then
+o begin
+o compute param_dest:var:비밀번호범위 param_src:cm:1 aop:& param_src:rc100z_num:1008
+o load param_dest:var:입력번호1 param_src:var:비밀번호범위
+o load param_dest:cm:9 param_src:var:입력번호1
+o load param_dest:cm:18 param_src:buzzertime_num:2
+o load param_dest:cm:17 param_src:scale_num:3
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o wait param_src:cm:1 lop:> param_src:dec_num:0 rop:then
+o wait param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+- 
+o wait param_src:cm:2 lop:!= param_src:bool_num:1 rop:then
+o if param_src:cm:1 lop:> param_src:rc100z_num:15 rop:then
+o begin
+o compute param_dest:var:비밀번호범위 param_src:cm:1 aop:& param_src:rc100z_num:1008
+o load param_dest:var:입력번호2 param_src:var:비밀번호범위
+o load param_dest:cm:9 param_src:var:입력번호2
+o load param_dest:cm:18 param_src:buzzertime_num:2
+o load param_dest:cm:17 param_src:scale_num:3
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o wait param_src:cm:1 lop:> param_src:dec_num:0 rop:then
+o wait param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+- 
+o wait param_src:cm:2 lop:!= param_src:bool_num:1 rop:then
+o if param_src:cm:1 lop:> param_src:rc100z_num:15 rop:then
+o begin
+o compute param_dest:var:비밀번호범위 param_src:cm:1 aop:& param_src:rc100z_num:1008
+o load param_dest:var:입력번호3 param_src:var:비밀번호범위
+o load param_dest:cm:11 param_src:var:입력번호3
+o load param_dest:cm:18 param_src:buzzertime_num:2
+o load param_dest:cm:17 param_src:scale_num:3
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+- 
+o function faddr_src:비밀번호검사
+o begin
+o if param_src:var:비밀번호1 lop:== param_src:var:입력번호1 rop:&& param_src:var:비밀번호2 lop:== param_src:var:입력번호2 rop:&& param_src:var:비밀번호3 lop:== param_src:var:입력번호3 rop:then
+o begin
+o call faddr_dest:비밀번호입력성공
+o end
+o else
+o begin
+o call faddr_dest:비밀번호입력실패
+o end
+o end
+- 
+o function faddr_src:비밀번호입력성공
+o begin
+o if param_src:aux:4:71 lop:== param_src:bool_num:0 rop:then
+o // param_text:금고 열려있음
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:6
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o call faddr_dest:금고열기
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:4 rop:then
+o begin
+o call faddr_dest:금고닫기
+o end
+o end
+o elseif param_src:aux:4:71 lop:== param_src:bool_num:1 rop:then
+o begin
+o // param_text:금고 닫혀있음
+o // param_text:잠금장치 열기
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:2
+o load param_dest:aux:7:62 param_src:position_num:612
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:금고 열기
+o load param_dest:aux:10:62 param_src:position_num:512
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o call faddr_dest:금고열기
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:4 rop:then
+o begin
+o call faddr_dest:금고닫기
+o end
+o end
+o end
+- 
+o function faddr_src:비밀번호입력실패
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:4
+o // param_text:금고 닫힘
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:잠금장치 닫힘
+o load param_dest:aux:7:62 param_src:position_num:412
+o end
+- 
+o function faddr_src:금고열기
+o begin
+o // param_text:잠금장치 열기
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:0
+o load param_dest:aux:7:62 param_src:position_num:612
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:금고 열기
+o load param_dest:aux:10:62 param_src:position_num:512
+o end
+- 
+o function faddr_src:금고닫기
+o begin
+o // param_text:금고 닫힘
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:1
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:잠금장치 닫힘
+o load param_dest:aux:7:62 param_src:position_num:412
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

@@ -1,0 +1,148 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 전자활
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:접촉센서를 누르면 활이 펴짐. 접촉센서를 한번 더 누르면 활이 접힘.(반복)
+o // param_text:활시위를 당겼다 놓는 동작(적외선센서를 가렸다가 뗌)을 하면 활이 발사되는 사운드 발생.
+- 
+o main
+o begin
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:9:61 param_src:bool_num:1
+o load param_dest:aux:8:62 param_src:position_num:203
+o load param_dest:aux:9:62 param_src:position_num:203
+- 
+o // param_text:스마트 폰과 연결 될때까지 대기 
+o load param_dest:var:상태 param_src:bool_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o while(1)
+o begin
+o if param_src:var:상태 lop:== param_src:bool_num:1 rop:then
+o begin
+o if param_src:cm:13 lop:>= param_src:dec_num:200 rop:&& param_src:cm:15 lop:>= param_src:dec_num:200 rop:then
+o begin
+o load param_dest:var:fire param_src:dec_num:2
+o load param_dest:aux:8:60 param_src:dir_num:400
+o load param_dest:aux:9:60 param_src:dir_num:400
+o load param_dest:aux:8:62 param_src:position_num:402
+o load param_dest:aux:9:62 param_src:position_num:402
+o end
+o if param_src:var:fire lop:== param_src:dec_num:2 rop:then
+o begin
+o if param_src:cm:13 lop:<= param_src:dec_num:200 rop:&& param_src:cm:15 lop:>= param_src:dec_num:200 rop:then
+o begin
+o load param_dest:var:fire param_src:dec_num:3
+o load param_dest:aux:8:60 param_src:dir_num:400
+o load param_dest:aux:9:60 param_src:dir_num:400
+- 
+o load param_dest:aux:8:62 param_src:position_num:324
+o load param_dest:aux:9:62 param_src:position_num:324
+o end
+o end
+o if param_src:var:fire lop:== param_src:dec_num:3 rop:then
+o begin
+o if param_src:cm:13 lop:<= param_src:dec_num:200 rop:&& param_src:cm:15 lop:<= param_src:dec_num:200 rop:then
+o begin
+o load param_dest:var:fire param_src:dec_num:1
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:24
+o call faddr_dest:화살발사
+o end
+o end
+o end
+o if param_src:aux:7:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o call faddr_dest:활준비
+o end
+o end
+o end
+- 
+o function faddr_src:활준비
+o begin
+- 
+o while(1)
+o begin
+o load param_dest:var:터치센서 param_src:aux:7:65
+o if param_src:var:터치센서 lop:== param_src:bool_num:1 rop:&& param_src:var:상태 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:var:상태 param_src:bool_num:1
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:20
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o break
+o end
+o elseif param_src:var:터치센서 lop:== param_src:bool_num:1 rop:&& param_src:var:상태 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:상태 param_src:bool_num:0
+o load param_dest:aux:8:62 param_src:position_num:203
+o load param_dest:aux:9:62 param_src:position_num:203
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:18
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o break
+o end
+o end
+o end
+- 
+o function faddr_src:화살발사
+o begin
+o load param_dest:aux:8:60 param_src:dir_num:1023
+o load param_dest:aux:9:60 param_src:dir_num:1023
+- 
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:aux:8:62 param_src:position_num:470
+o load param_dest:aux:9:62 param_src:position_num:470
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:aux:8:62 param_src:position_num:500
+o load param_dest:aux:9:62 param_src:position_num:500
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:aux:8:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

@@ -1,0 +1,238 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 청기백기 예제프로그램_리모콘
+o // param_text:[작동 방법]
+o // param_text:깃발이 움직이면 조종기 버튼을 눌러서 깃발을 맞춥니다.
+o main
+o begin
+o // param_text:처음 시작시 멜로디를 연주합니다.
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o call faddr_dest:멜로디기다리기
+- 
+o // param_text:깃발의 위치를 시작 위치로 옮깁니다.
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:aux:2:68 param_src:dir_num:1624
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:깃발정지
+o call faddr_dest:잠시기다림
+- 
+o // param_text:초기값 설정
+o load param_dest:var:기다림시간 param_src:dec_num:7
+o load param_dest:var:단계별횟수 param_src:dec_num:4
+o load param_dest:var:단계확인값 param_src:var:단계별횟수
+o load param_dest:var:시합횟수 param_src:dec_num:0
+o load param_dest:var:패배횟수 param_src:dec_num:0
+- 
+o while(1)
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o break
+o end
+o end
+- 
+o while(1)
+o begin
+o load param_dest:var:나의선택 param_src:dec_num:0
+o // param_text:0 ~ 13 사이의 난수를 발생시킵니다.
+o load param_dest:cm:25 param_src:dec_num:13
+o load param_dest:var:난수 param_src:cm:25
+- 
+o // param_text:발생된 난수가 0 이나 13 이면 깃발을 올리지 않습니다.
+o if param_src:var:난수 lop:== param_src:dec_num:13 rop:|| param_src:var:난수 lop:== param_src:dec_num:0 rop:then
+o load param_dest:var:깃발값 param_src:dec_num:0
+o else
+o begin
+o // param_text:난수가 1 ~ 9 이면 값에 따라 청기/백기를 올립니다.
+o // param_text:난수가 10 ~ 12 이면 값에 따라 청기/백기를 올리는 척 속입니다.
+o if param_src:var:난수 lop:<= param_src:dec_num:9 rop:then
+o call faddr_dest:깃발올리기
+o else
+o call faddr_dest:깃발속이기
+- 
+o // param_text:제대로 버튼을 눌렀는 지 확인합니다.
+o call faddr_dest:판정
+o end
+- 
+o // param_text:5회 이상 틀리면 프로그램이 끝나고, 20회 이상 맞추면 승리하며 끝납니다.
+o if param_src:var:패배횟수 lop:>= param_src:dec_num:5 rop:then
+o exit
+o elseif param_src:var:시합횟수 lop:>= param_src:dec_num:20 rop:then
+o call faddr_dest:승리
+- 
+o call faddr_dest:잠시기다림
+o call faddr_dest:잠시기다림
+o end
+o end
+- 
+o function faddr_src:깃발올리기
+o begin
+o if param_src:var:난수 lop:>= param_src:dec_num:1 rop:&& param_src:var:난수 lop:<= param_src:dec_num:3 rop:then
+o begin
+o // param_text:난수가 1 ~3 이면 청기를 올리고 레벨에 맞는 시간만큼 버튼 입력을 기다린 다음 내립니다.
+o load param_dest:aux:1:68 param_src:dir_num:1824
+o call faddr_dest:잠시기다림
+o call faddr_dest:깃발정지
+o call faddr_dest:입력기다림
+o load param_dest:aux:1:68 param_src:dir_num:800
+o load param_dest:var:깃발값 param_src:dec_num:1
+o end
+o elseif param_src:var:난수 lop:>= param_src:dec_num:4 rop:&& param_src:var:난수 lop:<= param_src:dec_num:6 rop:then
+o begin
+o // param_text:난수가 4 ~ 6 이면 백기를 올리고 레벨에 맞는 시간만큼 버튼 입력을 기다린 다음 내립니다.
+o load param_dest:aux:2:68 param_src:dir_num:800
+o call faddr_dest:잠시기다림
+o call faddr_dest:깃발정지
+o call faddr_dest:입력기다림
+o load param_dest:aux:2:68 param_src:dir_num:1824
+o load param_dest:var:깃발값 param_src:dec_num:2
+o end
+o else
+o begin
+o // param_text:난수가 7 ~ 9 이면 청기/백기를 모두 올리고 레벨에 맞는 시간만큼 버튼 입력을 기다린 다음 내립니다.
+o load param_dest:aux:1:68 param_src:dir_num:1824
+o load param_dest:aux:2:68 param_src:dir_num:800
+o call faddr_dest:잠시기다림
+o call faddr_dest:깃발정지
+o call faddr_dest:입력기다림
+o load param_dest:aux:1:68 param_src:dir_num:800
+o load param_dest:aux:2:68 param_src:dir_num:1824
+o load param_dest:var:깃발값 param_src:dec_num:3
+o end
+- 
+o call faddr_dest:잠시기다림
+o call faddr_dest:깃발정지
+o end
+- 
+o function faddr_src:깃발속이기
+o begin
+o load param_dest:var:깃발값 param_src:dec_num:4
+o if param_src:var:난수 lop:== param_src:dec_num:10 rop:then
+o begin
+o // param_text:난수가 10 이면 청기를 살짝 올리다가 내립니다.
+o load param_dest:aux:1:68 param_src:dir_num:1624
+o call faddr_dest:잠시기다림
+o load param_dest:aux:1:68 param_src:dir_num:600
+o end
+o elseif param_src:var:난수 lop:== param_src:dec_num:11 rop:then
+o begin
+o // param_text:난수가 11 이면 백기를 살짝 올리다가 내립니다.
+o load param_dest:aux:2:68 param_src:dir_num:600
+o call faddr_dest:잠시기다림
+o load param_dest:aux:2:68 param_src:dir_num:1624
+o end
+o else
+o begin
+o // param_text:난수가 12 이면 청기/백기를 모두 살짝 올리다가 내립니다.
+o load param_dest:aux:1:68 param_src:dir_num:1624
+o load param_dest:aux:2:68 param_src:dir_num:600
+o call faddr_dest:잠시기다림
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:aux:2:68 param_src:dir_num:1624
+o end
+- 
+o call faddr_dest:잠시기다림
+o call faddr_dest:깃발정지
+o call faddr_dest:입력기다림
+o end
+- 
+o function faddr_src:판정
+o begin
+o if param_src:var:깃발값 lop:<= param_src:dec_num:3 rop:then
+o begin
+o // param_text:청기/백기 를 올렸다면 누른 버튼이 맞는지 확인합니다.
+o if param_src:var:깃발값 lop:== param_src:var:나의선택 rop:then
+o call faddr_dest:맞음멜로디
+o else
+o begin
+o compute param_dest:var:패배횟수 param_src:var:패배횟수 aop:+ param_src:dec_num:1
+o call faddr_dest:틀림멜로디
+o end
+- 
+o // param_text:단계별 횟수만큼 게임을 했으면 한 단계 올려서 기다림 시간을 줄입니다.
+o compute param_dest:var:시합횟수 param_src:var:시합횟수 aop:+ param_src:dec_num:1
+o if param_src:var:시합횟수 lop:== param_src:var:단계확인값 rop:then
+o begin
+o // param_text:레벨업
+o compute param_dest:var:단계확인값 param_src:var:단계확인값 aop:+ param_src:var:단계별횟수
+o compute param_dest:var:기다림시간 param_src:var:기다림시간 aop:- param_src:dec_num:1
+o end
+o end
+o else
+o begin
+o // param_text:청기/백기를 속이기를 했으면 아무 버튼이나 누른 경우 틀리게 됩니다.
+o if param_src:var:나의선택 lop:!= param_src:dec_num:0 rop:then
+o begin
+o compute param_dest:var:패배횟수 param_src:var:패배횟수 aop:+ param_src:dec_num:1
+o call faddr_dest:틀림멜로디
+o end
+o end
+o end
+- 
+o function faddr_src:깃발정지
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 
+o // param_text:조종기 2번 : 청기, 조종기 4번 : 백기, 조종기 1번 : 둘다
+o function faddr_src:입력기다림
+o begin
+o load param_dest:cm:5 param_src:var:기다림시간
+o while param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o begin
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o compute param_dest:var:나의선택 param_src:var:나의선택 aop:| param_src:bin_num:1
+o if param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o compute param_dest:var:나의선택 param_src:var:나의선택 aop:| param_src:bin_num:2
+o if param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o compute param_dest:var:나의선택 param_src:var:나의선택 aop:| param_src:bin_num:3
+o end
+o end
+- 
+o function faddr_src:잠시기다림
+o begin
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o function faddr_src:승리
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:2
+o call faddr_dest:멜로디기다리기
+o exit
+o end
+- 
+o function faddr_src:멜로디기다리기
+o begin
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o end
+- 
+o function faddr_src:맞음멜로디
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:15
+o call faddr_dest:멜로디기다리기
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:19
+o call faddr_dest:멜로디기다리기
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:22
+o call faddr_dest:멜로디기다리기
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:27
+o call faddr_dest:멜로디기다리기
+o end
+- 
+o function faddr_src:틀림멜로디
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:8
+o call faddr_dest:멜로디기다리기
+o end
+- 

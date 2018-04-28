@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root name="R+Motion" version="2.0.0">
+  <DesignRoot name="Transformation Robot" controller="CM-200">
+    <skeleton>
+      <joint motor="SM" id="3" enable="True" id2="3" mirror="4" />
+      <joint motor="SM" id="4" enable="True" id2="4" mirror="3" />
+      <joint motor="SM" id="5" enable="True" id2="5" mirror="8" />
+      <joint motor="SM" id="6" enable="True" id2="6" mirror="9" />
+      <joint motor="SM" id="7" enable="True" id2="7" mirror="10" />
+      <joint motor="SM" id="8" enable="True" id2="8" mirror="5" />
+      <joint motor="SM" id="9" enable="True" id2="9" mirror="6" />
+      <joint motor="SM" id="10" enable="True" id2="10" mirror="7" />
+    </skeleton>
+  </DesignRoot>
+  <FlowRoot>
+    <Flow name="CAR_TRANS" return="-1">
+      <units>
+        <unit main="CAR_TRANS" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="ROBOT_TRANS" return="-1">
+      <units>
+        <unit main="ROBOT_TRANS" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="INIT" return="-1">
+      <units>
+        <unit main="INIT" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="GUN" return="-1">
+      <units>
+        <unit main="GUN" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="RIGHT_ATT" return="-1">
+      <units>
+        <unit main="RIGHT_ATT" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="LEFT_ATT" return="-1">
+      <units>
+        <unit main="LEFT_ATT" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="RIGHT_SWING" return="-1">
+      <units>
+        <unit main="RIGHT_SWING" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+    <Flow name="LEFT_SWING" return="-1">
+      <units>
+        <unit main="LEFT_SWING" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="True" />
+      </units>
+    </Flow>
+  </FlowRoot>
+  <PageRoot>
+    <Page name="CAR_TRANS">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="39" pose="-90 90 0 0 82 0 0 -82" />
+        <step frame="65" pose="0 0 -90 0 82 90 0 -82" />
+        <step frame="71" pose="0 0 -80 0 82 80 0 -82" />
+        <step frame="84" pose="0 0 80 0 82 -80 0 -82" />
+        <step frame="96" pose="0 0 80 0 82 -80 0 -82" />
+        <step frame="115" pose="-70 70 80 -10 85 -80 10 -85" />
+      </steps>
+    </Page>
+    <Page name="ROBOT_TRANS">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="-90 90 90 0 90 -90 0 -90" />
+        <step frame="77" pose="18.54 -18.54 -79.98 -7.03 90.71 79.98 7.03 -90.71" />
+        <step frame="102" pose="18.54 -18.54 -79.98 -7.03 97.71 79.98 7.03 -97.71" />
+        <step frame="128" pose="27.54 -27.54 -79.98 73.97 76.71 79.98 -73.97 -76.71" />
+        <step frame="167" pose="27.54 -27.54 -79.98 73.97 76.71 79.98 -73.97 -76.71" />
+      </steps>
+    </Page>
+    <Page name="INIT">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="67.97 -67.97 2.93 4.39 35.98 -2.93 -4.39 -35.98" />
+      </steps>
+    </Page>
+    <Page name="GUN">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="39" pose="10 20 76.46 -5.86 48.38 0.8 -8.2 -48.13" />
+        <step frame="65" pose="10 40 76.46 -5.86 68.38 -83.2 -8.2 -88.13" />
+        <step frame="77" pose="10 40 76.46 -5.86 50.38 -83.2 -8.2 -50.13" />
+        <step frame="103" pose="-10 -20 0 -10 48 -90 -10 -48" />
+        <step frame="142" pose="-30 -20 80 -10 88 -90 -10 -68" />
+        <step frame="153" pose="-30 -20 80 -10 50 -90 -10 -50" />
+        <step frame="230" pose="67.97 -67.97 2.93 4.39 36 -2.93 -4.39 -36" />
+        <step frame="384" pose="67.97 -67.97 2.93 4.39 36 -2.93 -4.39 -36" />
+      </steps>
+    </Page>
+    <Page name="RIGHT_ATT">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="38" pose="78.52 17.87 -30.18 -6.74 36.91 58.3 -66.5 -25.13" />
+        <step frame="51" pose="78.52 17.87 -30.18 -6.74 36.91 58.3 -66.5 -86.13" />
+        <step frame="77" pose="78.52 17.87 -30.18 -6.74 36.91 58.3 -66.5 -86.13" />
+        <step frame="102" pose="78.52 17.87 -30.18 -6.74 30 58.3 -66.5 -25.13" />
+        <step frame="154" pose="67.97 -67.97 2.93 4.39 30.98 -2.93 -4.39 -30.98" />
+      </steps>
+    </Page>
+    <Page name="LEFT_ATT">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="39" pose="-16.11 -79.98 -59.18 53.61 21.36 11.13 -12.01 -36" />
+        <step frame="52" pose="-16.11 -79.98 -59.18 53.61 72.36 11.13 -12.01 -36" />
+        <step frame="77" pose="-16.11 -79.98 -59.18 53.61 72.36 11.13 -12.01 -36" />
+        <step frame="102" pose="-16.11 -79.98 -59.18 53.61 25 11.13 -12.01 -36" />
+        <step frame="154" pose="67.97 -67.97 2.93 4.39 30.98 -2.93 -4.39 -35.98" />
+      </steps>
+    </Page>
+    <Page name="RIGHT_SWING">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="38" pose="75 1.76 -29.59 -8.2 36 -56.08 -68.81 -5.27" />
+        <step frame="79" pose="75 1.76 -29.59 -8.2 36 65.92 -3.81 -5.27" />
+      </steps>
+    </Page>
+    <Page name="LEFT_SWING">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="38" pose="-7.62 -79.1 66.38 65.92 -0.88 -1.76 -4.1 -36" />
+        <step frame="77" pose="-7.62 -79.1 -65.62 -9.08 -0.88 -1.76 -4.1 -36" />
+      </steps>
+    </Page>
+  </PageRoot>
+  <GroupRoot>
+    <Group name="None">
+      <param weights="0 0 0 0 0 0 0 0" />
+    </Group>
+    <Group name="All">
+      <param weights="1 1 1 1 1 1 1 1" />
+    </Group>
+    <Group name="group1">
+      <param weights="0 1 0 0 0 1 1 1" />
+    </Group>
+    <Group name="group2">
+      <param weights="1 0 1 1 1 0 0 0" />
+    </Group>
+  </GroupRoot>
+  <BucketRoot>
+    <Bucket name="TRANSFORM_MOTION">
+      <callFlows>
+        <callFlow callIndex="1" subIndex="0" exitIndex="0" flow="INIT" />
+        <callFlow callIndex="2" subIndex="0" exitIndex="0" flow="CAR_TRANS" />
+        <callFlow callIndex="3" subIndex="0" exitIndex="0" flow="ROBOT_TRANS" />
+        <callFlow callIndex="4" subIndex="0" exitIndex="0" flow="LEFT_ATT" />
+        <callFlow callIndex="5" subIndex="0" exitIndex="0" flow="RIGHT_ATT" />
+        <callFlow callIndex="6" subIndex="0" exitIndex="0" flow="LEFT_SWING" />
+        <callFlow callIndex="7" subIndex="0" exitIndex="0" flow="RIGHT_SWING" />
+        <callFlow callIndex="8" subIndex="0" exitIndex="0" flow="GUN" />
+      </callFlows>
+    </Bucket>
+  </BucketRoot>
+</Root>

@@ -1,0 +1,142 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 드리블 로봇
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:스마트폰 화면의 이동버튼을 터치하여 전진, 후진, 좌회전, 우회전.
+o // param_text:잡기버튼을 터치하여 집게 각도 조절, 들어올리기 버튼을 터치하여 공을 던짐.
+o // param_text:속도 버튼을 터치하여 이동속도를 1~3단계로 조절.
+- 
+o main
+o begin
+o // param_text:스마트 기기가 연결되어 화면이 나타날 때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+- 
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:dec_num:0
+- 
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:smart:100:276 param_src:dec_num:10
+o call faddr_dest:초기화
+o while(1)
+o begin
+o call faddr_dest:조종
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:속도 param_src:dec_num:700
+o load param_dest:smart:100:262 param_src:dec_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:10:61 param_src:bool_num:1
+o load param_dest:aux:5:60 param_src:dec_num:1023
+o load param_dest:aux:10:60 param_src:dec_num:1023
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:10:62 param_src:position_num:512
+- 
+o end
+- 
+o function faddr_src:조종
+o begin
+o load param_dest:var:터치 param_src:smart:100:286
+o if param_src:var:터치 lop:== param_src:dec_num:17 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:22 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:21 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:23 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o end
+- 
+o elseif param_src:var:터치 lop:== param_src:dec_num:9 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:205
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:14 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:19 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:770
+o end
+- 
+o elseif param_src:var:터치 lop:== param_src:dec_num:10 rop:then
+o begin
+o load param_dest:aux:10:62 param_src:position_num:120
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:15 rop:then
+o begin
+o load param_dest:aux:10:62 param_src:position_num:358
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:20 rop:then
+o begin
+o load param_dest:aux:10:62 param_src:position_num:512
+o end
+- 
+o elseif param_src:var:터치 lop:== param_src:dec_num:25 rop:then
+o begin
+o if param_src:smart:100:262 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:dec_num:2
+o load param_dest:var:속도 param_src:dec_num:1023
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+o elseif param_src:smart:100:262 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:dec_num:1
+o load param_dest:var:속도 param_src:dec_num:700
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+- 
+o else
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 
+o if param_src:smart:100:270 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:dec_num:1
+o end
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

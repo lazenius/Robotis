@@ -1,0 +1,240 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 암기게임 예제프로그램_리모콘
+o // param_text:[작동 방법]
+o // param_text:조종기 버튼을 이용하여, 암기게임을 할수 있습니다.
+o main
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o label laddr_src:시작
+o // param_text:스테이지 초기화
+o load param_dest:var:스테이지 param_src:dec_num:0
+o // param_text:남은 가능 게임수
+o load param_dest:var:남은기회 param_src:dec_num:3
+- 
+o load param_dest:cm:6 param_src:hrtimer_num:65535
+o while(1)
+o begin
+o // param_text:시작 버튼 : U
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:17
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o break
+o end
+o end
+- 
+o while(1)
+o begin
+o if param_src:var:남은기회 lop:== param_src:dec_num:0 rop:then
+o begin
+o exit
+o jump laddr_dest:시작
+o end
+o if param_src:var:스테이지 lop:== param_src:dec_num:17 rop:then
+o begin
+o jump laddr_dest:시작
+o end
+o if param_src:cm:6 lop:<= param_src:dec_num:0 rop:then
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:65535
+o end
+o call faddr_dest:초기화
+o call faddr_dest:게임준비
+o call faddr_dest:모터돌리기
+o call faddr_dest:정답입력
+o call faddr_dest:검사하기
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:cm:5 param_src:timer_num:7
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o load param_dest:var:반복 param_src:dec_num:-1
+o load param_dest:var:정답 param_src:dec_num:0
+o load param_dest:var:중간생성값 param_src:dec_num:0
+o end
+- 
+o // param_text:스테이지에 따른 적절한 3진수 코드 제작
+o function faddr_src:게임준비
+o begin
+o while(1)
+o begin
+o compute param_dest:cm:25 param_src:cm:6 aop:& param_src:hrtimer_num:2
+o load param_dest:var:임의숫자 param_src:cm:25
+- 
+o load param_dest:var:진수값 param_src:dec_num:1
+- 
+o compute param_dest:var:반복 param_src:var:반복 aop:+ param_src:dec_num:1
+o for param_var:i param_src:dec_num:1 param_src:var:반복
+o begin
+o compute param_dest:var:진수값 param_src:dec_num:3 aop:* param_src:var:진수값
+o end
+o compute param_dest:var:중간생성값 param_src:var:임의숫자 aop:* param_src:var:진수값
+o compute param_dest:var:정답 param_src:var:정답 aop:+ param_src:var:중간생성값
+- 
+o if param_src:var:반복 lop:== param_src:var:스테이지 rop:then
+o begin
+o break
+o end
+o end
+o load param_dest:var:반복 param_src:dec_num:0
+o end
+- 
+o function faddr_src:모터돌리기
+o begin
+o load param_dest:var:중간계산과정변수 param_src:var:정답
+o while(1)
+o begin
+o compute param_dest:var:모터번호 param_src:var:중간계산과정변수 aop:% param_src:dec_num:3
+o compute param_dest:var:중간계산과정변수 param_src:var:중간계산과정변수 aop:/ param_src:dec_num:3
+o if param_src:var:모터번호 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1524
+o load param_dest:cm:5 param_src:timer_num:9
+o wait param_src:cm:5 lop:> param_src:hrtimer_num:0 rop:then
+- 
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:21
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o load param_dest:aux:1:68 param_src:dir_num:0
+- 
+o end
+o if param_src:var:모터번호 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:aux:3:61 param_src:bool_num:0
+o load param_dest:aux:3:60 param_src:dir_num:2047
+o load param_dest:cm:5 param_src:timer_num:7
+o wait param_src:cm:5 lop:> param_src:hrtimer_num:0 rop:then
+- 
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:21
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o load param_dest:aux:3:60 param_src:dir_num:0
+o end
+o if param_src:var:모터번호 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:aux:2:68 param_src:dir_num:1524
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:hrtimer_num:0 rop:then
+- 
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:21
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 
+o if param_src:var:반복 lop:== param_src:var:스테이지 rop:then
+o begin
+o break
+o load param_dest:var:반복 param_src:dec_num:0
+o end
+o compute param_dest:var:반복 param_src:var:반복 aop:+ param_src:dec_num:1
+o end
+o end
+- 
+o // param_text:스마트폰이 아닌 RC-100 조종기를 가지고 정답을 입력
+o function faddr_src:정답입력
+o begin
+o load param_dest:var:반복 param_src:dec_num:-1
+o load param_dest:var:입력정답 param_src:dec_num:0
+o load param_dest:var:중간입력값 param_src:dec_num:3
+o while(1)
+o begin
+o load param_dest:var:진수값 param_src:dec_num:1
+o load param_dest:cm:5 param_src:timer_num:25
+- 
+o while(1)
+o begin
+o load param_dest:var:받은데이터 param_src:cm:1
+o // param_text:1,2,3이 각 캐릭터에 해당하는 버튼
+o if param_src:var:받은데이터 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o load param_dest:var:중간입력값 param_src:dec_num:0
+o compute param_dest:var:반복 param_src:var:반복 aop:+ param_src:dec_num:1
+o load param_dest:cm:17 param_src:scale_num:0
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o break
+o end
+o if param_src:var:받은데이터 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:var:중간입력값 param_src:dec_num:1
+o compute param_dest:var:반복 param_src:var:반복 aop:+ param_src:dec_num:1
+o load param_dest:cm:17 param_src:scale_num:2
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o break
+o end
+o if param_src:var:받은데이터 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o load param_dest:var:중간입력값 param_src:dec_num:2
+o compute param_dest:var:반복 param_src:var:반복 aop:+ param_src:dec_num:1
+o load param_dest:cm:17 param_src:scale_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o break
+o end
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:buzzertime_num:0 rop:then
+o end
+o // param_text:시간이 초과했을 경우 오답으로 처리하기 위한 구문
+o if param_src:var:중간입력값 lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:cm:17 param_src:melody_num:6
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:var:입력정답 param_src:dec_num:-1
+o break
+o end
+o // param_text:입력숫자를 3진수로 만드는 과정
+o if param_src:var:중간입력값 lop:!= param_src:dec_num:3 rop:then
+o begin
+o for param_var:i param_src:dec_num:0 param_src:var:반복
+o begin
+o compute param_dest:var:진수값 param_src:dec_num:3 aop:* param_src:var:진수값
+o end
+o compute param_dest:var:진수값 param_src:var:진수값 aop:/ param_src:dec_num:3
+o compute param_dest:var:입력값변환 param_src:var:중간입력값 aop:* param_src:var:진수값
+o compute param_dest:var:입력정답 param_src:var:입력정답 aop:+ param_src:var:입력값변환
+- 
+o load param_dest:var:중간입력값 param_src:dec_num:3
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o if param_src:var:반복 lop:== param_src:var:스테이지 rop:then
+o begin
+o break
+o end
+o end
+o end
+o function faddr_src:검사하기
+o begin
+o while(1)
+o begin
+o if param_src:var:입력정답 lop:== param_src:var:정답 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:2
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o compute param_dest:var:스테이지 param_src:var:스테이지 aop:+ param_src:dec_num:1
+o break
+o end
+o else
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:4
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o compute param_dest:var:남은기회 param_src:var:남은기회 aop:- param_src:dec_num:1
+o break
+o end
+- 
+o end
+o end
+- 

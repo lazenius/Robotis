@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<Root name="R+Motion" version="2.0.0">
+  <DesignRoot name="" controller="CM-200">
+    <skeleton>
+      <joint motor="SM" id="3" enable="True" id2="3" mirror="-1" />
+      <joint motor="SM" id="4" enable="True" id2="4" mirror="-1" />
+      <joint motor="SM" id="5" enable="True" id2="5" mirror="-1" />
+      <joint motor="SM" id="6" enable="True" id2="6" mirror="-1" />
+      <joint motor="SM" id="7" enable="True" id2="7" mirror="-1" />
+      <joint motor="SM" id="8" enable="True" id2="8" mirror="-1" />
+      <joint motor="SM" id="9" enable="True" id2="9" mirror="-1" />
+      <joint motor="SM" id="10" enable="True" id2="10" mirror="-1" />
+    </skeleton>
+  </DesignRoot>
+  <FlowRoot>
+    <Flow name="init" return="-1">
+      <units>
+        <unit main="init" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="Forward walk" return="-1">
+      <units>
+        <unit main="Forward" mainSpeed="3" loop="1" exit="" exitSpeed="1" callSite="False" />
+        <unit main="Forward2" mainSpeed="3" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="Left Turn" return="-1">
+      <units>
+        <unit main="Left" mainSpeed="2" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="Right Turn" return="-1">
+      <units>
+        <unit main="right" mainSpeed="2" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="backward walk" return="-1">
+      <units>
+        <unit main="backward" mainSpeed="2.7" loop="1" exit="" exitSpeed="1" callSite="False" />
+        <unit main="backward2" mainSpeed="2.7" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+    <Flow name="roar" return="-1">
+      <units>
+        <unit main="roar" mainSpeed="1" loop="1" exit="" exitSpeed="1" callSite="False" />
+      </units>
+    </Flow>
+  </FlowRoot>
+  <PageRoot>
+    <Page name="init">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="0 0 0 0 0 0 0 0" />
+      </steps>
+    </Page>
+    <Page name="backward">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="-20 0 0 0 0 0 0 0" />
+        <step frame="77" pose="-55 0 0 -30 0 0 0 0" />
+        <step frame="103" pose="-20 0 0 0 0 0 0 0" />
+      </steps>
+    </Page>
+    <Page name="backward2">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="0 20 0 0 0 0 0 0" />
+        <step frame="78" pose="0 55 0 0 0 0 20 0" />
+        <step frame="102" pose="0 20 0 0 0 0 0 0" />
+      </steps>
+    </Page>
+    <Page name="ready">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="-14.95 14.95 -14.95 -14.95 -14.95 14.95 14.65 14.65" />
+      </steps>
+    </Page>
+    <Page name="Forward">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="0 0 0 -40 0 0 0 0" />
+        <step frame="77" pose="-20 0 0 -55 0 0 0 0" />
+        <step frame="104" pose="-20 0 0 -40 0 0 -20 0" />
+      </steps>
+    </Page>
+    <Page name="Left">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="0 0 -30 -30 0 0 0 0" />
+        <step frame="77" pose="-30 -20 -45 -30 -20 0 -30 0" />
+        <step frame="102" pose="-30 20 -45 -30 -40 0 -30 0" />
+        <step frame="128" pose="0 0 0 0 0 0 0 0" />
+        <step frame="154" pose="0 0 0 0 0 0 0 0" />
+      </steps>
+    </Page>
+    <Page name="right">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="0 0 0 0 0 30 30 0" />
+        <step frame="76" pose="20 30 0 30 0 45 30 20" />
+        <step frame="102" pose="-20 30 0 30 0 45 30 40" />
+        <step frame="128" pose="0 0 0 0 0 0 0 0" />
+        <step frame="154" pose="0 0 0 0 0 0 0 0" />
+      </steps>
+    </Page>
+    <Page name="Forward2">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="51" pose="0 0 0 0 0 0 40 0" />
+        <step frame="77" pose="0 20 0 0 0 0 55 0" />
+        <step frame="103" pose="0 20 0 20 0 0 50 0" />
+      </steps>
+    </Page>
+    <Page name="roar">
+      <param compileSize="1" acceleration="32" softness="5 5 5 5 5 5 5 5" />
+      <steps>
+        <step frame="26" pose="0 0 0 0 0 0 0 0" />
+        <step frame="52" pose="10 -10 0 -20 0 0 20 0" />
+        <step frame="154" pose="10 -10 0 -20 0 0 20 0" />
+        <step frame="170" pose="10 -10 0 -20 0 0 20 0" />
+        <step frame="192" pose="-30 30 0 20 0 0 -20 0" />
+        <step frame="282" pose="-30 30 0 20 0 0 -20 0" />
+        <step frame="333" pose="0 0 0 0 0 0 0 0" />
+      </steps>
+    </Page>
+  </PageRoot>
+  <GroupRoot>
+    <Group name="None">
+      <param weights="0 0 0 0 0 0 0 0" />
+    </Group>
+    <Group name="All">
+      <param weights="1 1 1 1 1 1 1 1" />
+    </Group>
+    <Group name="오른뒷다리앞뒤">
+      <param weights="1 0 0 0 0 0 0 0" />
+    </Group>
+    <Group name="왼뒷다리앞뒤">
+      <param weights="0 1 0 0 0 0 0 0" />
+    </Group>
+    <Group name="왼앞다리좌우">
+      <param weights="0 0 1 0 0 0 0 0" />
+    </Group>
+    <Group name="왼앞다리앞뒤">
+      <param weights="0 0 0 1 0 0 0 0" />
+    </Group>
+    <Group name="왼뒷다리좌우">
+      <param weights="0 0 0 0 1 0 0 0" />
+    </Group>
+    <Group name="오른앞다리좌우">
+      <param weights="0 0 0 0 0 1 0 0" />
+    </Group>
+    <Group name="오른앞다리앞뒤">
+      <param weights="0 0 0 0 0 0 1 0" />
+    </Group>
+    <Group name="오른뒷다리좌우">
+      <param weights="0 0 0 0 0 0 0 1" />
+    </Group>
+  </GroupRoot>
+  <BucketRoot>
+    <Bucket name="motion group (1)">
+      <callFlows>
+        <callFlow callIndex="1" subIndex="0" exitIndex="0" flow="init" />
+        <callFlow callIndex="2" subIndex="0" exitIndex="0" flow="Forward walk" />
+        <callFlow callIndex="3" subIndex="0" exitIndex="0" flow="backward walk" />
+        <callFlow callIndex="4" subIndex="0" exitIndex="0" flow="Left Turn" />
+        <callFlow callIndex="5" subIndex="0" exitIndex="0" flow="Right Turn" />
+        <callFlow callIndex="6" subIndex="0" exitIndex="0" flow="roar" />
+      </callFlows>
+    </Bucket>
+  </BucketRoot>
+</Root>

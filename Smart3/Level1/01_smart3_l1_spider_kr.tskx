@@ -1,0 +1,100 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 거미로봇 예제프로그램
+o // param_text:[작동 방법]
+o // param_text:스마트 기기를 기울여 조종 할 수 있고, 조도센서 값에 따라 로봇의 속도가 변화합니다.
+o main
+o begin
+o // param_text:스마트 기기가 연결되어 화면이 나타날 때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+- 
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:smart:100:262 param_src:img_num:1
+o call faddr_dest:초기화
+- 
+o while(1)
+o begin
+o call faddr_dest:조종
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:주행속도 param_src:dec_num:650
+o load param_dest:smart:100:263 param_src:scrpos3_num:65805
+o end
+- 
+o function faddr_src:조종
+o begin
+- 
+o if param_src:smart:100:281 lop:> param_src:dec_num:30 rop:then
+o begin
+o call faddr_dest:직진
+o end
+o elseif param_src:smart:100:279 lop:> param_src:dec_num:30 rop:then
+o begin
+o call faddr_dest:제자리좌회전
+o end
+o elseif param_src:smart:100:278 lop:> param_src:dec_num:30 rop:then
+o begin
+o call faddr_dest:제자리우회전
+o end
+o elseif param_src:smart:100:280 lop:> param_src:dec_num:30 rop:then
+o begin
+o call faddr_dest:후진
+o end
+o elseif param_src:smart:100:281 lop:< param_src:dec_num:20 rop:&& param_src:smart:100:279 lop:< param_src:dec_num:20 rop:&& param_src:smart:100:278 lop:< param_src:dec_num:10 rop:&& param_src:var:오른쪽기울기 lop:< param_src:dec_num:10 rop:then
+o begin
+o call faddr_dest:정지
+o end
+o elseif param_src:smart:100:282 lop:< param_src:dec_num:100 rop:then
+o begin
+o load param_dest:var:주행속도 param_src:dec_num:800
+o end
+o elseif param_src:smart:100:282 lop:>= param_src:dec_num:100 rop:then
+o begin
+o load param_dest:var:주행속도 param_src:dec_num:650
+o end
+o end
+- 
+o function faddr_src:정지
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:65805
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 
+o function faddr_src:직진
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:65805
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:주행속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:주행속도
+o end
+- 
+o function faddr_src:후진
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66061
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:주행속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:주행속도
+o end
+- 
+o function faddr_src:제자리좌회전
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66317
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:주행속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:주행속도
+o end
+- 
+o function faddr_src:제자리우회전
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66573
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:주행속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:주행속도
+o end
+- 

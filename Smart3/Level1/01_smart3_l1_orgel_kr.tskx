@@ -1,0 +1,161 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 오르골 예제프로그램
+o // param_text:[작동 방법]
+o // param_text:트랙을 선택하여, 오르골과 음악을 재생합니다.
+o main
+o begin
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:var:음악트랙 param_src:dec_num:1
+o while(1)
+o begin
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o call faddr_dest:오르골_정지
+o load param_dest:smart:100:269 param_src:playinst_num:6489089
+o load param_dest:smart:100:292 param_src:vibtime_num:30
+o wait param_src:smart:100:269 lop:!= param_src:dec_num:0 rop:then
+o // param_text:이전트랙
+o compute param_dest:var:음악트랙 param_src:var:음악트랙 aop:- param_src:dec_num:1
+o if param_src:var:음악트랙 lop:< param_src:dec_num:1 rop:then
+o begin
+o load param_dest:var:음악트랙 param_src:dec_num:3
+o end
+o if param_src:smart:100:270 lop:!= param_src:audio_num:0 rop:then
+o begin
+o call faddr_dest:오르골_회전
+o compute param_dest:smart:100:270 param_src:audio_num:0 aop:+ param_src:var:음악트랙
+o end
+o load param_dest:cm:6 param_src:hrtimer_num:400
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:25 rop:then
+o begin
+o call faddr_dest:오르골_정지
+o load param_dest:smart:100:269 param_src:playinst_num:6489096
+o load param_dest:smart:100:292 param_src:vibtime_num:30
+o wait param_src:smart:100:269 lop:!= param_src:dec_num:0 rop:then
+o // param_text:다음트랙
+o compute param_dest:var:음악트랙 param_src:var:음악트랙 aop:+ param_src:dec_num:1
+o if param_src:var:음악트랙 lop:> param_src:dec_num:3 rop:then
+o begin
+o load param_dest:var:음악트랙 param_src:dec_num:1
+o end
+o if param_src:smart:100:270 lop:!= param_src:audio_num:0 rop:then
+o begin
+o call faddr_dest:오르골_회전
+o compute param_dest:smart:100:270 param_src:audio_num:0 aop:+ param_src:var:음악트랙
+o end
+o load param_dest:cm:6 param_src:hrtimer_num:400
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o if param_src:var:음악트랙 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:65800
+o end
+o if param_src:var:음악트랙 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66056
+o end
+o if param_src:var:음악트랙 lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66312
+o end
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:30
+o // param_text:재생하기
+o call faddr_dest:오르골_회전
+o compute param_dest:smart:100:270 param_src:audio_num:0 aop:+ param_src:var:음악트랙
+o load param_dest:cm:6 param_src:hrtimer_num:400
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:24 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:30
+o // param_text:정지하기
+o call faddr_dest:오르골_정지
+o load param_dest:smart:100:270 param_src:audio_num:0
+o end
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:22 rop:&& param_src:smart:100:270 lop:!= param_src:audio_num:0 rop:then
+o begin
+o call faddr_dest:오르골_정지
+o load param_dest:smart:100:270 param_src:audio_num:0
+o load param_dest:smart:100:292 param_src:vibtime_num:30
+o // param_text:다시재생
+o call faddr_dest:오르골_회전
+o compute param_dest:smart:100:270 param_src:audio_num:0 aop:+ param_src:var:음악트랙
+o load param_dest:cm:6 param_src:hrtimer_num:400
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o end
+o end
+- 
+o function faddr_src:오르골_회전
+o begin
+o if param_src:var:음악트랙 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:250
+o load param_dest:aux:2:68 param_src:dir_num:1324
+o end
+o if param_src:var:음악트랙 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1274
+o load param_dest:aux:2:68 param_src:dir_num:300
+o end
+o if param_src:var:음악트랙 lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1374
+o load param_dest:aux:2:68 param_src:dir_num:400
+o end
+o end
+o function faddr_src:오르골_정지
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

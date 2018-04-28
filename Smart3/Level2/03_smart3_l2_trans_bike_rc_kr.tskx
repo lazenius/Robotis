@@ -1,0 +1,189 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 스마트 오토바이
+o // param_text:최초배포: 2017/03/02
+o // param_text:리모컨으로 동작
+o // param_text:U: 전진, D: 후진, U+L: 좌회전하며 전진, U+R: 우회전하며 전진, D+L: 좌회전하며 후진, D+R: 우회전하며 후진
+o // param_text:1: 변신, 2~4: 속도 설정(느림, 중간, 빠름)
+- 
+o main
+o begin
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:4:61 param_src:bool_num:1
+- 
+o load param_dest:cm:23 param_src:dec_num:0
+- 
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:== param_src:buzzertime_num:0 rop:then
+- 
+o call faddr_dest:초기화
+- 
+o while(1)
+o begin
+o call faddr_dest:조종
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:서보모터위치_구동부 param_src:dec_num:512
+o load param_dest:var:서보모터위치_조향부 param_src:dec_num:512
+o load param_dest:aux:3:62 param_src:var:서보모터위치_구동부
+o load param_dest:aux:4:62 param_src:var:서보모터위치_조향부
+- 
+o load param_dest:var:변신여부 param_src:bool_num:0
+o load param_dest:var:속도단계 param_src:dec_num:1
+o load param_dest:var:속도 param_src:dec_num:700
+o end
+- 
+o function faddr_src:조종
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:512
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:512
+o end
+o end
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:9 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:400
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:624
+o end
+o end
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:5 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:624
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:400
+o end
+o end
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:512
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:512
+o end
+o end
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:10 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:400
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:624
+o end
+o end
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:6 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:624
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:속도
+o load param_dest:aux:4:62 param_src:position_num:400
+o end
+o end
+- 
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:var:서보모터위치_구동부 param_src:dec_num:700
+o load param_dest:aux:3:62 param_src:var:서보모터위치_구동부
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:14
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:var:변신여부 param_src:bool_num:1
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:서보모터위치_구동부 param_src:dec_num:512
+o load param_dest:aux:3:62 param_src:var:서보모터위치_구동부
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:14
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:var:변신여부 param_src:bool_num:0
+o end
+o end
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:800
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:700
+o end
+o end
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:64 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:900
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:800
+o end
+o end
+- 
+o if param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o if param_src:var:변신여부 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:1023
+o end
+o elseif param_src:var:변신여부 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:속도 param_src:dec_num:900
+o end
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+o begin
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o end
+- 

@@ -1,0 +1,145 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 해적 게임
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:복불복 게임. 도깨비를 눌러 접촉센서가 눌리면 게임 시작.
+o // param_text:도깨비가 튀어나올 때까지 스마트폰의 버튼을 터치. 도깨비가 튀어나오면 게임에서 짐.
+o // param_text:도깨비를 다시 눌러 게임 재시작 가능.
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+- 
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:3:60 param_src:dec_num:1023
+o load param_dest:aux:3:62 param_src:position_num:205
+o label laddr_src:시작
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:aux:2:68 param_src:dir_num:0
+o load param_dest:cm:6 param_src:dec_num:65535
+o load param_dest:smart:100:268 param_src:txt_num:1
+o call faddr_dest:제어기_게임준비
+o call faddr_dest:스마트_게임준비
+o while(1)
+o begin
+o call faddr_dest:게임시작
+o call faddr_dest:게임종료
+o jump laddr_dest:시작
+o end
+o end
+- 
+o function faddr_src:제어기_게임준비
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o load param_dest:smart:100:262 param_src:img_num:2
+o while(1)
+o begin
+o load param_dest:var:터치입력 param_src:aux:4:65
+o if param_src:var:터치입력 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:aux:3:60 param_src:dec_num:700
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o break
+o end
+o compute param_dest:cm:25 param_src:cm:6 aop:& param_src:bin_num:24
+o load param_dest:var:함정 param_src:cm:25
+o end
+o end
+o function faddr_src:스마트_게임준비
+o begin
+o load param_dest:smart:100:262 param_src:img_num:1
+o wait param_src:smart:100:286 lop:!= param_src:scrpos1_num:23 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:300
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:262 param_src:img_num:2
+o for param_var:i param_src:dec_num:-1 param_src:dec_num:24
+o begin
+o compute param_dest:smart:100:263 param_src:scrpos3_num:65793 aop:+ param_src:var:i
+o end
+o load param_dest:cm:6 param_src:hrtimer_num:1000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o function faddr_src:게임시작
+o begin
+o while(1)
+o begin
+o load param_dest:var:터치입력 param_src:dec_num:-1
+o load param_dest:var:터치입력 param_src:smart:100:286
+o compute param_dest:var:터치입력 param_src:var:터치입력 aop:- param_src:dec_num:1
+o if param_src:var:터치입력 lop:!= param_src:dec_num:-1 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o compute param_dest:smart:100:263 param_src:scrpos3_num:458753 aop:+ param_src:var:터치입력
+o if param_src:var:터치입력 lop:== param_src:var:함정 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:255
+o break
+o end
+o load param_dest:var:터치입력 param_src:dec_num:-1
+o end
+o end
+o end
+- 
+o function faddr_src:게임종료
+o begin
+o load param_dest:smart:100:262 param_src:img_num:3
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o load param_dest:smart:100:270 param_src:audio_num:0
+o load param_dest:aux:1:68 param_src:dir_num:1724
+o load param_dest:smart:100:268 param_src:txt_num:2
+o load param_dest:aux:3:62 param_src:position_num:205
+- 
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:7
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o wait param_src:smart:100:286 lop:!= param_src:scrpos1_num:23 rop:then
+- 
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

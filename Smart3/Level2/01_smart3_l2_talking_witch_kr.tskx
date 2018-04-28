@@ -1,0 +1,433 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 마녀 로봇
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:터치모드나 음성모드로 선택 가능.
+o // param_text:음성모드 - 마이크 버튼을 터치하여 목록에 있는 음성을 입력하면 마녀가 움직이고 대답함.
+o // param_text:터치모드 - 스마트폰의 버튼을 터치하면 마녀가 움직이며 대답함.
+o // param_text:파란색 버튼을 누르면 마녀가 움직이고 점괘를 얘기함.
+- 
+o main
+o begin
+o // param_text:스마트 기기가 연결되어 화면이 나타날 때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+- 
+o // param_text:스마트기기 화면 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:smart:100:268 param_src:dec_num:18
+o call faddr_dest:양손내리기
+o call faddr_dest:대기0_4
+o call faddr_dest:손_정지
+o call faddr_dest:초기화
+- 
+o while(1)
+o begin
+o call faddr_dest:입력감지
+o if param_src:var:점봐주기 lop:== param_src:bool_num:1 rop:then
+o begin
+o call faddr_dest:점보기
+o call faddr_dest:초기화
+o end
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:8:62 param_src:position_num:512
+- 
+o load param_dest:smart:100:262 param_src:dec_num:1
+o load param_dest:smart:100:266 param_src:scrpos4_num:18743556
+o load param_dest:smart:100:266 param_src:scrpos4_num:18743813
+o load param_dest:smart:100:266 param_src:scrpos4_num:18744073
+o load param_dest:smart:100:266 param_src:scrpos4_num:18744330
+o load param_dest:smart:100:266 param_src:scrpos4_num:18744590
+o load param_dest:smart:100:266 param_src:scrpos4_num:18744847
+o load param_dest:smart:100:266 param_src:scrpos4_num:18745107
+o load param_dest:smart:100:266 param_src:scrpos4_num:18745364
+o end
+- 
+o function faddr_src:입력감지
+o begin
+o load param_dest:var:터치 param_src:smart:100:286
+o if param_src:var:터치 lop:== param_src:dec_num:25 rop:then
+o begin
+o if param_src:smart:100:274 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:274 param_src:dec_num:1
+- 
+o // param_text:음성 입력이 완료되었을때까지 대기
+o wait param_src:smart:100:274 lop:!= param_src:dec_num:0 rop:then
+- 
+o while(1)
+o begin
+o load param_dest:var:음성인식결과 param_src:smart:100:275
+- 
+o // param_text:에러체크
+o if param_src:var:음성인식결과 lop:!= param_src:dec_num:-1 rop:then
+o begin
+o call faddr_dest:결과동작
+o // param_text:결과 초기화
+o load param_dest:smart:100:275 param_src:dec_num:0
+o break
+o end
+o end
+o end
+o end
+o if param_src:var:터치 lop:== param_src:dec_num:4 rop:then
+o begin
+o // param_text:응, 안녕.
+o load param_dest:smart:100:268 param_src:dec_num:10
+o call faddr_dest:행동1
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:5 rop:then
+o begin
+o // param_text:너도, 잘자.
+o load param_dest:smart:100:268 param_src:dec_num:11
+o call faddr_dest:행동2
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:9 rop:then
+o begin
+o // param_text:걱정하지마.
+o load param_dest:smart:100:268 param_src:dec_num:12
+o call faddr_dest:행동3
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:10 rop:then
+o begin
+o // param_text:무슨 일이야!!
+o load param_dest:smart:100:268 param_src:dec_num:13
+o call faddr_dest:행동4
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:14 rop:then
+o begin
+o // param_text:나도, 메롱.
+o load param_dest:smart:100:268 param_src:dec_num:14
+o call faddr_dest:행동6
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:15 rop:then
+o begin
+o // param_text:나랑, 놀자.
+o load param_dest:smart:100:268 param_src:dec_num:15
+o call faddr_dest:행동7
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:19 rop:then
+o begin
+o // param_text:어디 아파?
+o load param_dest:smart:100:268 param_src:dec_num:16
+o call faddr_dest:행동8
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:20 rop:then
+o begin
+o // param_text:내가 더 미안해.
+o load param_dest:smart:100:268 param_src:dec_num:17
+o call faddr_dest:행동9
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o end
+- 
+o function faddr_src:결과동작
+o begin
+o if param_src:var:음성인식결과 lop:== param_src:dec_num:0 rop:then
+o begin
+o // param_text:다시. 말해줄래?
+o load param_dest:smart:100:268 param_src:dec_num:9
+o call faddr_dest:행동5
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:1 rop:then
+o begin
+o // param_text:응, 안녕.
+o load param_dest:smart:100:268 param_src:dec_num:10
+o call faddr_dest:행동1
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:2 rop:then
+o begin
+o // param_text:너도, 잘자.
+o load param_dest:smart:100:268 param_src:dec_num:11
+o call faddr_dest:행동2
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:3 rop:then
+o begin
+o // param_text:걱정하지마.
+o load param_dest:smart:100:268 param_src:dec_num:12
+o call faddr_dest:행동3
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:4 rop:then
+o begin
+o // param_text:무슨 일이야!!
+o load param_dest:smart:100:268 param_src:dec_num:13
+o call faddr_dest:행동4
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:5 rop:then
+o begin
+o // param_text:나도, 메롱.
+o load param_dest:smart:100:268 param_src:dec_num:14
+o call faddr_dest:행동6
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:6 rop:then
+o begin
+o // param_text:나랑, 놀자.
+o load param_dest:smart:100:268 param_src:dec_num:15
+o call faddr_dest:행동7
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:7 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:dec_num:16
+o call faddr_dest:행동8
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:8 rop:then
+o begin
+o // param_text:내가 더 미안해.
+o load param_dest:smart:100:268 param_src:dec_num:17
+o call faddr_dest:행동9
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o end
+o // param_text:응, 안녕.
+o function faddr_src:행동1
+o begin
+o call faddr_dest:왼손들기
+o call faddr_dest:대기0_4
+o call faddr_dest:오른손들기
+o call faddr_dest:대기0_4
+o call faddr_dest:왼손들기
+o call faddr_dest:대기0_4
+o call faddr_dest:오른손들기
+o call faddr_dest:대기0_4
+o call faddr_dest:양손내리기
+o call faddr_dest:대기0_8
+o call faddr_dest:손_정지
+o end
+- 
+o // param_text:너도, 잘자.
+o function faddr_src:행동2
+o begin
+o call faddr_dest:양손들기
+o call faddr_dest:대기0_8
+o call faddr_dest:양손내리기
+o call faddr_dest:대기0_8
+o call faddr_dest:손_정지
+o end
+- 
+o // param_text:걱정하지마.
+o function faddr_src:행동3
+o begin
+o call faddr_dest:양손들기
+o call faddr_dest:대기0_4
+o call faddr_dest:양손내리기
+o call faddr_dest:대기0_4
+o call faddr_dest:양손들기
+o call faddr_dest:대기0_4
+o call faddr_dest:양손내리기
+o call faddr_dest:대기0_8
+o call faddr_dest:손_정지
+o end
+- 
+o // param_text:무슨 일이야!!
+o function faddr_src:행동4
+o begin
+o call faddr_dest:양쪽망토올리기
+o call faddr_dest:대기0_4
+o call faddr_dest:양쪽망토내리기
+o end
+- 
+o // param_text:다시. 말해줄래?
+o function faddr_src:행동5
+o begin
+o call faddr_dest:양쪽망토올리기
+o call faddr_dest:대기0_8
+o call faddr_dest:양쪽망토내리기
+o end
+- 
+o // param_text:나도, 메롱.
+o function faddr_src:행동6
+o begin
+o call faddr_dest:왼망토들기
+o call faddr_dest:대기0_8
+o call faddr_dest:오른망토들기
+o call faddr_dest:대기0_8
+o call faddr_dest:양쪽망토내리기
+o end
+- 
+o // param_text:나랑, 놀자.
+o function faddr_src:행동7
+o begin
+o call faddr_dest:오른망토들기
+o call faddr_dest:대기0_8
+o call faddr_dest:왼망토들기
+o call faddr_dest:대기0_8
+o call faddr_dest:양쪽망토내리기
+o end
+- 
+o // param_text:어디 아파?
+o function faddr_src:행동8
+o begin
+o call faddr_dest:양쪽망토올리기
+o call faddr_dest:대기0_8
+o call faddr_dest:양쪽망토내리기
+o call faddr_dest:대기0_8
+o end
+- 
+o // param_text:내가 더 미안해.
+o function faddr_src:행동9
+o begin
+o call faddr_dest:양쪽망토올리기
+o call faddr_dest:대기0_8
+o call faddr_dest:대기0_8
+o call faddr_dest:양쪽망토내리기
+o call faddr_dest:대기0_8
+o end
+- 
+o function faddr_src:점보기
+o begin
+o load param_dest:smart:100:266 param_src:scrpos4_num:0
+o load param_dest:smart:100:270 param_src:audio_num:1
+o for param_var:a param_src:dec_num:0 param_src:dec_num:7
+o begin
+o load param_dest:smart:100:262 param_src:dec_num:2
+o call faddr_dest:왼손들기
+o call faddr_dest:대기0_4
+o load param_dest:smart:100:262 param_src:dec_num:3
+o call faddr_dest:오른손들기
+o call faddr_dest:대기0_4
+o end
+o call faddr_dest:대기0_8
+o call faddr_dest:손_정지
+- 
+o compute param_dest:var:임의숫자_점 param_src:cm:25 aop:% param_src:dec_num:5
+o load param_dest:smart:100:270 param_src:audio_num:0
+- 
+o if param_src:var:임의숫자_점 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:19
+o call faddr_dest:행동1
+o end
+o elseif param_src:var:임의숫자_점 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:20
+o call faddr_dest:행동2
+o end
+o elseif param_src:var:임의숫자_점 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:21
+o call faddr_dest:행동6
+o end
+o elseif param_src:var:임의숫자_점 lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:22
+o call faddr_dest:행동7
+o end
+o elseif param_src:var:임의숫자_점 lop:== param_src:dec_num:4 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:23
+o call faddr_dest:행동9
+o end
+o load param_dest:var:점봐주기 param_src:bool_num:0
+o load param_dest:var:접촉 param_src:bool_num:0
+o load param_dest:smart:100:262 param_src:dec_num:1
+o end
+- 
+o function faddr_src:왼손들기
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1424
+o load param_dest:aux:2:68 param_src:dir_num:1424
+o end
+o function faddr_src:오른손들기
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:400
+o load param_dest:aux:2:68 param_src:dir_num:400
+o end
+o function faddr_src:양손들기
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1424
+o load param_dest:aux:2:68 param_src:dir_num:400
+o end
+o function faddr_src:양손내리기
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:400
+o load param_dest:aux:2:68 param_src:dir_num:1424
+o end
+o function faddr_src:손_정지
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o function faddr_src:왼망토들기
+o begin
+o load param_dest:aux:5:62 param_src:position_num:712
+o load param_dest:aux:8:62 param_src:position_num:512
+o end
+o function faddr_src:오른망토들기
+o begin
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:8:62 param_src:position_num:312
+o end
+o function faddr_src:양쪽망토올리기
+o begin
+o load param_dest:aux:5:62 param_src:position_num:712
+o load param_dest:aux:8:62 param_src:position_num:312
+o end
+o function faddr_src:양쪽망토내리기
+o begin
+o load param_dest:aux:5:62 param_src:position_num:512
+o load param_dest:aux:8:62 param_src:position_num:512
+o end
+o function faddr_src:대기0_4
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:400
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+o function faddr_src:대기0_8
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:800
+o wait param_src:cm:6 lop:> param_src:dec_num:0 rop:then
+o end
+- 
+o callback
+o begin
+o load param_dest:var:접촉 param_src:aux:4:65
+o if param_src:var:접촉 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:점봐주기 param_src:bool_num:1
+o end
+o end
+- 

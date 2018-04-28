@@ -1,0 +1,104 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 꿀벌 예제프로그램_터치
+o // param_text:[작동 방법]
+o // param_text:터치센서를 사용하여 전차총의 효과를 낼수 있습니다.
+o main
+o begin
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o while(1)
+o begin
+o call faddr_dest:발사확인
+o end
+o end
+- 
+o // param_text:터치센서를 계속 누르고 있으면 3단계까지 올라감
+o function faddr_src:발사확인
+o begin
+o load param_dest:var:발사 param_src:aux:7:65
+- 
+o if param_src:var:발사 lop:== param_src:dec_num:1 rop:then
+o begin
+o for param_var:i param_src:dec_num:1 param_src:dec_num:5
+o begin
+o load param_dest:cm:17 param_src:scale_num:3
+o load param_dest:aux:1:68 param_src:dir_num:300
+o load param_dest:aux:2:68 param_src:dir_num:300
+o load param_dest:cm:6 param_src:hrtimer_num:50
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o load param_dest:cm:6 param_src:hrtimer_num:50
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o if param_src:aux:7:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:var:발사 param_src:var:발사 aop:+ param_src:dec_num:1
+o end
+o end
+- 
+o if param_src:var:발사 lop:== param_src:dec_num:2 rop:then
+o begin
+o for param_var:i param_src:dec_num:1 param_src:dec_num:5
+o begin
+o load param_dest:cm:17 param_src:scale_num:5
+o load param_dest:aux:1:68 param_src:dir_num:500
+o load param_dest:aux:2:68 param_src:dir_num:500
+o load param_dest:cm:6 param_src:hrtimer_num:50
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o load param_dest:cm:6 param_src:hrtimer_num:50
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o if param_src:aux:7:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:var:발사 param_src:var:발사 aop:+ param_src:dec_num:1
+o end
+o end
+- 
+o if param_src:var:발사 lop:== param_src:dec_num:3 rop:then
+o begin
+o label laddr_src:연사
+o for param_var:i param_src:dec_num:1 param_src:dec_num:5
+o begin
+o load param_dest:cm:17 param_src:scale_num:7
+o load param_dest:aux:1:68 param_src:dir_num:1023
+o load param_dest:aux:2:68 param_src:dir_num:1023
+o load param_dest:cm:6 param_src:hrtimer_num:50
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o load param_dest:cm:6 param_src:hrtimer_num:50
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+- 
+o if param_src:aux:7:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o jump laddr_dest:연사
+o end
+o end
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

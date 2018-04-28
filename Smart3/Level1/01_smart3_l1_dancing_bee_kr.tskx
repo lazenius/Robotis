@@ -1,0 +1,62 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 꿀벌 예제프로그램
+o // param_text:[작동 방법]
+o // param_text:스마트 폰의 흔들림에 따라 로봇이 춤을 춥니다.
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+- 
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:scrrot_num:1
+- 
+o load param_dest:var:배경 param_src:dec_num:1
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o while(1)
+o begin
+o if param_src:smart:100:270 lop:== param_src:audio_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o end
+- 
+o load param_dest:smart:100:262 param_src:var:배경
+- 
+o // param_text:스마트폰 흔들림센서 값에 따른 꿀벌 춤 속도 변화
+o compute param_dest:var:흔들림 param_src:smart:100:277 aop:* param_src:dec_num:3
+o if param_src:var:흔들림 lop:> param_src:dec_num:30 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1624 aop:+ param_src:var:흔들림
+o compute param_dest:aux:2:68 param_src:dir_num:1624 aop:+ param_src:var:흔들림
+o load param_dest:smart:100:263 param_src:scrpos3_num:65803
+o load param_dest:smart:100:263 param_src:scrpos3_num:66058
+o load param_dest:smart:100:263 param_src:scrpos3_num:66307
+o if param_src:var:흔들림 lop:> param_src:dec_num:400 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:131339
+o load param_dest:smart:100:263 param_src:scrpos3_num:131594
+o load param_dest:smart:100:263 param_src:scrpos3_num:131843
+o load param_dest:aux:1:68 param_src:dir_num:2047
+o load param_dest:aux:2:68 param_src:dir_num:2047
+o load param_dest:smart:100:292 param_src:dec_num:2
+o compute param_dest:var:배경 param_src:var:배경 aop:+ param_src:dec_num:1
+o if param_src:var:배경 lop:> param_src:dec_num:2 rop:then
+o begin
+o load param_dest:var:배경 param_src:dec_num:1
+o end
+o end
+o end
+o else
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o end
+o end
+o end
+- 

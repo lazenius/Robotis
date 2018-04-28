@@ -1,0 +1,508 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 스마트 금고
+o // param_text:비밀번호를 지정 후 설정한 비밀번호를 눌러 금고를 열 수 있음.
+o // param_text:비밀번호 입력에 실패하면 오류 뜸. 성공하면 이미지가 나타남.
+o // param_text:새로운 비밀번호를 입력하려면 설정 버튼을 다시 누름.
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o call faddr_dest:초기화
+o load param_dest:smart:100:268 param_src:txt_num:3
+o while(1)
+o begin
+o call faddr_dest:메뉴선택
+o call faddr_dest:키패드입력감지
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:aux:10:61 param_src:bool_num:1
+o load param_dest:aux:7:61 param_src:bool_num:1
+o if param_src:aux:4:71 lop:== param_src:bool_num:1 rop:then
+o begin
+o // param_text:잠금장치 열림
+o load param_dest:aux:7:62 param_src:position_num:612
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:금고 열림
+o load param_dest:aux:10:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:금고 닫힘
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:잠금장치 닫힘
+o load param_dest:aux:7:62 param_src:position_num:412
+o end
+o else
+o begin
+o // param_text:금고 닫힘
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:잠금장치 닫힘
+o load param_dest:aux:7:62 param_src:position_num:412
+o end
+o load param_dest:var:비밀번호1 param_src:dec_num:-1
+o load param_dest:var:비밀번호2 param_src:dec_num:-1
+o load param_dest:var:비밀번호3 param_src:dec_num:-1
+o load param_dest:var:입력번호 param_src:dec_num:-1
+o load param_dest:var:입력번호1 param_src:dec_num:-1
+o load param_dest:var:입력번호2 param_src:dec_num:-1
+o load param_dest:var:입력번호3 param_src:dec_num:-1
+o load param_dest:var:터치 param_src:dec_num:0
+o load param_dest:var:비밀번호설정상태 param_src:bool_num:0
+o // param_text:0 : 비밀번호 설정, 1: 비밀번호입력, 2: 비밀번호 재설정
+o load param_dest:var:모드 param_src:dec_num:-1
+o // param_text:기본 이미지 설정
+o load param_dest:smart:100:262 param_src:img_num:1
+o // param_text:닫기
+o load param_dest:smart:100:263 param_src:scrpos3_num:68884
+o // param_text:열기
+o load param_dest:smart:100:263 param_src:scrpos3_num:68633
+o // param_text:설정
+o load param_dest:smart:100:263 param_src:scrpos3_num:68357
+o end
+- 
+o function faddr_src:메뉴선택
+o begin
+o load param_dest:var:터치 param_src:smart:100:286
+o // param_text:비밀번호 설정
+o if param_src:var:터치 lop:== param_src:dec_num:5 rop:then
+o begin
+o // param_text:0 : 비밀번호 설정, 1: 비밀번호입력, 2: 비밀번호 재설정
+o if param_src:var:비밀번호1 lop:< param_src:dec_num:0 rop:|| param_src:var:비밀번호2 lop:< param_src:dec_num:0 rop:|| param_src:var:비밀번호3 lop:< param_src:dec_num:0 rop:then
+o begin
+o load param_dest:var:모드 param_src:dec_num:0
+o end
+o else
+o begin
+o load param_dest:var:모드 param_src:dec_num:2
+o end
+o call faddr_dest:키패드감추기
+o call faddr_dest:키패드표시
+o // param_text:보물상자 열림
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o // param_text:비밀번호 입력
+o elseif param_src:var:터치 lop:== param_src:dec_num:25 rop:then
+o begin
+- 
+o if param_src:var:비밀번호설정상태 lop:== param_src:bool_num:1 rop:then
+o begin
+o if param_src:aux:4:71 lop:== param_src:bool_num:0 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:7
+o end
+o elseif param_src:aux:4:71 lop:== param_src:bool_num:1 rop:then
+o begin
+o // param_text:0 : 비밀번호 설정, 1: 비밀번호입력, 2: 비밀번호 재설정
+o load param_dest:var:모드 param_src:dec_num:1
+o call faddr_dest:키패드감추기
+o call faddr_dest:키패드표시
+o end
+o end
+o else
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:2
+o end
+o end
+o elseif param_src:var:터치 lop:== param_src:dec_num:20 rop:then
+o begin
+o // param_text:보물상자 닫힘
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:잠금장치 닫힘
+o load param_dest:aux:7:62 param_src:position_num:412
+o end
+o end
+- 
+o function faddr_src:키패드감추기
+o begin
+o load param_dest:smart:100:267 param_src:scrpos4_num:0
+o load param_dest:smart:100:266 param_src:scrpos4_num:0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o load param_dest:smart:100:262 param_src:img_num:1
+o // param_text:닫기
+o load param_dest:smart:100:263 param_src:scrpos3_num:68884
+o // param_text:열기
+o load param_dest:smart:100:263 param_src:scrpos3_num:68633
+o // param_text:설정
+o load param_dest:smart:100:263 param_src:scrpos3_num:68357
+o end
+- 
+o function faddr_src:키패드표시
+o begin
+o // param_text:암호 입력창 이미지 설정
+o load param_dest:smart:100:263 param_src:scrpos3_num:3586
+o load param_dest:smart:100:263 param_src:scrpos3_num:3587
+o load param_dest:smart:100:263 param_src:scrpos3_num:3588
+o // param_text:암호 입력창 숫자 초기화
+o call faddr_dest:키패드입력값지움
+o // param_text:0 : 비밀번호 설정, 1: 비밀번호입력, 2: 비밀번호 재설정
+o if param_src:var:모드 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:9
+o // param_text:입력버튼 설정
+o load param_dest:smart:100:263 param_src:scrpos3_num:68357
+o end
+o elseif param_src:var:모드 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:4
+o // param_text:입력버튼 설정
+o load param_dest:smart:100:263 param_src:scrpos3_num:68357
+o end
+o elseif param_src:var:모드 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:5
+o // param_text:입력버튼 설정
+o load param_dest:smart:100:263 param_src:scrpos3_num:68357
+o end
+o // param_text:키패드 이미지 설정
+o load param_dest:smart:100:263 param_src:scrpos3_num:65799
+o load param_dest:smart:100:263 param_src:scrpos3_num:66056
+o load param_dest:smart:100:263 param_src:scrpos3_num:66313
+o load param_dest:smart:100:263 param_src:scrpos3_num:66572
+o load param_dest:smart:100:263 param_src:scrpos3_num:66829
+o load param_dest:smart:100:263 param_src:scrpos3_num:67086
+o load param_dest:smart:100:263 param_src:scrpos3_num:67345
+o load param_dest:smart:100:263 param_src:scrpos3_num:67602
+o load param_dest:smart:100:263 param_src:scrpos3_num:67859
+o load param_dest:smart:100:263 param_src:scrpos3_num:68119
+o // param_text:확인 취소 버튼 설정
+o load param_dest:smart:100:263 param_src:scrpos3_num:3862
+o load param_dest:smart:100:263 param_src:scrpos3_num:4120
+o end
+- 
+o function faddr_src:키패드입력감지
+o begin
+o load param_dest:var:터치 param_src:smart:100:286
+o // param_text:1
+o if param_src:var:터치 lop:== param_src:dec_num:7 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:1
+o end
+o // param_text:2
+o elseif param_src:var:터치 lop:== param_src:dec_num:8 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:2
+o end
+o // param_text:3
+o elseif param_src:var:터치 lop:== param_src:dec_num:9 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:3
+o end
+o // param_text:4
+o elseif param_src:var:터치 lop:== param_src:dec_num:12 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:4
+o end
+o // param_text:5
+o elseif param_src:var:터치 lop:== param_src:dec_num:13 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:5
+o end
+o // param_text:6
+o elseif param_src:var:터치 lop:== param_src:dec_num:14 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:6
+o end
+o // param_text:7
+o elseif param_src:var:터치 lop:== param_src:dec_num:17 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:7
+o end
+o // param_text:8
+o elseif param_src:var:터치 lop:== param_src:dec_num:18 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:8
+o end
+o // param_text:9
+o elseif param_src:var:터치 lop:== param_src:dec_num:19 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:9
+o end
+o // param_text:0
+o elseif param_src:var:터치 lop:== param_src:dec_num:23 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:0
+o end
+o // param_text:확인
+o elseif param_src:var:터치 lop:== param_src:dec_num:22 rop:then
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:-1
+o call faddr_dest:키패드입력값설정또는확인
+o end
+o // param_text:취소
+o elseif param_src:var:터치 lop:== param_src:dec_num:24 rop:then
+o begin
+o call faddr_dest:키패드입력값지움
+o end
+o call faddr_dest:키패드입력값표시
+o end
+- 
+o function faddr_src:키패드입력값설정또는확인
+o begin
+o // param_text:0 : 비밀번호 설정, 1: 비밀번호입력, 2: 비밀번호 재설정
+o if param_src:var:모드 lop:== param_src:dec_num:0 rop:then
+o begin
+o if param_src:var:입력번호1 lop:< param_src:dec_num:0 rop:|| param_src:var:입력번호2 lop:< param_src:dec_num:0 rop:|| param_src:var:입력번호3 lop:< param_src:dec_num:0 rop:then
+o begin
+o return
+o end
+o load param_dest:var:비밀번호1 param_src:var:입력번호1
+o load param_dest:var:비밀번호2 param_src:var:입력번호2
+o load param_dest:var:비밀번호3 param_src:var:입력번호3
+o load param_dest:var:비밀번호설정상태 param_src:bool_num:1
+o load param_dest:smart:100:268 param_src:txt_num:1
+o // param_text:잠금장치 열림
+o load param_dest:aux:7:62 param_src:position_num:612
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:금고 열림
+o load param_dest:aux:10:62 param_src:position_num:512
+o load param_dest:cm:5 param_src:timer_num:12
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:키패드감추기
+o end
+o elseif param_src:var:모드 lop:== param_src:dec_num:1 rop:then
+o begin
+o if param_src:var:비밀번호1 lop:< param_src:dec_num:0 rop:|| param_src:var:비밀번호2 lop:< param_src:dec_num:0 rop:|| param_src:var:비밀번호3 lop:< param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:dec_num:2
+o return
+o end
+o if param_src:var:입력번호1 lop:< param_src:dec_num:0 rop:|| param_src:var:입력번호2 lop:< param_src:dec_num:0 rop:|| param_src:var:입력번호3 lop:< param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:dec_num:4
+o return
+o end
+o // param_text:비밀번호가 일치하는지 확인
+o if param_src:var:입력번호1 lop:== param_src:var:비밀번호1 rop:&& param_src:var:입력번호2 lop:== param_src:var:비밀번호2 rop:&& param_src:var:입력번호3 lop:== param_src:var:비밀번호3 rop:then
+o begin
+o call faddr_dest:결과표시
+o return
+o end
+o if param_src:var:입력번호1 lop:!= param_src:var:비밀번호1 rop:|| param_src:var:입력번호2 lop:!= param_src:var:비밀번호2 rop:|| param_src:var:입력번호3 lop:!= param_src:var:비밀번호3 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:6
+o end
+o // param_text:첫번째 자리 비밀번호 확인
+o if param_src:var:입력번호1 lop:== param_src:var:비밀번호1 rop:then
+o begin
+o compute param_dest:var:입력번호1_표시위치조정 param_src:var:입력번호1 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608450 aop:+ param_src:var:입력번호1_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o elseif param_src:var:입력번호1 lop:== param_src:var:비밀번호2 rop:then
+o begin
+o compute param_dest:var:입력번호1_표시위치조정 param_src:var:입력번호1 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608450 aop:+ param_src:var:입력번호1_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o elseif param_src:var:입력번호1 lop:== param_src:var:비밀번호3 rop:then
+o begin
+o compute param_dest:var:입력번호1_표시위치조정 param_src:var:입력번호1 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608450 aop:+ param_src:var:입력번호1_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o else
+o begin
+o compute param_dest:var:입력번호1_표시위치조정 param_src:var:입력번호1 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608450 aop:+ param_src:var:입력번호1_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o // param_text:두번째 자리 비밀번호 확인
+o if param_src:var:입력번호2 lop:== param_src:var:비밀번호1 rop:then
+o begin
+o compute param_dest:var:입력번호2_표시위치조정 param_src:var:입력번호2 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608451 aop:+ param_src:var:입력번호2_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o elseif param_src:var:입력번호2 lop:== param_src:var:비밀번호2 rop:then
+o begin
+o compute param_dest:var:입력번호2_표시위치조정 param_src:var:입력번호2 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608451 aop:+ param_src:var:입력번호2_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o elseif param_src:var:입력번호2 lop:== param_src:var:비밀번호3 rop:then
+o begin
+o compute param_dest:var:입력번호2_표시위치조정 param_src:var:입력번호2 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608451 aop:+ param_src:var:입력번호2_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o else
+o begin
+o compute param_dest:var:입력번호2_표시위치조정 param_src:var:입력번호2 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608451 aop:+ param_src:var:입력번호2_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o // param_text:세번째 자리 비밀번호 확인
+o if param_src:var:입력번호3 lop:== param_src:var:비밀번호1 rop:then
+o begin
+o compute param_dest:var:입력번호3_표시위치조정 param_src:var:입력번호3 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608452 aop:+ param_src:var:입력번호3_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o elseif param_src:var:입력번호3 lop:== param_src:var:비밀번호2 rop:then
+o begin
+o compute param_dest:var:입력번호3_표시위치조정 param_src:var:입력번호3 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608452 aop:+ param_src:var:입력번호3_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o elseif param_src:var:입력번호3 lop:== param_src:var:비밀번호3 rop:then
+o begin
+o compute param_dest:var:입력번호3_표시위치조정 param_src:var:입력번호3 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608452 aop:+ param_src:var:입력번호3_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o else
+o begin
+o compute param_dest:var:입력번호3_표시위치조정 param_src:var:입력번호3 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:53608452 aop:+ param_src:var:입력번호3_표시위치조정
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o load param_dest:var:입력번호1 param_src:dec_num:-1
+o load param_dest:var:입력번호2 param_src:dec_num:-1
+o load param_dest:var:입력번호3 param_src:dec_num:-1
+o load param_dest:cm:5 param_src:timer_num:25
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:smart:100:267 param_src:dec_num:0
+o end
+o elseif param_src:var:모드 lop:== param_src:dec_num:2 rop:then
+o begin
+o if param_src:var:비밀번호1 lop:< param_src:dec_num:0 rop:|| param_src:var:비밀번호2 lop:< param_src:dec_num:0 rop:|| param_src:var:비밀번호3 lop:< param_src:dec_num:0 rop:then
+o begin
+o return
+o end
+o if param_src:var:입력번호1 lop:< param_src:dec_num:0 rop:|| param_src:var:입력번호2 lop:< param_src:dec_num:0 rop:|| param_src:var:입력번호3 lop:< param_src:dec_num:0 rop:then
+o begin
+o return
+o end
+o // param_text:비밀번호가 일치하는지 확인
+o if param_src:var:입력번호1 lop:== param_src:var:비밀번호1 rop:&& param_src:var:입력번호2 lop:== param_src:var:비밀번호2 rop:&& param_src:var:입력번호3 lop:== param_src:var:비밀번호3 rop:then
+o begin
+o call faddr_dest:초기화
+o load param_dest:var:모드 param_src:dec_num:0
+o call faddr_dest:키패드감추기
+o call faddr_dest:키패드표시
+o // param_text:금고 열림
+o load param_dest:aux:10:62 param_src:position_num:162
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:var:비밀번호설정상태 param_src:bool_num:0
+o end
+o else
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:6
+o load param_dest:var:입력번호1 param_src:dec_num:-1
+o load param_dest:var:입력번호2 param_src:dec_num:-1
+o load param_dest:var:입력번호3 param_src:dec_num:-1
+o end
+o end
+o end
+- 
+o function faddr_src:키패드입력값지움
+o begin
+o load param_dest:var:입력번호 param_src:dec_num:-1
+o load param_dest:var:입력번호1 param_src:dec_num:-1
+o load param_dest:var:입력번호2 param_src:dec_num:-1
+o load param_dest:var:입력번호3 param_src:dec_num:-1
+o load param_dest:smart:100:267 param_src:scrpos4_num:33554434
+o load param_dest:smart:100:267 param_src:scrpos4_num:33554435
+o load param_dest:smart:100:267 param_src:scrpos4_num:33554436
+o end
+- 
+o function faddr_src:키패드입력값표시
+o begin
+o // param_text:0 : 비밀번호 설정, 1: 비밀번호입력, 2: 비밀번호 재설정
+o if param_src:var:모드 lop:== param_src:dec_num:0 rop:|| param_src:var:모드 lop:== param_src:dec_num:1 rop:|| param_src:var:모드 lop:== param_src:dec_num:2 rop:then
+o begin
+o if param_src:var:입력번호 lop:>= param_src:dec_num:0 rop:&& param_src:var:입력번호 lop:<= param_src:dec_num:9 rop:then
+o begin
+o if param_src:var:입력번호1 lop:== param_src:dec_num:-1 rop:then
+o begin
+o load param_dest:var:입력번호1 param_src:var:입력번호
+o compute param_dest:var:입력번호_표시위치조정 param_src:var:입력번호 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:36831234 aop:+ param_src:var:입력번호_표시위치조정
+o end
+o elseif param_src:var:입력번호2 lop:== param_src:dec_num:-1 rop:then
+o begin
+o if param_src:var:입력번호 lop:!= param_src:var:입력번호1 rop:then
+o begin
+o load param_dest:var:입력번호2 param_src:var:입력번호
+o compute param_dest:var:입력번호_표시위치조정 param_src:var:입력번호 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:36831235 aop:+ param_src:var:입력번호_표시위치조정
+o end
+o end
+o elseif param_src:var:입력번호3 lop:== param_src:dec_num:-1 rop:then
+o begin
+o if param_src:var:입력번호 lop:!= param_src:var:입력번호1 rop:&& param_src:var:입력번호 lop:!= param_src:var:입력번호2 rop:then
+o begin
+o load param_dest:var:입력번호3 param_src:var:입력번호
+o compute param_dest:var:입력번호_표시위치조정 param_src:var:입력번호 aop:* param_src:dec_num:256
+o compute param_dest:var:입력번호표시 param_src:scrpos4_num:36831236 aop:+ param_src:var:입력번호_표시위치조정
+o end
+o end
+o load param_dest:var:입력번호 param_src:dec_num:-1
+o load param_dest:smart:100:267 param_src:var:입력번호표시
+o end
+o end
+o end
+- 
+o function faddr_src:결과표시
+o begin
+o call faddr_dest:키패드감추기
+o load param_dest:smart:100:270 param_src:audio_num:1
+o // param_text:잠금장치 열림
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:aux:7:62 param_src:position_num:612
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o // param_text:금고 열림
+o load param_dest:aux:10:62 param_src:position_num:512
+o call faddr_dest:보물표시
+o end
+- 
+o function faddr_src:보물표시
+o begin
+o load param_dest:cm:25 param_src:dec_num:4
+o if param_src:cm:25 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:69901
+o end
+o elseif param_src:cm:25 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:70157
+o end
+o elseif param_src:cm:25 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:70413
+o end
+o elseif param_src:cm:25 lop:== param_src:dec_num:3 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:70669
+o end
+o else
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:70925
+o end
+o load param_dest:cm:5 param_src:timer_num:24
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:smart:100:263 param_src:scrpos3_num:65549
+o end
+- 

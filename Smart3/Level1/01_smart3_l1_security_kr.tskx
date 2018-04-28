@@ -1,0 +1,243 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 1단계 보안로봇 예제프로그램
+o // param_text:[작동 방법]
+o // param_text:주변을 감지하다가 움직임이 포착되면 카메라로 촬영을 하여 저장 합니다.
+- 
+o main
+o begin
+o // param_text:스마트 기기가 연결되어 화면이 나타날 때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o // param_text:움직임 감지기능 설정
+o load param_dest:smart:100:254 param_src:camfun_num:3
+o load param_dest:smart:100:252 param_src:camcho_num:2
+o load param_dest:cm:25 param_src:dec_num:3
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:smart:100:262 param_src:img_num:1
+o call faddr_dest:초기화
+o call faddr_dest:눈동자표시
+o load param_dest:var:회전방향 param_src:bool_num:1
+o load param_dest:var:움직임감지횟수 param_src:dec_num:0
+o while(1)
+o begin
+o // param_text:일정간격으로 회전
+o load param_dest:aux:3:62 param_src:var:서보모터위치
+o load param_dest:cm:5 param_src:timer_num:20
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:움직임감지
+o call faddr_dest:구동정하기
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:3:60 param_src:dec_num:500
+o load param_dest:aux:3:62 param_src:position_num:0
+o load param_dest:var:터치영역 param_src:dec_num:0
+o load param_dest:var:이전감지영역 param_src:dec_num:0
+o load param_dest:var:현재감지영역 param_src:dec_num:0
+o end
+- 
+o function faddr_src:눈동자표시
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:65805
+o end
+- 
+o function faddr_src:움직임감지
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:2000
+o while param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o begin
+o // param_text:감지영역 : 25 개
+o load param_dest:var:현재감지영역 param_src:smart:100:260
+- 
+o if param_src:var:현재감지영역 lop:>= param_src:dec_num:1 rop:then
+o begin
+o compute param_dest:var:움직임감지횟수 param_src:var:움직임감지횟수 aop:+ param_src:dec_num:1
+o call faddr_dest:눈동자감지
+o call faddr_dest:음성출력
+o call faddr_dest:사진촬영
+o call faddr_dest:감지영역표시
+o break
+o end
+o else
+o begin
+o call faddr_dest:눈동자표시
+o end
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:6
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o function faddr_src:눈동자감지
+o begin
+o if param_src:var:현재감지영역 lop:== param_src:dec_num:2 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:3 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:4 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:7 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:8 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:9 rop:then
+o begin
+o // param_text:위를 보는 눈동자를 표시
+o load param_dest:smart:100:263 param_src:scrpos3_num:66061
+o end
+o elseif param_src:var:현재감지영역 lop:== param_src:dec_num:17 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:18 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:19 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:22 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:23 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:24 rop:then
+o begin
+o // param_text:아래를 보는 눈동자를 표시
+o load param_dest:smart:100:263 param_src:scrpos3_num:66317
+o end
+o elseif param_src:var:현재감지영역 lop:== param_src:dec_num:1 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:6 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:11 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:16 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:21 rop:then
+o begin
+o // param_text:왼쪽을 보는 눈동자를 표시
+o load param_dest:smart:100:263 param_src:scrpos3_num:66573
+o end
+o elseif param_src:var:현재감지영역 lop:== param_src:dec_num:5 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:10 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:15 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:20 rop:|| param_src:var:현재감지영역 lop:== param_src:dec_num:25 rop:then
+o begin
+o // param_text:오른쪽 보는 눈동자를 표시
+o load param_dest:smart:100:263 param_src:scrpos3_num:66829
+o end
+o else
+o begin
+o // param_text:가운데를 보는 눈동자를 표시
+o load param_dest:smart:100:263 param_src:scrpos3_num:65805
+o end
+o end
+- 
+o function faddr_src:감지영역표시
+o begin
+o compute param_dest:smart:100:265 param_src:scrpos4_num:50987264 aop:+ param_src:var:현재감지영역
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o compute param_dest:smart:100:265 param_src:scrpos4_num:52297984 aop:+ param_src:var:현재감지영역
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o compute param_dest:smart:100:265 param_src:scrpos4_num:53608704 aop:+ param_src:var:현재감지영역
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o compute param_dest:smart:100:265 param_src:scrpos4_num:0 aop:+ param_src:var:현재감지영역
+- 
+o load param_dest:smart:100:263 param_src:scrpos3_num:65805
+o end
+- 
+o function faddr_src:음성출력
+o begin
+o if param_src:smart:100:268 lop:== param_src:txt_num:0 rop:then
+o // param_text:음성출력중이 아닌 경우
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:1
+o end
+o end
+- 
+o function faddr_src:사진촬영
+o begin
+o load param_dest:smart:100:257 param_src:phocap_num:1
+o load param_dest:smart:100:270 param_src:audio_num:1
+o end
+- 
+o function faddr_src:구동정하기
+o begin
+o if param_src:var:서보모터위치 lop:>= param_src:dec_num:973 rop:then
+o begin
+o load param_dest:var:구동방향 param_src:cm:25
+o load param_dest:var:회전방향 param_src:bool_num:0
+o load param_dest:var:서보모터위치 param_src:aux:3:62
+o if param_src:var:움직임감지횟수 lop:== param_src:dec_num:0 rop:then
+o begin
+o if param_src:var:구동방향 lop:== param_src:dec_num:0 rop:then
+o begin
+o call faddr_dest:전진
+o end
+o elseif param_src:var:구동방향 lop:== param_src:dec_num:1 rop:then
+o begin
+o call faddr_dest:후진
+o end
+o elseif param_src:var:구동방향 lop:== param_src:dec_num:2 rop:then
+o begin
+o call faddr_dest:좌회전
+o end
+o elseif param_src:var:구동방향 lop:== param_src:dec_num:3 rop:then
+o begin
+o call faddr_dest:우회전
+o end
+o end
+o load param_dest:var:움직임감지횟수 param_src:dec_num:0
+o end
+o elseif param_src:var:서보모터위치 lop:<= param_src:dec_num:50 rop:then
+o begin
+o load param_dest:var:구동방향 param_src:cm:25
+o load param_dest:var:회전방향 param_src:bool_num:1
+o if param_src:var:움직임감지횟수 lop:== param_src:dec_num:0 rop:then
+o begin
+o if param_src:var:구동방향 lop:== param_src:dec_num:0 rop:then
+o begin
+o call faddr_dest:전진
+o end
+o elseif param_src:var:구동방향 lop:== param_src:dec_num:1 rop:then
+o begin
+o call faddr_dest:후진
+o end
+o elseif param_src:var:구동방향 lop:== param_src:dec_num:2 rop:then
+o begin
+o call faddr_dest:좌회전
+o end
+o elseif param_src:var:구동방향 lop:== param_src:dec_num:3 rop:then
+o begin
+o call faddr_dest:우회전
+o end
+o end
+o load param_dest:var:움직임감지횟수 param_src:dec_num:0
+o end
+- 
+o if param_src:var:회전방향 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:var:서보모터위치 param_src:var:서보모터위치 aop:+ param_src:position_num:100
+o end
+o elseif param_src:var:회전방향 lop:== param_src:bool_num:0 rop:then
+o begin
+o compute param_dest:var:서보모터위치 param_src:var:서보모터위치 aop:- param_src:position_num:100
+o end
+o end
+- 
+o function faddr_src:전진
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:500
+o load param_dest:aux:2:68 param_src:dir_num:1524
+o load param_dest:cm:6 param_src:hrtimer_num:1000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o function faddr_src:후진
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1524
+o load param_dest:aux:2:68 param_src:dir_num:500
+o load param_dest:cm:6 param_src:hrtimer_num:1000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o function faddr_src:좌회전
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1524
+o load param_dest:aux:2:68 param_src:dir_num:1524
+o load param_dest:cm:6 param_src:hrtimer_num:1000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o function faddr_src:우회전
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:500
+o load param_dest:aux:2:68 param_src:dir_num:500
+o load param_dest:cm:6 param_src:hrtimer_num:1000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+- 

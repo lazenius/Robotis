@@ -1,0 +1,57 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 바람개비 꽃 예제프로그램
+o // param_text:[작동 방법]
+o // param_text:마이크에 소음이 감지되면 감지된 크기만큼 모터가 회전 합니다.
+o main
+o begin
+o // param_text:스마트 기기가 연결되어 화면이 나타날 때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+- 
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:scrrot_num:1
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:var:그림 param_src:dec_num:1
+- 
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o while(1)
+o begin
+o // param_text:그림을 표시할 수 있도록 계산
+o compute param_dest:var:그림위치 param_src:var:그림 aop:* param_src:dec_num:256
+o compute param_dest:smart:100:263 param_src:scrpos3_num:65549 aop:+ param_src:var:그림위치
+- 
+o compute param_dest:var:그림 param_src:var:그림 aop:+ param_src:dec_num:1
+o if param_src:var:그림 lop:> param_src:dec_num:6 rop:then
+o begin
+o load param_dest:var:그림 param_src:dec_num:1
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:4
+o while param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o begin
+o compute param_dest:var:바람세기 param_src:smart:100:285 aop:* param_src:dec_num:8
+o if param_src:var:바람세기 lop:> param_src:dec_num:650 rop:then
+o begin
+o load param_dest:var:바람세기 param_src:dec_num:1023
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o break
+o end
+o else
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:바람세기
+o end
+o end
+o end
+o end
+- 

@@ -1,0 +1,202 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 4단계 스마트 탐사차
+o // param_text:3번포트-잡기/놓기, 4번포트-집게올리기/내리기, 5번,6번포트-앞바퀴올리기/내리기
+o // param_text:스마트기기의 버튼을 터치하여 전후좌우로 이동
+o // param_text:집게를 올리고 내리며, 집게로 물건을 잡을 수 있고, 앞바퀴를 올려 계단을 오를 수 있음
+o // param_text:전진을 하면서 동시에 집게와 앞바퀴를 조종할 수 있음
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o load param_dest:smart:100:262 param_src:img_num:1
+o // param_text:오디오아이템 추가하기
+o load param_dest:smart:100:270 param_src:audio_num:1
+- 
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:6:61 param_src:bool_num:1
+- 
+o load param_dest:aux:5:60 param_src:dec_num:1023
+o load param_dest:aux:6:60 param_src:dec_num:1023
+- 
+- 
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:4:62 param_src:position_num:324
+- 
+o load param_dest:aux:5:62 param_src:position_num:702
+o load param_dest:aux:6:62 param_src:position_num:322
+- 
+o load param_dest:var:감속모터출력 param_src:dec_num:1000
+- 
+o while(1)
+o begin
+o load param_dest:var:터치 param_src:smart:100:286
+o // param_text:앞바퀴올리기
+o if param_src:var:터치 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:1023
+o load param_dest:aux:6:62 param_src:position_num:0
+o end
+o // param_text:앞바퀴중간
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:10 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:702
+o load param_dest:aux:6:62 param_src:position_num:322
+o end
+o // param_text:앞바퀴내리기
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:15 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:420
+o load param_dest:aux:6:62 param_src:position_num:604
+o end
+o // param_text:집게올리기
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:20 rop:then
+o begin
+o load param_dest:aux:4:62 param_src:position_num:205
+o end
+o // param_text:집게내리기
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:25 rop:then
+o begin
+o load param_dest:aux:4:62 param_src:position_num:512
+o end
+o // param_text:집게열기
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:19 rop:then
+o begin
+o load param_dest:aux:3:62 param_src:position_num:334
+o end
+o // param_text:집게닫기
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:24 rop:then
+o begin
+o load param_dest:aux:3:62 param_src:position_num:690
+o end
+o // param_text:저속
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:1 rop:then
+o begin
+o load param_dest:var:감속모터출력 param_src:dec_num:800
+o end
+o // param_text:고속
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:2 rop:then
+o begin
+o load param_dest:var:감속모터출력 param_src:dec_num:1000
+o end
+o // param_text:전진
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력
+o // param_text:앞바퀴올리기
+o if param_src:smart:100:287 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:1023
+o load param_dest:aux:6:62 param_src:position_num:0
+o end
+o // param_text:앞바퀴중간
+o elseif param_src:smart:100:287 lop:== param_src:scrpos1_num:10 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:702
+o load param_dest:aux:6:62 param_src:position_num:322
+o end
+o // param_text:앞바퀴내리기
+o elseif param_src:smart:100:287 lop:== param_src:scrpos1_num:15 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:420
+o load param_dest:aux:6:62 param_src:position_num:604
+o end
+o // param_text:집게올리기
+o elseif param_src:smart:100:287 lop:== param_src:scrpos1_num:20 rop:then
+o begin
+o load param_dest:aux:4:62 param_src:position_num:205
+o end
+o // param_text:집게내리기
+o elseif param_src:smart:100:287 lop:== param_src:scrpos1_num:25 rop:then
+o begin
+o load param_dest:aux:4:62 param_src:position_num:512
+o end
+o // param_text:집게열기
+o elseif param_src:smart:100:287 lop:== param_src:scrpos1_num:19 rop:then
+o begin
+o load param_dest:aux:3:62 param_src:position_num:334
+o end
+o // param_text:집게닫기
+o elseif param_src:smart:100:287 lop:== param_src:scrpos1_num:24 rop:then
+o begin
+o load param_dest:aux:3:62 param_src:position_num:690
+o end
+o end
+o // param_text:후진
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:22 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력
+o end
+o // param_text:우회전
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:1000
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:1000
+o end
+o // param_text:좌회전
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:1000
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:dec_num:1000
+o end
+o elseif param_src:var:터치 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o end
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

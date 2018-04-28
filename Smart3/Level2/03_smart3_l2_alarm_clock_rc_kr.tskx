@@ -1,0 +1,146 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 알람 로봇
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:리모컨으로 동작
+o // param_text:전원을 켜면 알람시계가 회전.
+o // param_text:1: 10초 후, 2: 20초 후, 3: 30초 후, 4: 40초 후, 5: 50초 후, 6: 60초 후로 알람 맞춤.
+o // param_text:U: 알람 해제, 중도 취소.
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:dec_num:0 rop:then
+o call faddr_dest:초기화
+o label laddr_src:시작
+o load param_dest:cm:6 param_src:hrtimer_num:0
+o while(1)
+o begin
+o if param_src:cm:6 lop:== param_src:hrtimer_num:0 rop:then
+o begin
+o call faddr_dest:알람설정
+o end
+o elseif param_src:cm:6 lop:!= param_src:hrtimer_num:0 rop:then
+o begin
+o while(1)
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:39
+o jump laddr_dest:시작
+o end
+o elseif param_src:cm:6 lop:== param_src:hrtimer_num:0 rop:then
+o begin
+o call faddr_dest:알람동작
+o jump laddr_dest:시작
+o end
+o end
+o end
+o end
+o end
+o function faddr_src:초기화
+o begin
+o load param_dest:var:알람 param_src:dec_num:0
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:5:62 param_src:position_num:91
+o load param_dest:aux:8:62 param_src:position_num:933
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:cm:5 param_src:timer_num:16
+o while param_src:cm:5 lop:!= param_src:timer_num:0 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1524
+o load param_dest:aux:2:68 param_src:dir_num:1524
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:500
+o load param_dest:aux:2:68 param_src:dir_num:500
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o load param_dest:aux:5:62 param_src:position_num:350
+o load param_dest:aux:8:62 param_src:position_num:674
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+- 
+o function faddr_src:알람설정
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:3
+o load param_dest:cm:6 param_src:hrtimer_num:10000
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:5
+o load param_dest:cm:6 param_src:hrtimer_num:20000
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:64 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:7
+o load param_dest:cm:6 param_src:hrtimer_num:30000
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:8
+o load param_dest:cm:6 param_src:hrtimer_num:40000
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:256 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:10
+o load param_dest:cm:6 param_src:hrtimer_num:50000
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:512 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:1
+o load param_dest:cm:17 param_src:scale_num:12
+o load param_dest:cm:6 param_src:hrtimer_num:60000
+o end
+o end
+- 
+o function faddr_src:알람동작
+o begin
+o load param_dest:aux:8:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:5:62 param_src:position_num:91
+o load param_dest:aux:8:62 param_src:position_num:933
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o while param_src:cm:1 lop:!= param_src:rc100z_num:1 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:6
+o load param_dest:aux:1:68 param_src:dir_num:1524
+o load param_dest:aux:2:68 param_src:dir_num:1524
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:500
+o load param_dest:aux:2:68 param_src:dir_num:500
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o load param_dest:aux:5:62 param_src:position_num:350
+o load param_dest:aux:8:62 param_src:position_num:674
+o load param_dest:cm:5 param_src:timer_num:8
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:8:61 param_src:bool_num:0
+o load param_dest:aux:5:61 param_src:bool_num:0
+o load param_dest:aux:1:68 param_src:dir_num:1024
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 

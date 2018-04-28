@@ -1,0 +1,215 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 검투사
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동 방법]
+o // param_text:검투사로 하는 격투 게임. 얼굴인식을 통해 게임을 시작.
+o // param_text:스마트폰의 버튼을 터치하여 이동하거나 공격.
+o // param_text:머리나 가슴을 맞아 접촉센서가 눌리면 에너지 감소. 3번의 기회.
+- 
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:dec_num:0 rop:then
+o call faddr_dest:초기화
+o while(1)
+o begin
+o call faddr_dest:에너지표시
+o call faddr_dest:로봇명중
+o call faddr_dest:로봇조종
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o // param_text:이동 속도 설정
+o load param_dest:var:이동속도 param_src:dec_num:850
+o // param_text:초기값 설정
+o load param_dest:var:상하팔위치 param_src:dec_num:400
+o load param_dest:var:좌우팔위치 param_src:dec_num:512
+o load param_dest:var:상하공격위치 param_src:dec_num:750
+o load param_dest:var:좌우공격위치 param_src:dec_num:812
+o load param_dest:var:에너지 param_src:dec_num:3
+o load param_dest:var:머리공격당함 param_src:bool_num:0
+o // param_text:팔 초기 위치 설정
+o load param_dest:aux:9:61 param_src:bool_num:1
+o load param_dest:aux:10:61 param_src:bool_num:1
+o load param_dest:aux:9:60 param_src:dec_num:1023
+o load param_dest:aux:10:60 param_src:dec_num:1023
+o load param_dest:aux:9:62 param_src:var:좌우팔위치
+o load param_dest:aux:10:62 param_src:var:상하공격위치
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:smart:100:268 param_src:dec_num:3
+o load param_dest:smart:100:266 param_src:dec_num:0
+o // param_text:얼굴인식 대기
+o load param_dest:smart:100:262 param_src:dec_num:1
+o // param_text:카메라설정
+o load param_dest:smart:100:252 param_src:dec_num:2
+o load param_dest:smart:100:254 param_src:dec_num:1
+o // param_text:에너지 표시 삭제
+o load param_dest:smart:100:267 param_src:scrpos4_num:10
+o // param_text:카메라 전환을 기다림
+o wait param_src:smart:100:252 lop:!= param_src:dec_num:2 rop:then
+o wait param_src:smart:100:258 lop:!= param_src:scrpos1_num:13 rop:then
+o load param_dest:smart:100:268 param_src:dec_num:2
+o wait param_src:smart:100:268 lop:== param_src:dec_num:2 rop:then
+o load param_dest:smart:100:270 param_src:dec_num:1
+o load param_dest:smart:100:252 param_src:dec_num:0
+o // param_text:배경 교체
+o load param_dest:smart:100:262 param_src:dec_num:2
+o end
+- 
+o function faddr_src:에너지표시
+o begin
+o load param_dest:smart:100:267 param_src:scrpos0_num:10,에너지,60,1
+o end
+- 
+o function faddr_src:로봇명중
+o begin
+o // param_text:접촉센서가 눌리면 공격당한 것.
+o if param_src:var:머리공격당함 lop:== param_src:bool_num:1 rop:then
+o begin
+o compute param_dest:var:에너지 param_src:var:에너지 aop:- param_src:dec_num:1
+o // param_text:공격 당했음을 멜로디로 알림
+o load param_dest:smart:100:270 param_src:dec_num:4
+o // param_text:1초간 후진
+o call faddr_dest:후진
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:좌회전
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:정지
+o load param_dest:var:머리공격당함 param_src:bool_num:0
+o end
+o if param_src:var:에너지 lop:<= param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:267 param_src:scrpos0_num:10,에너지,60,1
+o load param_dest:smart:100:270 param_src:dec_num:6
+o call faddr_dest:게임종료
+o end
+o end
+- 
+o function faddr_src:로봇조종
+o begin
+o load param_dest:var:터치 param_src:smart:100:286
+o if param_src:var:터치 lop:== param_src:dec_num:17 rop:then
+o call faddr_dest:전진
+o elseif param_src:var:터치 lop:== param_src:dec_num:22 rop:then
+o call faddr_dest:후진
+o elseif param_src:var:터치 lop:== param_src:dec_num:21 rop:then
+o call faddr_dest:좌회전
+o elseif param_src:var:터치 lop:== param_src:dec_num:23 rop:then
+o call faddr_dest:우회전
+o else
+o call faddr_dest:정지
+o if param_src:var:터치 lop:== param_src:dec_num:20 rop:then
+o begin
+o if param_src:smart:100:270 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:dec_num:3
+o end
+o load param_dest:aux:9:62 param_src:var:좌우공격위치
+o load param_dest:aux:10:62 param_src:var:상하공격위치
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:9:62 param_src:var:좌우팔위치
+o load param_dest:aux:10:62 param_src:var:상하공격위치
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o if param_src:var:터치 lop:== param_src:dec_num:25 rop:then
+o begin
+o if param_src:smart:100:270 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:dec_num:2
+o end
+o load param_dest:aux:10:62 param_src:var:상하팔위치
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:10:62 param_src:var:상하공격위치
+o load param_dest:cm:5 param_src:timer_num:3
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o end
+- 
+o function faddr_src:전진
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:이동속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:이동속도
+o end
+o function faddr_src:후진
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:이동속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:이동속도
+o end
+o function faddr_src:좌회전
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:이동속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:이동속도
+o end
+- 
+o function faddr_src:우회전
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:이동속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:이동속도
+o end
+- 
+o function faddr_src:정지
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 
+o function faddr_src:게임종료
+o begin
+o load param_dest:cm:6 param_src:hrtimer_num:3000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o // param_text:Retry 표시
+o load param_dest:smart:100:263 param_src:scrpos3_num:196877
+o // param_text:Retry 깜박임, 클릭시 게임 재시작
+o while param_src:smart:100:286 lop:!= param_src:scrpos1_num:13 rop:then
+o begin
+o for param_var:반복 param_src:dec_num:0 param_src:dec_num:1
+o begin
+o if param_src:var:반복 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:196877
+o end
+o else
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o end
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o while param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o begin
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:13 rop:then
+o begin
+o break
+o end
+o end
+o end
+o end
+o // param_text:화면 클리어
+o load param_dest:smart:100:263 param_src:dec_num:0
+o // param_text:초기화
+o call faddr_dest:초기화
+o end
+- 
+o // param_text:인터럽트 활성
+o callback
+o begin
+o if param_src:aux:7:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:var:머리공격당함 param_src:bool_num:1
+o end
+o end
+- 

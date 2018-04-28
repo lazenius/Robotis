@@ -1,0 +1,191 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 반딧불이 리모컨
+o // param_text:UDLR - 전후좌우 이동
+o // param_text:1 - 제자리에서 날개짓
+- 
+o main
+o begin
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o call faddr_dest:초기화
+o while(1)
+o begin
+o call faddr_dest:조종
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:주행속도 param_src:dec_num:1023
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:6:61 param_src:bool_num:1
+o load param_dest:aux:9:61 param_src:bool_num:1
+- 
+o load param_dest:aux:3:60 param_src:dec_num:1023
+o load param_dest:aux:4:60 param_src:dec_num:1023
+o load param_dest:aux:6:60 param_src:dec_num:1023
+o load param_dest:aux:9:60 param_src:dec_num:1023
+- 
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:aux:6:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o end
+- 
+o function faddr_src:조종
+o begin
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o call faddr_dest:전진
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:4 rop:then
+o begin
+o call faddr_dest:제자리좌회전
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:8 rop:then
+o begin
+o call faddr_dest:제자리우회전
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o call faddr_dest:후진
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:5
+o load param_dest:aux:2:68 param_src:dir_num:800
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+o begin
+o call faddr_dest:정지
+o end
+o end
+o function faddr_src:전진
+o begin
+o label laddr_src:전진반복
+o load param_dest:aux:2:68 param_src:dir_num:800
+o for param_var:a param_src:dec_num:0 param_src:dec_num:3
+- 
+o begin
+o load param_dest:aux:8:66 param_src:led_num:3
+o load param_dest:aux:3:62 param_src:position_num:662
+o load param_dest:aux:4:62 param_src:position_num:662
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:362
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:8:66 param_src:led_num:0
+o load param_dest:aux:3:62 param_src:position_num:362
+o load param_dest:aux:4:62 param_src:position_num:362
+o load param_dest:aux:6:62 param_src:position_num:662
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o jump laddr_dest:전진반복
+o end
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o function faddr_src:후진
+o begin
+o label laddr_src:후진반복
+o load param_dest:aux:2:68 param_src:dir_num:800
+o for param_var:a param_src:dec_num:0 param_src:dec_num:3
+- 
+o begin
+o load param_dest:aux:8:66 param_src:led_num:3
+o load param_dest:aux:3:62 param_src:position_num:362
+o load param_dest:aux:4:62 param_src:position_num:362
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:362
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:8:66 param_src:led_num:0
+o load param_dest:aux:3:62 param_src:position_num:662
+o load param_dest:aux:4:62 param_src:position_num:662
+o load param_dest:aux:6:62 param_src:position_num:662
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o jump laddr_dest:후진반복
+o end
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 
+o function faddr_src:제자리좌회전
+o begin
+o label laddr_src:좌회전반복
+o load param_dest:aux:2:68 param_src:dir_num:800
+o for param_var:a param_src:dec_num:0 param_src:dec_num:3
+- 
+o begin
+o load param_dest:aux:8:66 param_src:led_num:1
+o load param_dest:aux:3:62 param_src:position_num:662
+o load param_dest:aux:4:62 param_src:position_num:662
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:412
+o load param_dest:cm:6 param_src:hrtimer_num:250
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:8:66 param_src:led_num:0
+o load param_dest:aux:3:62 param_src:position_num:362
+o load param_dest:aux:4:62 param_src:position_num:362
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:4 rop:then
+o begin
+o jump laddr_dest:좌회전반복
+o end
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o function faddr_src:제자리우회전
+o begin
+o label laddr_src:우회전반복
+o load param_dest:aux:2:68 param_src:dir_num:800
+o for param_var:a param_src:dec_num:0 param_src:dec_num:3
+- 
+o begin
+o load param_dest:aux:8:66 param_src:led_num:2
+o load param_dest:aux:3:62 param_src:position_num:362
+o load param_dest:aux:4:62 param_src:position_num:362
+o load param_dest:aux:6:62 param_src:position_num:612
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:250
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:8:66 param_src:led_num:0
+o load param_dest:aux:3:62 param_src:position_num:662
+o load param_dest:aux:4:62 param_src:position_num:662
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o end
+o if param_src:cm:1 lop:== param_src:rc100z_num:8 rop:then
+o begin
+o jump laddr_dest:우회전반복
+o end
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o function faddr_src:정지
+o begin
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:aux:6:62 param_src:position_num:512
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 

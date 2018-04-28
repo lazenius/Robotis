@@ -1,0 +1,129 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 운반로봇 예제프로그램_리모콘
+o // param_text:[작동 방법]
+o // param_text:조종기를 가지고 운반로봇을 조종합니다.
+- 
+o main
+o begin
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o load param_dest:var:이동속도 param_src:dec_num:400
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:5:62 param_src:position_num:460
+- 
+o // param_text:UDLR은 방향키 @5번 : 속도 400 @6번 : 속도 600 @5,6번 : 정지 @1,2,3번 : 로봇 손의 위치 
+o while(1)
+o begin
+o load param_dest:var:무선데이터 param_src:cm:1
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o call faddr_dest:전진
+o end
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o call faddr_dest:후진
+o end
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:4 rop:then
+o begin
+o call faddr_dest:좌회전
+o end
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:8 rop:then
+o begin
+o call faddr_dest:우회전
+o end
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:0 rop:then
+o begin
+o call faddr_dest:정지
+o end
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:512 rop:then
+o begin
+o load param_dest:var:이동속도 param_src:dec_num:600
+o end
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:256 rop:then
+o begin
+o load param_dest:var:이동속도 param_src:dec_num:400
+o end
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:400
+o end
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:512
+o end
+o if param_src:var:무선데이터 lop:== param_src:rc100z_num:64 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:700
+o end
+o end
+o end
+o function faddr_src:전진
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:이동속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:이동속도
+o end
+o function faddr_src:후진
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:이동속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:이동속도
+o end
+o function faddr_src:정지
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:0
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:dec_num:0
+o end
+o function faddr_src:좌회전
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:이동속도
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:이동속도
+o end
+o function faddr_src:우회전
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:이동속도
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:이동속도
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

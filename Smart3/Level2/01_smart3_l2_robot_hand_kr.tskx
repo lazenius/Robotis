@@ -1,0 +1,483 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 2단계 가위바위보 로봇
+o // param_text:최초배포: 2017/03/02
+o // param_text:[작동방법]
+o // param_text:대결모드나 조종모드로 선택 가능.
+o // param_text:대결모드 - 카운트다운하는 동안 스마트폰에서 가위, 바위, 보 중 선택. 로봇과 대결.
+o // param_text:조종모드 - 스마트폰으로 가위, 바위, 보 원격 조종.
+- 
+o main
+o begin
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:4:61 param_src:bool_num:1
+- 
+o wait param_src:smart:100:251 lop:< param_src:dec_num:0 rop:then
+o load param_dest:smart:100:251 param_src:dec_num:2
+o load param_dest:cm:23 param_src:dec_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o load param_dest:cm:25 param_src:dec_num:2
+- 
+o label laddr_src:메인화면
+o load param_dest:smart:100:262 param_src:img_num:1
+- 
+o while(1)
+o begin
+o if param_src:smart:100:286 lop:== param_src:scrpos1_num:11 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o jump laddr_dest:대결모드
+o end
+o elseif param_src:smart:100:286 lop:== param_src:scrpos1_num:15 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o jump laddr_dest:조종모드
+o end
+o end
+- 
+o // param_text:터치 위치에 따라서 조종/대결 모드가 선택
+o while(1)
+o begin
+o label laddr_src:조종모드
+o load param_dest:smart:100:262 param_src:img_num:2
+- 
+o load param_dest:var:터치입력 param_src:smart:100:286
+o // param_text:가위내기
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:19 rop:then
+o begin
+o call faddr_dest:가위
+o end
+o // param_text:바위내기
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o call faddr_dest:바위
+o end
+o // param_text:보내기
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:18 rop:then
+o begin
+o call faddr_dest:보
+o end
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o jump laddr_dest:메인화면
+o end
+o end
+o wait param_src:smart:100:286 lop:!= param_src:scrpos1_num:23 rop:then
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o jump laddr_dest:메인화면
+- 
+o // param_text:3초, 2초에 입력하면 패배
+o label laddr_src:대결모드
+o while(1)
+o begin
+o load param_dest:smart:100:262 param_src:img_num:2
+o load param_dest:var:카운트 param_src:dec_num:3
+o load param_dest:var:사용자 param_src:dec_num:4
+o load param_dest:var:스마트로봇 param_src:cm:25
+- 
+o load param_dest:smart:100:291 param_src:smarttime_num:4
+o while param_src:smart:100:291 lop:> param_src:smarttime_num:0 rop:then
+o begin
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:smart:100:291 lop:<= param_src:smarttime_num:3 rop:&& param_src:smart:100:291 lop:> param_src:smarttime_num:2 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:267 param_src:scrpos4_num:60162829
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:17 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:18 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:19 rop:then
+o begin
+o jump laddr_dest:패배
+o end
+o wait param_src:smart:100:291 lop:> param_src:smarttime_num:2 rop:then
+o end
+o elseif param_src:smart:100:291 lop:<= param_src:smarttime_num:2 rop:&& param_src:smart:100:291 lop:> param_src:smarttime_num:1 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:267 param_src:scrpos4_num:60162573
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:17 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:18 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:19 rop:then
+o begin
+o jump laddr_dest:시작
+o end
+o wait param_src:smart:100:291 lop:> param_src:smarttime_num:1 rop:then
+o end
+o elseif param_src:smart:100:291 lop:<= param_src:smarttime_num:1 rop:&& param_src:smart:100:291 lop:> param_src:smarttime_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:267 param_src:scrpos4_num:60162317
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:17 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:18 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:19 rop:then
+o begin
+o jump laddr_dest:시작
+o end
+o wait param_src:smart:100:291 lop:> param_src:smarttime_num:0 rop:then
+o end
+o else
+o begin
+o jump laddr_dest:시작
+o end
+o end
+o label laddr_src:패배
+o load param_dest:smart:100:267 param_src:scrpos4_num:0
+o load param_dest:smart:100:268 param_src:txt_num:4
+o jump laddr_dest:메인화면
+o label laddr_src:시작
+o load param_dest:smart:100:267 param_src:scrpos4_num:0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:!= param_src:scrpos1_num:17 rop:&& param_src:var:터치입력 lop:!= param_src:scrpos1_num:18 rop:&& param_src:var:터치입력 lop:!= param_src:scrpos1_num:19 rop:then
+o begin
+o // param_text:선택 안하면 패배
+o load param_dest:smart:100:263 param_src:scrpos3_num:66573
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:7
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o jump laddr_dest:메인화면
+o end
+o // param_text:사용자가 가위를 선택했을 때
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:19 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o load param_dest:var:사용자 param_src:dec_num:0
+o if param_src:var:스마트로봇 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:8
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:가위
+o call faddr_dest:결과확인
+o end
+o if param_src:var:스마트로봇 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:6
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:바위
+o call faddr_dest:결과확인
+o end
+o if param_src:var:스마트로봇 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:7
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:보
+o call faddr_dest:결과확인
+o end
+o end
+o // param_text:사용자가 바위를 선택했을 때
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o load param_dest:var:사용자 param_src:dec_num:1
+o if param_src:var:스마트로봇 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:5
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:가위
+o call faddr_dest:결과확인
+o end
+o if param_src:var:스마트로봇 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:3
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:바위
+o call faddr_dest:결과확인
+o end
+o if param_src:var:스마트로봇 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:4
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:보
+o call faddr_dest:결과확인
+o end
+o end
+o // param_text:사용자가 보를 선택했을 때
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:18 rop:then
+o begin
+o load param_dest:var:사용자 param_src:dec_num:2
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o if param_src:var:스마트로봇 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:11
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:가위
+o call faddr_dest:결과확인
+o end
+o if param_src:var:스마트로봇 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:9
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:바위
+o call faddr_dest:결과확인
+o end
+o if param_src:var:스마트로봇 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:10
+o load param_dest:smart:100:270 param_src:audio_num:1
+o call faddr_dest:보
+o call faddr_dest:결과확인
+o end
+o end
+o while(1)
+o begin
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o jump laddr_dest:대결모드
+o end
+o elseif param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o jump laddr_dest:메인화면
+o end
+o end
+o end
+o end
+- 
+o // param_text:로봇 손 모양만들기
+o function faddr_src:가위
+o begin
+o if param_src:var:바위 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:var:바위 param_src:bool_num:0
+o end
+o else
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:4:62 param_src:position_num:247
+o end
+o call faddr_dest:결과정지
+o end
+- 
+o function faddr_src:바위
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:600
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:3:62 param_src:position_num:247
+o load param_dest:aux:4:62 param_src:position_num:247
+o load param_dest:var:바위 param_src:bool_num:1
+o call faddr_dest:결과정지
+o end
+- 
+o function faddr_src:보
+o begin
+o load param_dest:var:바위 param_src:bool_num:0
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:aux:1:68 param_src:dir_num:1624
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o call faddr_dest:결과정지
+o end
+- 
+o // param_text:사용자가 낸 무기와 로봇의 무기를 비교
+o function faddr_src:결과확인
+o begin
+o // param_text:비겼을 때
+o if param_src:var:사용자 lop:== param_src:var:스마트로봇 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o // param_text:둘다 가위를 냈을 때
+o if param_src:var:사용자 lop:== param_src:dec_num:0 rop:&& param_src:var:스마트로봇 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:smart:100:268 param_src:txt_num:3
+o while(1)
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:65805
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o call faddr_dest:정지1_0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o break
+o end
+o end
+o end
+o // param_text:둘다 바위를 냈을 때
+o elseif param_src:var:사용자 lop:== param_src:dec_num:1 rop:&& param_src:var:스마트로봇 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:smart:100:268 param_src:txt_num:3
+o while(1)
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:65805
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o call faddr_dest:정지1_0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o break
+o end
+o end
+o end
+o // param_text:둘다 보를 냈을 때
+o elseif param_src:var:사용자 lop:== param_src:dec_num:2 rop:&& param_src:var:스마트로봇 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:smart:100:268 param_src:txt_num:3
+- 
+o while(1)
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:65805
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o call faddr_dest:정지1_0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o break
+o end
+o end
+o end
+o end
+o // param_text:사용자는 가위, 스마트로봇은 바위
+o elseif param_src:var:사용자 lop:== param_src:dec_num:0 rop:&& param_src:var:스마트로봇 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:smart:100:268 param_src:txt_num:2
+- 
+o while(1)
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66061
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o call faddr_dest:정지1_0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o break
+o end
+o end
+o end
+o // param_text:사용자는 가위, 스마트로봇은 보
+o elseif param_src:var:사용자 lop:== param_src:dec_num:0 rop:&& param_src:var:스마트로봇 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o load param_dest:smart:100:268 param_src:txt_num:1
+- 
+o while(1)
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66317
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o call faddr_dest:정지1_0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o break
+o end
+o end
+o end
+o // param_text:사용자는 바위, 스마트로봇은 가위
+o elseif param_src:var:사용자 lop:== param_src:dec_num:1 rop:&& param_src:var:스마트로봇 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o load param_dest:smart:100:268 param_src:txt_num:1
+- 
+o while(1)
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66317
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o call faddr_dest:정지1_0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o break
+o end
+o end
+o end
+o // param_text:사용자는 바위, 스마트로봇은 보
+o elseif param_src:var:사용자 lop:== param_src:dec_num:1 rop:&& param_src:var:스마트로봇 lop:== param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:3
+o load param_dest:smart:100:268 param_src:txt_num:2
+- 
+o while(1)
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66061
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o call faddr_dest:정지1_0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o break
+o end
+o end
+o end
+o // param_text:사용자는 보, 스마트로봇은 가위
+o elseif param_src:var:사용자 lop:== param_src:dec_num:2 rop:&& param_src:var:스마트로봇 lop:== param_src:dec_num:0 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:268 param_src:txt_num:2
+- 
+o while(1)
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66061
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o call faddr_dest:정지1_0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o break
+o end
+o end
+o end
+o // param_text:사용자는 보, 스마트로봇은 바위
+o elseif param_src:var:사용자 lop:== param_src:dec_num:2 rop:&& param_src:var:스마트로봇 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:268 param_src:txt_num:1
+- 
+o while(1)
+o begin
+o load param_dest:smart:100:263 param_src:scrpos3_num:66317
+o call faddr_dest:정지1_0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o call faddr_dest:정지1_0
+o load param_dest:var:터치입력 param_src:smart:100:286
+o if param_src:var:터치입력 lop:== param_src:scrpos1_num:1 rop:|| param_src:var:터치입력 lop:== param_src:scrpos1_num:5 rop:then
+o begin
+o break
+o end
+o end
+o end
+o end
+o function faddr_src:결과정지
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o function faddr_src:정지1_0
+o begin
+o load param_dest:cm:5 param_src:timer_num:4
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

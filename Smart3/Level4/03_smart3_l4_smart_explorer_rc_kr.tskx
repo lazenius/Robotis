@@ -1,0 +1,146 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 4단계 스마트탐사차 RC
+o // param_text:[리모컨으로 조종]
+o // param_text:UDLR - 전후좌우 이동
+o // param_text:5: 앞바퀴 올리기, 5+6: 앞바퀴 중간, 6: 앞바퀴 내리기
+o // param_text:1: 집게 올리기, 3: 집게 내리기, 4: 집게 열기, 2: 집게 닫기
+- 
+o main
+o begin
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:5:61 param_src:bool_num:1
+o load param_dest:aux:6:61 param_src:bool_num:1
+- 
+o load param_dest:aux:5:60 param_src:dec_num:1023
+o load param_dest:aux:6:60 param_src:dec_num:1023
+- 
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:4:62 param_src:position_num:324
+- 
+o load param_dest:aux:5:62 param_src:position_num:702
+o load param_dest:aux:6:62 param_src:position_num:322
+- 
+o load param_dest:var:감속모터출력 param_src:dec_num:1000
+- 
+o while(1)
+o begin
+o // param_text:앞바퀴올리기
+o if param_src:cm:1 lop:== param_src:rc100z_num:256 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:1023
+o load param_dest:aux:6:62 param_src:position_num:0
+o end
+o // param_text:앞바퀴중간
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:768 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:702
+o load param_dest:aux:6:62 param_src:position_num:322
+o end
+o // param_text:앞바퀴내리기
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:512 rop:then
+o begin
+o load param_dest:aux:5:62 param_src:position_num:420
+o load param_dest:aux:6:62 param_src:position_num:604
+o end
+o // param_text:집게올리기
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:16 rop:then
+o begin
+o load param_dest:aux:4:62 param_src:position_num:205
+o end
+o // param_text:집게내리기
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:64 rop:then
+o begin
+o load param_dest:aux:4:62 param_src:position_num:512
+o end
+o // param_text:집게열기
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:128 rop:then
+o begin
+o load param_dest:aux:3:62 param_src:position_num:334
+o end
+o // param_text:집게닫기
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:32 rop:then
+o begin
+o load param_dest:aux:3:62 param_src:position_num:690
+o end
+- 
+o // param_text:전진
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:1 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력
+o end
+o // param_text:후진
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:2 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:var:감속모터출력
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:var:감속모터출력
+o end
+o // param_text:우회전
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:8 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:0 aop:+ param_src:dec_num:1000
+o compute param_dest:aux:2:68 param_src:dir_num:0 aop:+ param_src:dec_num:1000
+o end
+o // param_text:좌회전
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:4 rop:then
+o begin
+o compute param_dest:aux:1:68 param_src:dir_num:1024 aop:+ param_src:dec_num:1000
+o compute param_dest:aux:2:68 param_src:dir_num:1024 aop:+ param_src:dec_num:1000
+o end
+o elseif param_src:cm:1 lop:== param_src:rc100z_num:0 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+o end
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

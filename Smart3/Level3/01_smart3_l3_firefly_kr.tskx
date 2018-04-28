@@ -1,0 +1,292 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:스마트3 3단계 반딧불이
+o // param_text:스마트기기의 버튼을 터치하여 전후좌우 이동, 날개버튼을 터치하여 날개짓.
+o // param_text:음성 명령에 따라 이동.
+- 
+o main
+o begin
+o // param_text:스마트 기기가 연결되어 화면이 나타날 때까지 대기
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+- 
+o // param_text:스마트기기 화면 방향 설정
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+- 
+o call faddr_dest:초기화
+o load param_dest:smart:100:262 param_src:img_num:1
+o while(1)
+o begin
+o call faddr_dest:터치
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:주행속도 param_src:dec_num:1023
+o load param_dest:aux:3:61 param_src:bool_num:1
+o load param_dest:aux:4:61 param_src:bool_num:1
+o load param_dest:aux:6:61 param_src:bool_num:1
+o load param_dest:aux:9:61 param_src:bool_num:1
+- 
+o load param_dest:aux:3:60 param_src:dec_num:1023
+o load param_dest:aux:4:60 param_src:dec_num:1023
+o load param_dest:aux:6:60 param_src:dec_num:1023
+o load param_dest:aux:9:60 param_src:dec_num:1023
+- 
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:aux:6:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o end
+- 
+o function faddr_src:터치
+o begin
+o load param_dest:var:이동버튼 param_src:smart:100:286
+o if param_src:var:이동버튼 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o call faddr_dest:전진
+o end
+o elseif param_src:var:이동버튼 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o call faddr_dest:제자리좌회전
+o end
+o elseif param_src:var:이동버튼 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o call faddr_dest:제자리우회전
+o end
+o elseif param_src:var:이동버튼 lop:== param_src:scrpos1_num:22 rop:then
+o begin
+o call faddr_dest:후진
+o end
+o elseif param_src:var:이동버튼 lop:== param_src:scrpos1_num:25 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:aux:2:68 param_src:dir_num:800
+o end
+o elseif param_src:var:이동버튼 lop:== param_src:scrpos1_num:20 rop:then
+o begin
+o load param_dest:smart:100:268 param_src:txt_num:5
+o load param_dest:smart:100:262 param_src:img_num:0
+o load param_dest:smart:100:266 param_src:scrpos4_num:20709635
+o load param_dest:smart:100:266 param_src:scrpos4_num:20709896
+o load param_dest:smart:100:266 param_src:scrpos4_num:20710157
+o load param_dest:smart:100:266 param_src:scrpos4_num:20710418
+o load param_dest:cm:5 param_src:timer_num:24
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o if param_src:smart:100:274 lop:== param_src:voice_num:0 rop:then
+o begin
+o load param_dest:smart:100:274 param_src:voice_num:1
+o // param_text:음성 입력이 완료되었을때까지 대기
+o wait param_src:smart:100:274 lop:!= param_src:voice_num:0 rop:then
+o while(1)
+o begin
+o load param_dest:var:음성인식결과 param_src:smart:100:275
+o // param_text:에러체크
+o if param_src:var:음성인식결과 lop:!= param_src:dec_num:-1 rop:then
+o begin
+o if param_src:var:음성인식결과 lop:== param_src:dec_num:1 rop:then
+o begin
+o call faddr_dest:전진
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:3 rop:then
+o begin
+o call faddr_dest:제자리좌회전
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:4 rop:then
+o begin
+o call faddr_dest:제자리우회전
+o end
+o elseif param_src:var:음성인식결과 lop:== param_src:dec_num:2 rop:then
+o begin
+o call faddr_dest:후진
+o end
+o // param_text:결과 초기화
+o load param_dest:smart:100:275 param_src:txt_num:0
+o load param_dest:smart:100:262 param_src:img_num:1
+o break
+o end
+o end
+o end
+o load param_dest:smart:100:262 param_src:img_num:1
+o load param_dest:smart:100:266 param_src:scrpos4_num:0
+o end
+o elseif param_src:var:이동버튼 lop:== param_src:scrpos1_num:0 rop:then
+o begin
+- 
+o call faddr_dest:정지
+o end
+o end
+o function faddr_src:전진
+o begin
+o label laddr_src:전진반복
+o load param_dest:aux:2:68 param_src:dir_num:800
+o for param_var:a param_src:dec_num:0 param_src:dec_num:3
+- 
+o begin
+o load param_dest:aux:8:66 param_src:led_num:3
+o load param_dest:aux:3:62 param_src:position_num:662
+o load param_dest:aux:4:62 param_src:position_num:662
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:362
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:8:66 param_src:led_num:0
+o load param_dest:aux:3:62 param_src:position_num:362
+o load param_dest:aux:4:62 param_src:position_num:362
+o load param_dest:aux:6:62 param_src:position_num:662
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:var:이동버튼 param_src:smart:100:286
+o end
+o if param_src:var:이동버튼 lop:== param_src:scrpos1_num:17 rop:then
+o begin
+o jump laddr_dest:전진반복
+o end
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o function faddr_src:후진
+o begin
+o label laddr_src:후진반복
+o load param_dest:aux:2:68 param_src:dir_num:800
+o for param_var:a param_src:dec_num:0 param_src:dec_num:3
+o begin
+o load param_dest:aux:8:66 param_src:led_num:3
+o load param_dest:aux:3:62 param_src:position_num:362
+o load param_dest:aux:4:62 param_src:position_num:362
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:362
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:8:66 param_src:led_num:0
+o load param_dest:aux:3:62 param_src:position_num:662
+o load param_dest:aux:4:62 param_src:position_num:662
+o load param_dest:aux:6:62 param_src:position_num:662
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:var:이동버튼 param_src:smart:100:286
+o end
+o if param_src:var:이동버튼 lop:== param_src:scrpos1_num:22 rop:then
+o begin
+o jump laddr_dest:후진반복
+o end
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 
+o function faddr_src:제자리좌회전
+o begin
+o label laddr_src:좌회전반복
+o load param_dest:aux:2:68 param_src:dir_num:800
+o for param_var:a param_src:dec_num:0 param_src:dec_num:3
+- 
+o begin
+o load param_dest:aux:8:66 param_src:led_num:1
+o load param_dest:aux:3:62 param_src:position_num:662
+o load param_dest:aux:4:62 param_src:position_num:662
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:412
+o load param_dest:cm:6 param_src:hrtimer_num:250
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:8:66 param_src:led_num:0
+o load param_dest:aux:3:62 param_src:position_num:362
+o load param_dest:aux:4:62 param_src:position_num:362
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:var:이동버튼 param_src:smart:100:286
+o end
+o if param_src:var:이동버튼 lop:== param_src:scrpos1_num:21 rop:then
+o begin
+o jump laddr_dest:좌회전반복
+o end
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o function faddr_src:제자리우회전
+o begin
+o label laddr_src:우회전반복
+o load param_dest:aux:2:68 param_src:dir_num:800
+o for param_var:a param_src:dec_num:0 param_src:dec_num:3
+- 
+o begin
+o load param_dest:aux:8:66 param_src:led_num:2
+o load param_dest:aux:3:62 param_src:position_num:362
+o load param_dest:aux:4:62 param_src:position_num:362
+o load param_dest:aux:6:62 param_src:position_num:612
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:250
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:8:66 param_src:led_num:0
+o load param_dest:aux:3:62 param_src:position_num:662
+o load param_dest:aux:4:62 param_src:position_num:662
+o load param_dest:aux:6:62 param_src:position_num:412
+o load param_dest:aux:9:62 param_src:position_num:612
+o load param_dest:cm:6 param_src:hrtimer_num:200
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:var:이동버튼 param_src:smart:100:286
+o end
+o if param_src:var:이동버튼 lop:== param_src:scrpos1_num:23 rop:then
+o begin
+o jump laddr_dest:우회전반복
+o end
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+o function faddr_src:정지
+o begin
+o load param_dest:aux:3:62 param_src:position_num:512
+o load param_dest:aux:4:62 param_src:position_num:512
+o load param_dest:aux:9:62 param_src:position_num:512
+o load param_dest:aux:6:62 param_src:position_num:512
+o load param_dest:aux:2:68 param_src:dir_num:0
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 

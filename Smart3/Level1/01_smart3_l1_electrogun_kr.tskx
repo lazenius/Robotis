@@ -1,0 +1,328 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 전자총 예제프로그램
+o // param_text:[작동 방법]
+o // param_text:스마트 폰을 로봇에 장착 가상으로 유령잡는 게임을 합니다.
+o main
+o begin
+o // param_text:스마트 폰과 연결 될때까지 대기 
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+- 
+o // param_text:핸드폰 방향 설정
+o load param_dest:smart:100:251 param_src:scrrot_num:2
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o label laddr_src:시작
+o call faddr_dest:초기화
+- 
+o while(1)
+o begin
+o call faddr_dest:유령생성
+- 
+o if param_src:var:게임오버 lop:== param_src:bool_num:1 rop:then
+o begin
+o jump laddr_dest:시작
+o end
+o end
+o end
+- 
+o function faddr_src:초기화
+o begin
+o load param_dest:var:게임오버 param_src:bool_num:0
+o load param_dest:var:유령표시시간 param_src:hrtimer_num:200
+o load param_dest:var:유령과의거리최대 param_src:dec_num:5
+o load param_dest:var:유령과의거리이전 param_src:dec_num:1
+o load param_dest:var:유령출현중 param_src:bool_num:0
+o load param_dest:var:유령잡음 param_src:dec_num:0
+- 
+o load param_dest:smart:100:262 param_src:img_num:1
+- 
+o load param_dest:var:현재점수 param_src:dec_num:0
+o compute param_dest:var:현재점수_표시위치조정 param_src:var:현재점수 aop:* param_src:dec_num:256
+o load param_dest:smart:100:266 param_src:scrpos4_num:70387736
+o compute param_dest:smart:100:267 param_src:scrpos4_num:70385689 aop:+ param_src:var:현재점수_표시위치조정
+- 
+o load param_dest:var:에너지 param_src:dec_num:5
+o compute param_dest:var:에너지_표시위치조정 param_src:var:에너지 aop:* param_src:dec_num:256
+o load param_dest:smart:100:266 param_src:scrpos4_num:70387477
+o compute param_dest:smart:100:267 param_src:scrpos4_num:70385686 aop:+ param_src:var:에너지_표시위치조정
+- 
+o load param_dest:smart:100:265 param_src:scrpos4_num:50987277
+o end
+- 
+o function faddr_src:유령생성
+o begin
+o if param_src:var:유령출현중 lop:== param_src:bool_num:0 rop:then
+o begin
+o while(1)
+o begin
+o compute param_dest:var:핸드폰방향 param_src:smart:100:284 aop:/ param_src:dec_num:10
+o load param_dest:var:유령방향 param_src:var:카운터
+- 
+o // param_text:현재 핸드폰 방향을 중심점(17) 을 바탕으로 유령의 방향을 보정하여 하여 왼쪽 또는 오른쪽 방향을 표시
+o call faddr_dest:유령방향보정
+- 
+o // param_text:현재 방향에서 약 130 도를 벗어나지 않는 범위내에서 유령 생성
+o if param_src:var:유령방향보정 lop:>= param_src:dec_num:4 rop:&& param_src:var:유령방향보정 lop:<= param_src:dec_num:30 rop:then
+o begin
+o break
+o end
+o end
+- 
+o load param_dest:var:유령출현중 param_src:bool_num:1
+o load param_dest:var:유령잡음 param_src:bool_num:0
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o load param_dest:smart:100:266 param_src:scrpos4_num:36831245
+o compute param_dest:var:유령표시시간 param_src:var:유령표시시간 aop:- param_src:hrtimer_num:5
+o end
+- 
+o call faddr_dest:유령감지
+o end
+- 
+o function faddr_src:유령감지
+o begin
+o while(1)
+o begin
+o if param_src:smart:100:271 lop:== param_src:audio_num:0 rop:then
+o begin
+o load param_dest:smart:100:271 param_src:audio_num:3
+o end
+o // param_text:주위 환경이 어두우면 카메라 플래쉬 ON, 밝으면 OFF
+o if param_src:smart:100:282 lop:<= param_src:dec_num:10 rop:then
+o begin
+o load param_dest:smart:100:293 param_src:bool_num:1
+o end
+o else
+o begin
+o load param_dest:smart:100:293 param_src:bool_num:0
+o end
+- 
+o load param_dest:smart:100:266 param_src:scrpos4_num:117440527
+o load param_dest:smart:100:266 param_src:scrpos4_num:117440523
+- 
+o compute param_dest:var:핸드폰방향 param_src:smart:100:284 aop:/ param_src:dec_num:10
+- 
+o // param_text:현재 핸드폰 방향을 중심점(17) 을 바탕으로 유령의 방향을 보정하여 하여 왼쪽 또는 오른쪽 방향을 표시
+o call faddr_dest:유령방향보정
+- 
+o if param_src:var:오차범위 lop:>= param_src:dec_num:0 rop:&& param_src:var:오차범위 lop:<= param_src:dec_num:2 rop:then
+o begin
+o load param_dest:smart:100:265 param_src:scrpos4_num:67764493
+o call faddr_dest:유령표시
+o break
+o end
+o else
+o begin
+o load param_dest:smart:100:265 param_src:scrpos4_num:50987277
+- 
+o if param_src:var:유령방향보정 lop:> param_src:dec_num:17 rop:then
+o begin
+o compute param_dest:var:도형크기 param_src:var:유령방향보정 aop:- param_src:dec_num:17
+o compute param_dest:var:도형크기 param_src:var:도형크기 aop:* param_src:dec_num:15
+o compute param_dest:var:도형크기 param_src:var:도형크기 aop:* param_src:dec_num:65536
+- 
+o compute param_dest:smart:100:266 param_src:scrpos4_num:50334223 aop:+ param_src:var:도형크기
+- 
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+o else
+o begin
+o compute param_dest:var:도형크기 param_src:dec_num:17 aop:- param_src:var:유령방향보정
+o compute param_dest:var:도형크기 param_src:var:도형크기 aop:* param_src:dec_num:15
+o compute param_dest:var:도형크기 param_src:var:도형크기 aop:* param_src:dec_num:65536
+o compute param_dest:smart:100:266 param_src:scrpos4_num:50334475 aop:+ param_src:var:도형크기
+- 
+o load param_dest:cm:5 param_src:timer_num:1
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o call faddr_dest:발사확인
+o if param_src:var:유령잡음 lop:== param_src:dec_num:2 rop:then
+o begin
+o call faddr_dest:에너지확인
+o return
+o end
+o end
+o end
+o end
+- 
+o function faddr_src:유령표시
+o begin
+o for param_var:유령과의거리 param_src:var:유령과의거리이전 param_src:var:유령과의거리최대
+o begin
+o compute param_dest:var:유령과의거리_표시위치조정 param_src:var:유령과의거리 aop:* param_src:dec_num:256
+o compute param_dest:smart:100:263 param_src:scrpos3_num:13 aop:+ param_src:var:유령과의거리_표시위치조정
+o load param_dest:cm:6 param_src:var:유령표시시간
+o while param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o begin
+o compute param_dest:var:핸드폰방향 param_src:smart:100:284 aop:/ param_src:dec_num:10
+- 
+o call faddr_dest:유령방향보정
+- 
+o if param_src:var:오차범위 lop:> param_src:dec_num:2 rop:then
+o begin
+o if param_src:var:유령과의거리 lop:== param_src:var:유령과의거리최대 rop:then
+o begin
+o load param_dest:var:유령과의거리이전 param_src:dec_num:1
+o load param_dest:var:유령출현중 param_src:bool_num:0
+o load param_dest:smart:100:292 param_src:vibtime_num:20
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o return
+o end
+- 
+o compute param_dest:var:유령과의거리이전 param_src:var:유령과의거리 aop:+ param_src:dec_num:1
+o load param_dest:smart:100:263 param_src:scrpos3_num:0
+o return
+o end
+- 
+o call faddr_dest:발사확인
+- 
+o if param_src:var:유령잡음 lop:== param_src:dec_num:1 rop:then
+o begin
+o load param_dest:var:유령과의거리이전 param_src:dec_num:1
+o load param_dest:var:유령출현중 param_src:bool_num:0
+- 
+o compute param_dest:var:캡쳐유령이미지 param_src:var:유령과의거리 aop:+ param_src:dec_num:5
+o compute param_dest:var:캡쳐유령이미지_표시위치조정 param_src:var:캡쳐유령이미지 aop:* param_src:dec_num:256
+o compute param_dest:smart:100:263 param_src:scrpos3_num:13 aop:+ param_src:var:캡쳐유령이미지_표시위치조정
+- 
+o compute param_dest:var:캡쳐점수 param_src:dec_num:6 aop:- param_src:var:유령과의거리
+o compute param_dest:var:캡쳐점수_표시위치조정 param_src:var:캡쳐점수 aop:* param_src:dec_num:256
+o compute param_dest:smart:100:266 param_src:scrpos4_num:70385677 aop:+ param_src:var:캡쳐점수_표시위치조정
+- 
+o compute param_dest:var:현재점수 param_src:var:현재점수 aop:+ param_src:var:캡쳐점수
+o compute param_dest:var:현재점수_표시위치조정 param_src:var:현재점수 aop:* param_src:dec_num:256
+o compute param_dest:smart:100:267 param_src:scrpos4_num:70385689 aop:+ param_src:var:현재점수_표시위치조정
+- 
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+- 
+o return
+o end
+o elseif param_src:var:유령잡음 lop:== param_src:dec_num:2 rop:then
+o begin
+o call faddr_dest:에너지확인
+o return
+o end
+o end
+o end
+- 
+o call faddr_dest:에너지확인
+o load param_dest:cm:5 param_src:timer_num:10
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o function faddr_src:유령방향보정
+o begin
+o compute param_dest:var:중심점보정 param_src:dec_num:17 aop:- param_src:var:핸드폰방향
+o compute param_dest:var:유령방향보정 param_src:var:유령방향 aop:+ param_src:var:중심점보정
+o if param_src:var:유령방향보정 lop:> param_src:dec_num:35 rop:then
+o begin
+o compute param_dest:var:유령방향보정 param_src:var:유령방향보정 aop:- param_src:dec_num:35
+o end
+o elseif param_src:var:유령방향보정 lop:< param_src:dec_num:0 rop:then
+o begin
+o compute param_dest:var:유령방향보정 param_src:dec_num:35 aop:+ param_src:var:유령방향보정
+o end
+- 
+o if param_src:var:유령방향보정 lop:> param_src:dec_num:17 rop:then
+o begin
+o compute param_dest:var:오차범위 param_src:var:유령방향보정 aop:- param_src:dec_num:17
+o end
+o else
+o begin
+o compute param_dest:var:오차범위 param_src:dec_num:17 aop:- param_src:var:유령방향보정
+o end
+o end
+- 
+o function faddr_src:발사확인
+o begin
+o load param_dest:var:유령잡음 param_src:dec_num:0
+o load param_dest:var:발사 param_src:aux:7:65
+o if param_src:var:발사 lop:>= param_src:dec_num:1 rop:then
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:1
+o for param_var:i param_src:dec_num:1 param_src:dec_num:5
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:1023
+o load param_dest:aux:2:68 param_src:dir_num:1023
+o load param_dest:cm:6 param_src:hrtimer_num:50
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o load param_dest:cm:6 param_src:hrtimer_num:50
+o wait param_src:cm:6 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:aux:2:68 param_src:dir_num:0
+- 
+o if param_src:var:오차범위 lop:>= param_src:dec_num:0 rop:&& param_src:var:오차범위 lop:<= param_src:dec_num:2 rop:then
+o begin
+o load param_dest:var:유령잡음 param_src:dec_num:1
+o end
+o else
+o begin
+o load param_dest:var:유령잡음 param_src:dec_num:2
+o end
+o end
+o end
+- 
+o function faddr_src:에너지확인
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:4
+o load param_dest:var:유령과의거리이전 param_src:dec_num:1
+o load param_dest:var:유령출현중 param_src:bool_num:0
+o load param_dest:smart:100:263 param_src:scrpos3_num:2829
+o load param_dest:smart:100:266 param_src:scrpos4_num:53609997
+o load param_dest:smart:100:292 param_src:dec_num:200
+o load param_dest:smart:100:268 param_src:dec_num:20
+o compute param_dest:var:에너지 param_src:var:에너지 aop:- param_src:dec_num:1
+o compute param_dest:var:에너지_표시위치조정 param_src:var:에너지 aop:* param_src:dec_num:256
+o compute param_dest:smart:100:267 param_src:scrpos4_num:70385686 aop:+ param_src:var:에너지_표시위치조정
+o if param_src:var:에너지 lop:== param_src:dec_num:0 rop:then
+o begin
+o call faddr_dest:게임오버
+o load param_dest:var:게임오버 param_src:bool_num:1
+o end
+o end
+- 
+o function faddr_src:게임오버
+o begin
+o load param_dest:var:게임오버메시지표시 param_src:bool_num:1
+- 
+o load param_dest:smart:100:270 param_src:audio_num:2
+o load param_dest:smart:100:263 param_src:scrpos3_num:68621
+- 
+o while param_src:smart:100:286 lop:<= param_src:scrpos1_num:0 rop:then
+o begin
+o if param_src:var:게임오버메시지표시 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:smart:100:266 param_src:scrpos4_num:52300035
+o load param_dest:var:게임오버메시지표시 param_src:bool_num:0
+o end
+o else
+o begin
+o load param_dest:smart:100:266 param_src:scrpos4_num:18745603
+o load param_dest:var:게임오버메시지표시 param_src:bool_num:1
+o end
+- 
+o load param_dest:cm:5 param_src:timer_num:2
+o wait param_src:cm:5 lop:> param_src:timer_num:0 rop:then
+o end
+- 
+o load param_dest:smart:100:266 param_src:scrpos4_num:18743299
+o end
+- 
+o callback
+o begin
+o if param_src:var:카운터 lop:== param_src:dec_num:0 rop:then
+o load param_dest:var:카운터 param_src:dec_num:35
+o else
+o compute param_dest:var:카운터 param_src:var:카운터 aop:- param_src:dec_num:1
+o end
+- 

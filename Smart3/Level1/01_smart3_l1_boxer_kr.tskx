@@ -1,0 +1,109 @@
+﻿version 4.00
+cm_version 2.0
+platform CM-200
+o // param_text:제목 : 스마트3 1단계 복서 예제프로그램
+o // param_text:[작동 방법]
+o // param_text:스마트 폰을 흔들어 로봇의 펀치를 움직입니다.
+o main
+o begin
+o wait param_src:smart:100:251 lop:< param_src:scrrot_num:0 rop:then
+o load param_dest:smart:100:251 param_src:scrrot_num:1
+o load param_dest:cm:23 param_src:powersave_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:3
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o label laddr_src:재시작
+o load param_dest:var:펀치점수 param_src:dec_num:0
+o load param_dest:var:펀치횟수 param_src:dec_num:0
+o load param_dest:smart:100:262 param_src:img_num:1
+o wait param_src:smart:100:286 lop:!= param_src:scrpos1_num:23 rop:then
+- 
+o while(1)
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:400
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:smart:100:262 param_src:img_num:2
+o load param_dest:smart:100:267 param_src:scrpos0_num:1,펀치횟수,50,3
+o load param_dest:smart:100:267 param_src:scrpos0_num:5,펀치점수,50,3
+- 
+o // param_text:스마트폰이 흔들릴 때
+o load param_dest:var:흔들림 param_src:smart:100:277
+o if param_src:var:흔들림 lop:> param_src:dec_num:50 rop:then
+o begin
+o load param_dest:smart:100:262 param_src:img_num:3
+o load param_dest:aux:2:68 param_src:dir_num:500
+o load param_dest:cm:6 param_src:hrtimer_num:500
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o compute param_dest:var:펀치횟수 param_src:var:펀치횟수 aop:+ param_src:dec_num:1
+o load param_dest:smart:100:267 param_src:scrpos0_num:1,펀치횟수,50,3
+o load param_dest:smart:100:267 param_src:scrpos0_num:5,펀치점수,50,3
+o if param_src:aux:3:65 lop:== param_src:bool_num:1 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:smart:100:293 param_src:flash_num:1
+o load param_dest:smart:100:270 param_src:audio_num:1
+o load param_dest:smart:100:292 param_src:vibtime_num:50
+o load param_dest:smart:100:262 param_src:img_num:4
+o call faddr_dest:오른손원위치
+o load param_dest:cm:6 param_src:hrtimer_num:1000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:smart:100:293 param_src:flash_num:0
+o load param_dest:cm:18 param_src:buzzertime_num:255
+o load param_dest:cm:17 param_src:melody_num:0
+o wait param_src:cm:18 lop:> param_src:buzzertime_num:0 rop:then
+o compute param_dest:var:펀치점수 param_src:var:펀치점수 aop:+ param_src:dec_num:10
+o load param_dest:smart:100:267 param_src:scrpos0_num:1,펀치횟수,50,3
+o load param_dest:smart:100:267 param_src:scrpos0_num:5,펀치점수,50,3
+o end
+o else
+o begin
+o load param_dest:smart:100:270 param_src:audio_num:2
+o load param_dest:smart:100:262 param_src:img_num:5
+o load param_dest:smart:100:267 param_src:scrpos0_num:1,펀치횟수,50,3
+o load param_dest:smart:100:267 param_src:scrpos0_num:5,펀치점수,50,3
+o end
+o call faddr_dest:오른손원위치
+o end
+- 
+o // param_text:펀치를 10번하면 게임종료
+o if param_src:var:펀치횟수 lop:== param_src:dec_num:10 rop:then
+o begin
+o load param_dest:aux:1:68 param_src:dir_num:0
+o load param_dest:smart:100:262 param_src:img_num:6
+o load param_dest:smart:100:267 param_src:scrpos4_num:0
+o load param_dest:smart:100:267 param_src:scrpos0_num:13,펀치점수,200,3
+o wait param_src:smart:100:286 lop:!= param_src:scrpos1_num:23 rop:then
+o load param_dest:smart:100:267 param_src:scrpos4_num:0
+o jump laddr_dest:재시작
+o end
+o end
+o end
+- 
+o function faddr_src:오른손원위치
+o begin
+o load param_dest:aux:2:68 param_src:dir_num:1624
+o load param_dest:cm:6 param_src:hrtimer_num:1000
+o wait param_src:cm:6 lop:> param_src:hrtimer_num:0 rop:then
+o load param_dest:aux:2:68 param_src:dir_num:1024
+o end
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
+- 
